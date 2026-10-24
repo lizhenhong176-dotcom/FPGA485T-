@@ -41,9 +41,26 @@ def main() -> int:
     print("   import OK; VivadoTools located")
 
     print(f"== step 1: read 2017.2 DCP {DCP} ==")
-    # RapidWright's auto-generated readable.tcl does not escape Windows
-    # backslashes (E:\v7work\...\routed.dcp -> E:7work...), so pass forward
-    # slashes; Vivado's open_checkpoint accepts them.
+    # RW's auto-generated readable.tcl mangles Windows backslash paths.
+    # Workaround (documented option #1): pre-generate a sibling readable
+    # EDIF (write_edif) with a forward-slash path, then disable auto-gen so
+    # readCheckpoint picks up <base>.edf instead of shelling out.
+    edf = DCP.with_suffix(".edf")
+    if not edf.exists():
+        tcl = OUT / "mk_edif.tcl"
+        tcl.write_text(
+            "open_checkpoint {0}\nwrite_edif -force {1}\nexit\n".format(
+                str(DCP).replace("\\", "/"), str(edf).replace("\\", "/")),
+            encoding="utf-8")
+        import subprocess
+        r = subprocess.run([str(VIVADO_BIN / "vivado.bat"), "-mode", "batch",
+                            "-source", str(tcl).replace("\\", "/")],
+                           cwd=str(OUT), capture_output=True, text=True, timeout=600)
+        print("   write_edif rc=", r.returncode, "edf exists=", edf.exists())
+        if not edf.exists():
+            print(r.stdout[-1500:]); print(r.stderr[-1500:])
+            return 2
+    os.environ["RW_AUTO_GENERATE_READABLE_EDIF"] = "0"
     dcp_fwd = str(DCP).replace("\\", "/")
     try:
         design = Design.readCheckpoint(dcp_fwd)
