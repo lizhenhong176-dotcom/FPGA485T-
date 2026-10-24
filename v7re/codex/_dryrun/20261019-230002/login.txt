@@ -1,0 +1,2 @@
+WARNING: proceeding, even though we could not create PATH aliases: 拒绝访问。 (os error 5) at path "C:\\Users\\i\\.codex\\tmp\\arg0\\codex-arg04vmtt4"
+Logged in using an API key - sk-9fd33***963f6

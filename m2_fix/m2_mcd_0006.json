@@ -1,0 +1,97 @@
+{
+  "id": "m2_mcd_0006",
+  "gate": "minimal_controlled_difference",
+  "design": "two_lut_or",
+  "tile_family": "CLBLL_L",
+  "changed_inputs": [
+    "B.B3->B.B5"
+  ],
+  "variant_a": "b3_fix",
+  "variant_b": "b5_fix",
+  "sink_pin_a": "B3",
+  "sink_pin_b": "B5",
+  "pip_substitutions": 2,
+  "pip_symdiff": 4,
+  "classification": "int_mux+site_pip",
+  "int_mux_substitution": {
+    "a": "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L17",
+    "b": "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L24"
+  },
+  "site_pip_substitution": {
+    "a": "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX17->CLBLL_LL_B3",
+    "b": "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX24->CLBLL_LL_B5"
+  },
+  "route_a": [
+    "CLBLL_L_X6Y10/CLBLL_L.CLBLL_LL_A->CLBLL_LOGIC_OUTS12",
+    "INT_L_X6Y10/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+    "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L17",
+    "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX17->CLBLL_LL_B3"
+  ],
+  "route_b": [
+    "CLBLL_L_X6Y10/CLBLL_L.CLBLL_LL_A->CLBLL_LOGIC_OUTS12",
+    "INT_L_X6Y10/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+    "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L24",
+    "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX24->CLBLL_LL_B5"
+  ],
+  "diff_frames": [
+    31696,
+    31697,
+    31700,
+    31701,
+    31702,
+    31703,
+    31704,
+    31705
+  ],
+  "data_bits": [
+    [
+      22,
+      4
+    ],
+    [
+      22,
+      11
+    ]
+  ],
+  "aux_word": 50,
+  "bitstream_a_sha256": "e50add8338a89f64bf468fdf8a4376d00cb01c21ec7bf0bffea7fad77b3d2b6a",
+  "bitstream_b_sha256": "e871fea70a85a9a24c31502f2a003ef5a551a93bf4dc328d134c94cf6103bc4f",
+  "evidence": {
+    "bitstream_a": "data/m2/fam/clbll_l/b3_fix/design.bit",
+    "bitstream_b": "data/m2/fam/clbll_l/b5_fix/design.bit",
+    "pips_a": "data/m2/fam/clbll_l/b3_fix/pips.txt",
+    "pips_b": "data/m2/fam/clbll_l/b5_fix/pips.txt",
+    "route_log_a": "data/m2/fam/clbll_l/b3_fix/build.log",
+    "route_log_b": "data/m2/fam/clbll_l/b5_fix/build.log"
+  },
+  "notes": "First non-A3/A5 transition. Codex correctly noted that LOCK_PINS uses BEL-pin names A1-A6 for every 6LUT, not site-pin names B1-B6. With BEL B6LUT, I0:A3 routes to CLBLL_LL_B3 and I0:A5 to CLBLL_LL_B5. Both share CLBLL_LL_A -> LOGIC_OUTS12 -> NR1BEG0 and differ only at NR1END0->IMUX_L17/L24 and the site PIP, so pip_symdiff=4. B5 initially duplicated A5 in LOCK_PINS and fell back to B1; the duplicate was fixed before this pair was built.",
+  "frame_count": 50176,
+  "frame_sha256_a": "1a62ffbef32d928a9ad6c7633cac4a35fa8582f6c319ecb3ca7e6d37fabf3f3d",
+  "frame_sha256_b": "e92bd68f2ad9dd0e8dd08088f6ffe661cd2d77b0449a757e97087a6b3bb34b94",
+  "aux_bits": [
+    [
+      50,
+      0
+    ],
+    [
+      50,
+      1
+    ],
+    [
+      50,
+      2
+    ],
+    [
+      50,
+      3
+    ],
+    [
+      50,
+      9
+    ],
+    [
+      50,
+      10
+    ]
+  ]
+}

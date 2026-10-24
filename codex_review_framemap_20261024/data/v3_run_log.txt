@@ -1,0 +1,22 @@
+﻿CSV:    E:\DEEPSEEK\FPGA比特流逆向\phaseA\frame_index_far.csv
+BIT:    E:\v7work\_curated_20261021\probe\SLICE_X10Y10\A6LUT\a.bit
+DB:     E:\v7work\model\v7_model.sqlite
+
+[1] CSV validation (pre-DB):
+  Parsed 50176 rows, all fields valid
+  CSV validation: PASS
+
+[2] Bitstream hash anchors (from E:\v7work\_curated_20261021\probe\SLICE_X10Y10\A6LUT\a.bit):
+  frame 31748: sha256=0441772f66559a1c...  PASS
+  frame 31750: sha256=d44f0364fa633f70...  PASS
+  Hash verification: PASS
+
+[3] DB insert + in-transaction audits:
+  Inserted 50176 rows; all in-transaction audits PASS; committed
+
+============================================================
+FRAME_MAP AUDIT: PASS (all checks green, committed)
+v3 fixes: real block-continuity (anchored at run start), row
+ordering + interval contiguity, ordered header check, all DB
+audits inside transaction, DROP+CREATE constrained schema,
+schema_model.sql updated with matching CHECK constraints.

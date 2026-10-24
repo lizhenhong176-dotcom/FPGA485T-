@@ -1,0 +1,3 @@
+The full review, answers to all six questions, and severity-ranked issues are in [CODEX_FRAME_MAP_VERDICT.md](/E:/DEEPSEEK/FPGA%E6%AF%94%E7%89%B9%E6%B5%81%E9%80%86%E5%90%91/codex_review_framemap_20261024/CODEX_FRAME_MAP_VERDICT.md).
+
+**Verdict: CONDITIONAL_PASS.** The full CSV passes the structural checks and contains the claimed anchors. The importer needs stronger input validation and transactional behavior, and the audits need broader checks to establish the complete mapping.

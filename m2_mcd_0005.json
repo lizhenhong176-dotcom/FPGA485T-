@@ -1,0 +1,61 @@
+{
+    "id": "m2_mcd_0005",
+    "gate": "minimal_controlled_difference",
+    "design": "two_lut_or",
+    "tile_family": "CLBLM_L",
+    "changed_inputs": [
+        "B.A3->B.A5"
+    ],
+    "variant_a": "x29_a3",
+    "variant_b": "x29_a5",
+    "pip_substitutions": 2,
+    "pip_symdiff": 4,
+    "classification": "int_mux+site_pip",
+    "int_mux_substitution": {
+        "a": "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L0",
+        "b": "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L9"
+    },
+    "site_pip_substitution": {
+        "a": "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX0->CLBLM_L_A3",
+        "b": "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX9->CLBLM_L_A5"
+    },
+    "route_a": [
+        "CLBLM_L_X18Y40/CLBLM_L.CLBLM_L_A->CLBLM_LOGIC_OUTS8",
+        "INT_L_X18Y40/INT_L.LOGIC_OUTS_L8->>NR1BEG0",
+        "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L0",
+        "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX0->CLBLM_L_A3"
+    ],
+    "route_b": [
+        "CLBLM_L_X18Y40/CLBLM_L.CLBLM_L_A->CLBLM_LOGIC_OUTS8",
+        "INT_L_X18Y40/INT_L.LOGIC_OUTS_L8->>NR1BEG0",
+        "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L9",
+        "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX9->CLBLM_L_A5"
+    ],
+    "diff_frames": [
+        32112,
+        32115,
+        32116,
+        32117,
+        32118,
+        32119,
+        32120,
+        32121
+    ],
+    "data_bits": [
+        [83, 1],
+        [83, 10],
+        [83, 11]
+    ],
+    "aux_word": 50,
+    "bitstream_a_sha256": "17b08341bdc138241c8f8e9d723d1b48bfa70ed94bebf8b3f383bb0c494fe780",
+    "bitstream_b_sha256": "8de6463bd878dd3e35b77699ba08d89082fb22e2591837476156b7975ff34cab",
+    "evidence": {
+        "bitstream_a": "data/m2/fam/clblm_l/x29_a3/design.bit",
+        "bitstream_b": "data/m2/fam/clblm_l/x29_a5/design.bit",
+        "pips_a": "data/m2/fam/clblm_l/x29_a3/pips.txt",
+        "pips_b": "data/m2/fam/clblm_l/x29_a5/pips.txt",
+        "route_log_a": "data/m2/fam/clblm_l/x29_a3/build.log",
+        "route_log_b": "data/m2/fam/clblm_l/x29_a5/build.log"
+    },
+    "notes": "CLBLM_L tile with SLICEL at SLICE_X29 (m2_mcd_0003 used SLICEM at SLICE_X28). The INT and site PIP names differ (IMUX0/9 vs IMUX1/8) and the data bits are 83/1,10,11 instead of 83/2,3,9. This is the first evidence that the site PIP encoding differs between SLICEL and SLICEM inside the same CLBLM_L tile."
+}

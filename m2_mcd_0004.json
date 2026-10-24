@@ -1,0 +1,61 @@
+{
+    "id": "m2_mcd_0004",
+    "gate": "minimal_controlled_difference",
+    "design": "two_lut_or",
+    "tile_family": "CLBLL_L",
+    "changed_inputs": [
+        "B.A3->B.A5"
+    ],
+    "variant_a": "y20_a3",
+    "variant_b": "y20_a5",
+    "pip_substitutions": 2,
+    "pip_symdiff": 4,
+    "classification": "int_mux+site_pip",
+    "int_mux_substitution": {
+        "a": "INT_L_X6Y21/INT_L.NR1END0->>IMUX_L1",
+        "b": "INT_L_X6Y21/INT_L.NR1END0->>IMUX_L8"
+    },
+    "site_pip_substitution": {
+        "a": "CLBLL_L_X6Y21/CLBLL_L.CLBLL_IMUX1->CLBLL_LL_A3",
+        "b": "CLBLL_L_X6Y21/CLBLL_L.CLBLL_IMUX8->CLBLL_LL_A5"
+    },
+    "route_a": [
+        "CLBLL_L_X6Y20/CLBLL_L.CLBLL_LL_A->CLBLL_LOGIC_OUTS12",
+        "INT_L_X6Y20/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+        "INT_L_X6Y21/INT_L.NR1END0->>IMUX_L1",
+        "CLBLL_L_X6Y21/CLBLL_L.CLBLL_IMUX1->CLBLL_LL_A3"
+    ],
+    "route_b": [
+        "CLBLL_L_X6Y20/CLBLL_L.CLBLL_LL_A->CLBLL_LOGIC_OUTS12",
+        "INT_L_X6Y20/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+        "INT_L_X6Y21/INT_L.NR1END0->>IMUX_L8",
+        "CLBLL_L_X6Y21/CLBLL_L.CLBLL_IMUX8->CLBLL_LL_A5"
+    ],
+    "diff_frames": [
+        31696,
+        31699,
+        31700,
+        31701,
+        31702,
+        31703,
+        31704,
+        31705
+    ],
+    "data_bits": [
+        [42, 2],
+        [42, 3],
+        [42, 9]
+    ],
+    "aux_word": 50,
+    "bitstream_a_sha256": "1a9cbe26ee3a98363541e0aaab5cc4e16c4aeb0e2fac859624b0a1be792f121d",
+    "bitstream_b_sha256": "8683bf0e39fea4bfd4865f7d5d668c4c7f3a365c951bcd3040ee92730aa588dc",
+    "evidence": {
+        "bitstream_a": "data/m2/fam/clbll_l/y20_a3/design.bit",
+        "bitstream_b": "data/m2/fam/clbll_l/y20_a5/design.bit",
+        "pips_a": "data/m2/fam/clbll_l/y20_a3/pips.txt",
+        "pips_b": "data/m2/fam/clbll_l/y20_a5/pips.txt",
+        "route_log_a": "data/m2/fam/clbll_l/y20_a3/build.log",
+        "route_log_b": "data/m2/fam/clbll_l/y20_a5/build.log"
+    },
+    "notes": "Same CLBLL_L tile family and same A3->A5 transition one row below m2_mcd_0002. The diff frames are identical, but the data bits move from word 22 to word 42. This proves the LUT-pin bit position depends on the tile/row, not just the tile family."
+}

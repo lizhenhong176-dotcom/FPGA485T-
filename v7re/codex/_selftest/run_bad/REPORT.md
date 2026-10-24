@@ -1,0 +1,13 @@
+# R2 report
+
+- SLICE_X10Y50 ok
+- SLICE_X10Y100 ok
+- SLICE_X10Y150 ok
+- SLICE_X10Y200 ok
+- SLICE_X10Y250 ok
+- SLICE_X10Y160 ok
+- SLICE_X60Y160 ok
+- SLICE_X80Y160 ok
+- SLICE_X180Y160 ok
+- SLICE_X220Y160 ok
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

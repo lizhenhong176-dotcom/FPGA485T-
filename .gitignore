@@ -1,0 +1,48 @@
+# 大文件 / 工具链：不进仓库
+tools/
+phaseA/
+backup/
+.idea/
+.pytest_cache/
+__pycache__/
+.archify/
+v7re/tmp/
+v7re/data/
+v7re/work/
+v7re/.Xil/
+
+# 二进制产物
+*.bit
+*.bin
+*.dcp
+*.edf
+*.sqlite
+*.sqlite3
+*.db
+*.jar
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.log
+*.jou
+*.rpt
+*.vcd
+*.wdb
+
+# 复核包里的大 tar
+codex_review_*/*.tar
+codex_review_*/*.tar.gz
+codex_review_*/*.zip
+codex_review_m2_v2_20261022/
+codex_review_m2_small_20261022/
+codex_review_overhead_20261022/
+
+# 杂项
+*.png
+NUL
+
+# license / �������
+*.lic
+Vivado_license_2037.lic
+v7re/codex/_probe/

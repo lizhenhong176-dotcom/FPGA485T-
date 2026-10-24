@@ -1,0 +1,61 @@
+{
+    "id": "m2_mcd_0003",
+    "gate": "minimal_controlled_difference",
+    "design": "two_lut_or",
+    "tile_family": "CLBLM_L",
+    "changed_inputs": [
+        "B.A3->B.A5"
+    ],
+    "variant_a": "pin_a3",
+    "variant_b": "pin_a5",
+    "pip_substitutions": 2,
+    "pip_symdiff": 4,
+    "classification": "int_mux+site_pip",
+    "int_mux_substitution": {
+        "a": "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L1",
+        "b": "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L8"
+    },
+    "site_pip_substitution": {
+        "a": "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX1->CLBLM_M_A3",
+        "b": "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX8->CLBLM_M_A5"
+    },
+    "route_a": [
+        "CLBLM_L_X18Y40/CLBLM_L.CLBLM_M_A->CLBLM_LOGIC_OUTS12",
+        "INT_L_X18Y40/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+        "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L1",
+        "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX1->CLBLM_M_A3"
+    ],
+    "route_b": [
+        "CLBLM_L_X18Y40/CLBLM_L.CLBLM_M_A->CLBLM_LOGIC_OUTS12",
+        "INT_L_X18Y40/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+        "INT_L_X18Y41/INT_L.NR1END0->>IMUX_L8",
+        "CLBLM_L_X18Y41/CLBLM_L.CLBLM_IMUX8->CLBLM_M_A5"
+    ],
+    "diff_frames": [
+        32112,
+        32115,
+        32116,
+        32117,
+        32118,
+        32119,
+        32120,
+        32121
+    ],
+    "data_bits": [
+        [83, 2],
+        [83, 3],
+        [83, 9]
+    ],
+    "aux_word": 50,
+    "bitstream_a_sha256": "a45f2f911545ae51b3d1a4d07818cd9e54fc9bb632f8334a5eb3425a54b29ae0",
+    "bitstream_b_sha256": "8da82a3e7f244e002f1ec8a1670168266b80ced3aff3aee9faeba3c97f32b641",
+    "evidence": {
+        "bitstream_a": "data/m2/fam/clblm_l/pin_a3/design.bit",
+        "bitstream_b": "data/m2/fam/clblm_l/pin_a5/design.bit",
+        "pips_a": "data/m2/fam/clblm_l/pin_a3/pips.txt",
+        "pips_b": "data/m2/fam/clblm_l/pin_a5/pips.txt",
+        "route_log_a": "data/m2/fam/clblm_l/pin_a3/build.log",
+        "route_log_b": "data/m2/fam/clblm_l/pin_a5/build.log"
+    },
+    "notes": "Third tile family (CLBLM_L). Same INT_L NR1END0->IMUX_L1/L8 and site-PIP coupling as CLBLL_L, but the data-bit word is 83 instead of 22, showing the frame/word mapping is site-column dependent. All LOCK_PINS mappings are unique."
+}

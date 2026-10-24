@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# generated Vivado artifacts
+*.bit
+*.bin
+*.dcp
+*.log
+*.jou
+*.xpr
+*.rpt
+.vivado/
+work/

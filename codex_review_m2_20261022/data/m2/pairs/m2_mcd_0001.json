@@ -1,0 +1,72 @@
+{
+    "id":  "m2_mcd_0001",
+    "gate":  "minimal_controlled_difference",
+    "design":  "two_lut_or",
+    "tile_family":  "CLBLM_R",
+    "changed_inputs":  [
+                           "B.A3-\u003eB.A5"
+                       ],
+    "variant_a":  "pin_a3",
+    "variant_b":  "pin_a5",
+    "pip_substitutions":  2,
+    "pip_symdiff":  4,
+    "classification":  "int_mux+site_pip",
+    "int_mux_substitution":  {
+                                 "a":  "INT_R_X7Y11/INT_R.NR1END0-\u003e\u003eIMUX1",
+                                 "b":  "INT_R_X7Y11/INT_R.NR1END0-\u003e\u003eIMUX8"
+                             },
+    "site_pip_substitution":  {
+                                  "a":  "CLBLM_R_X7Y11/CLBLM_R.CLBLM_IMUX1-\u003eCLBLM_M_A3",
+                                  "b":  "CLBLM_R_X7Y11/CLBLM_R.CLBLM_IMUX8-\u003eCLBLM_M_A5"
+                              },
+    "route_a":  [
+                    "CLBLM_R_X7Y10/CLBLM_R.CLBLM_M_A-\u003eCLBLM_LOGIC_OUTS12",
+                    "INT_R_X7Y10/INT_R.LOGIC_OUTS12-\u003e\u003eNR1BEG0",
+                    "INT_R_X7Y11/INT_R.NR1END0-\u003e\u003eIMUX1",
+                    "CLBLM_R_X7Y11/CLBLM_R.CLBLM_IMUX1-\u003eCLBLM_M_A3"
+                ],
+    "route_b":  [
+                    "CLBLM_R_X7Y10/CLBLM_R.CLBLM_M_A-\u003eCLBLM_LOGIC_OUTS12",
+                    "INT_R_X7Y10/INT_R.LOGIC_OUTS12-\u003e\u003eNR1BEG0",
+                    "INT_R_X7Y11/INT_R.NR1END0-\u003e\u003eIMUX8",
+                    "CLBLM_R_X7Y11/CLBLM_R.CLBLM_IMUX8-\u003eCLBLM_M_A5"
+                ],
+    "diff_frames":  [
+                        31732,
+                        31735,
+                        31736,
+                        31737,
+                        31738,
+                        31739,
+                        31740,
+                        31741
+                    ],
+    "data_bits":  [
+                      [
+                          22,
+                          2
+                      ],
+                      [
+                          22,
+                          3
+                      ],
+                      [
+                          22,
+                          9
+                      ]
+                  ],
+    "aux_word":  50,
+    "bitstream_a_sha256":  "1a65564b94a41ef901dcbe422102512f63ee5cff26e82039a856af9c00cdbed3",
+    "bitstream_b_sha256":  "8798b130d70bba367e2664c744844e0f6b388bf42d5ff4b567d63a1217be40a2",
+    "evidence":  {
+                     "bitstream_a":  "data/m2/pins/pin_a3/design.bit",
+                     "bitstream_b":  "data/m2/pins/pin_a5/design.bit",
+                     "pips_a":  "data/m2/pins/pin_a3/pips.txt",
+                     "pips_b":  "data/m2/pins/pin_a5/pips.txt",
+                     "route_log_a":  "data/m2/pins/pin_a3/build.log",
+                     "route_log_b":  "data/m2/pins/pin_a5/build.log",
+                     "parallel_edge_scan":  "data/m2/parallel_edges.json"
+                 },
+    "notes":  "No parallel PIP pairs exist; one input pin change necessarily substitutes one INT mux PIP and one site PIP. word 50 bits are ECC/aux."
+}
+

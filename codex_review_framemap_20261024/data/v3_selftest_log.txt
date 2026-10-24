@@ -1,0 +1,14 @@
+﻿============================================================
+SELF-TEST: negative scenarios
+
+[T1] malformed CSV (corrupted far on line 3):
+  validate_csv rejected malformed CSV: line 3: far '0xZZZZ' is not valid hex
+  T1: PASS
+
+[T2] forced audit failure -> rollback (on temp DB copy):
+  ROLLBACK: 1 audit failure(s) — DB unchanged
+    - (forced) negative-test audit failure
+  DB state before=('present', 50176) after=('present', 50176) — unchanged after rollback
+  T2: PASS
+
+SELF-TEST: PASS

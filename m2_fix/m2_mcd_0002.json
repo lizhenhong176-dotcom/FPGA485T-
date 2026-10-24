@@ -1,0 +1,99 @@
+{
+  "id": "m2_mcd_0002",
+  "gate": "minimal_controlled_difference",
+  "design": "two_lut_or",
+  "tile_family": "CLBLL_L",
+  "changed_inputs": [
+    "B.A3->B.A5"
+  ],
+  "variant_a": "pin_a3",
+  "variant_b": "pin_a5",
+  "pip_substitutions": 2,
+  "pip_symdiff": 4,
+  "classification": "int_mux+site_pip",
+  "int_mux_substitution": {
+    "a": "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L1",
+    "b": "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L8"
+  },
+  "site_pip_substitution": {
+    "a": "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX1->CLBLL_LL_A3",
+    "b": "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX8->CLBLL_LL_A5"
+  },
+  "route_a": [
+    "CLBLL_L_X6Y10/CLBLL_L.CLBLL_LL_A->CLBLL_LOGIC_OUTS12",
+    "INT_L_X6Y10/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+    "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L1",
+    "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX1->CLBLL_LL_A3"
+  ],
+  "route_b": [
+    "CLBLL_L_X6Y10/CLBLL_L.CLBLL_LL_A->CLBLL_LOGIC_OUTS12",
+    "INT_L_X6Y10/INT_L.LOGIC_OUTS_L12->>NR1BEG0",
+    "INT_L_X6Y11/INT_L.NR1END0->>IMUX_L8",
+    "CLBLL_L_X6Y11/CLBLL_L.CLBLL_IMUX8->CLBLL_LL_A5"
+  ],
+  "diff_frames": [
+    31696,
+    31699,
+    31700,
+    31701,
+    31702,
+    31703,
+    31704,
+    31705
+  ],
+  "data_bits": [
+    [
+      22,
+      2
+    ],
+    [
+      22,
+      3
+    ],
+    [
+      22,
+      9
+    ]
+  ],
+  "aux_word": 50,
+  "bitstream_a_sha256": "57b0a2538e4edd4fb4170f2b6b8db76a95e09412b80f3c21db74917bf64f97b6",
+  "bitstream_b_sha256": "238bd4993ff201f9e7841bcb12a686a4412b45d52d50f7eea806806be0b00cc8",
+  "evidence": {
+    "bitstream_a": "data/m2/fam/clbll_l/pin_a3/design.bit",
+    "bitstream_b": "data/m2/fam/clbll_l/pin_a5/design.bit",
+    "pips_a": "data/m2/fam/clbll_l/pin_a3/pips.txt",
+    "pips_b": "data/m2/fam/clbll_l/pin_a5/pips.txt",
+    "route_log_a": "data/m2/fam/clbll_l/pin_a3/build.log",
+    "route_log_b": "data/m2/fam/clbll_l/pin_a5/build.log"
+  },
+  "notes": "Second tile family (CLBLL_L). A5 initially failed because LOCK_PINS duplicated A5; fixed to I5:A6, then the route used CLBLL_IMUX8->CLBLL_LL_A5 cleanly. INT mux and site PIP remain coupled because there is one site PIP per LUT input pin. word 50 bits are ECC/aux.",
+  "frame_count": 50176,
+  "frame_sha256_a": "8c3faa90d0e7aa5c154cfbbd048b1e06dd356f459af34edbc41684150e2fa22e",
+  "frame_sha256_b": "2866f0430fd4678be0105e86201007756980bfd2b9fd3d2f3206cbf16dbf6940",
+  "aux_bits": [
+    [
+      50,
+      0
+    ],
+    [
+      50,
+      1
+    ],
+    [
+      50,
+      3
+    ],
+    [
+      50,
+      9
+    ],
+    [
+      50,
+      10
+    ],
+    [
+      50,
+      12
+    ]
+  ]
+}

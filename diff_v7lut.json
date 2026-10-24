@@ -1,0 +1,36 @@
+{
+  "a": "C:\\v7lut_a\\top.bit",
+  "b": "C:\\v7lut_b\\top.bit",
+  "frames_a": 34412,
+  "frames_b": 34412,
+  "compared": 34412,
+  "diff_frames": [
+    {
+      "frame": 21350,
+      "words": [
+        {
+          "word": 20,
+          "bits": [
+            14,
+            15
+          ],
+          "from": "0x00008000",
+          "to": "0x00004000",
+          "ecc": false
+        },
+        {
+          "word": 50,
+          "bits": [
+            0,
+            12
+          ],
+          "from": "0x000015CF",
+          "to": "0x000005CE",
+          "ecc": true
+        }
+      ]
+    }
+  ],
+  "total_bits": 4,
+  "data_bits": 2
+}

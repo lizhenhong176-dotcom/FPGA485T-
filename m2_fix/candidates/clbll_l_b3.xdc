@@ -1,0 +1,6 @@
+set_property LOC SLICE_X8Y10 [get_cells lut_a]
+set_property BEL A6LUT [get_cells lut_a]
+set_property LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6} [get_cells lut_a]
+set_property LOC SLICE_X8Y11 [get_cells lut_b]
+set_property BEL A6LUT [get_cells lut_b]
+set_property LOCK_PINS {I0:A1 I1:B3 I2:A2 I3:A4 I4:A5 I5:A6} [get_cells lut_b]

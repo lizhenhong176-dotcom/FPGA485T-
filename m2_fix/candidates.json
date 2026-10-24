@@ -1,0 +1,3890 @@
+[
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L2",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L11",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX2",
+      "CLBLL_LL_A2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX11",
+      "CLBLL_LL_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L1",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L8",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX1",
+      "CLBLL_LL_A3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX8",
+      "CLBLL_LL_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L18",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L27",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX18",
+      "CLBLL_LL_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX27",
+      "CLBLL_LL_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L17",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX17",
+      "CLBLL_LL_B3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX24",
+      "CLBLL_LL_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L29",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX29",
+      "CLBLL_LL_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX28",
+      "CLBLL_LL_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L22",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L31",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX22",
+      "CLBLL_LL_C3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX31",
+      "CLBLL_LL_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L45",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L44",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX45",
+      "CLBLL_LL_D2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX44",
+      "CLBLL_LL_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L38",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L47",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX38",
+      "CLBLL_LL_D3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX47",
+      "CLBLL_LL_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L3",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L10",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX3",
+      "CLBLL_L_A2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX10",
+      "CLBLL_L_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L0",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX0",
+      "CLBLL_L_A3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX9",
+      "CLBLL_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L19",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L26",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX19",
+      "CLBLL_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX26",
+      "CLBLL_L_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L16",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX16",
+      "CLBLL_L_B3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX25",
+      "CLBLL_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L20",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L21",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX20",
+      "CLBLL_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX21",
+      "CLBLL_L_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L23",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX23",
+      "CLBLL_L_C3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX30",
+      "CLBLL_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L36",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L37",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX36",
+      "CLBLL_L_D2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX37",
+      "CLBLL_L_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L39",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX39",
+      "CLBLL_L_D3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX46",
+      "CLBLL_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX2",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX11",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX2",
+      "CLBLL_LL_A2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX11",
+      "CLBLL_LL_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX1",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX8",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX1",
+      "CLBLL_LL_A3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX8",
+      "CLBLL_LL_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX18",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX27",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX18",
+      "CLBLL_LL_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX27",
+      "CLBLL_LL_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX17",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX17",
+      "CLBLL_LL_B3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX24",
+      "CLBLL_LL_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX29",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX29",
+      "CLBLL_LL_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX28",
+      "CLBLL_LL_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX22",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX31",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX22",
+      "CLBLL_LL_C3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX31",
+      "CLBLL_LL_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX45",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX44",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX45",
+      "CLBLL_LL_D2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX44",
+      "CLBLL_LL_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX38",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX47",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX38",
+      "CLBLL_LL_D3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX47",
+      "CLBLL_LL_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX3",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX10",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX3",
+      "CLBLL_L_A2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX10",
+      "CLBLL_L_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX0",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX0",
+      "CLBLL_L_A3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX9",
+      "CLBLL_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX19",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX26",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX19",
+      "CLBLL_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX26",
+      "CLBLL_L_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX16",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX16",
+      "CLBLL_L_B3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX25",
+      "CLBLL_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX20",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX21",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX20",
+      "CLBLL_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX21",
+      "CLBLL_L_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX23",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX23",
+      "CLBLL_L_C3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX30",
+      "CLBLL_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX36",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX37",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX36",
+      "CLBLL_L_D2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX37",
+      "CLBLL_L_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX39",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX39",
+      "CLBLL_L_D3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX46",
+      "CLBLL_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L3",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L10",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX3",
+      "CLBLM_L_A2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX10",
+      "CLBLM_L_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L0",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX0",
+      "CLBLM_L_A3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX9",
+      "CLBLM_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L19",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L26",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX19",
+      "CLBLM_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX26",
+      "CLBLM_L_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L16",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX16",
+      "CLBLM_L_B3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX25",
+      "CLBLM_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L20",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L21",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX20",
+      "CLBLM_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX21",
+      "CLBLM_L_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L23",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX23",
+      "CLBLM_L_C3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX30",
+      "CLBLM_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L36",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L37",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX36",
+      "CLBLM_L_D2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX37",
+      "CLBLM_L_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L39",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX39",
+      "CLBLM_L_D3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX46",
+      "CLBLM_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L2",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L11",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX2",
+      "CLBLM_M_A2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX11",
+      "CLBLM_M_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L1",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L8",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX1",
+      "CLBLM_M_A3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX8",
+      "CLBLM_M_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END1",
+      "IMUX_L18",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX_L27",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX18",
+      "CLBLM_M_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX27",
+      "CLBLM_M_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END0",
+      "IMUX_L17",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX_L24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX17",
+      "CLBLM_M_B3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX24",
+      "CLBLM_M_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L29",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX29",
+      "CLBLM_M_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX28",
+      "CLBLM_M_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L22",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L31",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX22",
+      "CLBLM_M_C3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX31",
+      "CLBLM_M_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END2",
+      "IMUX_L45",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX_L44",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX45",
+      "CLBLM_M_D2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX44",
+      "CLBLM_M_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NR1END3",
+      "IMUX_L38",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX_L47",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX38",
+      "CLBLM_M_D3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX47",
+      "CLBLM_M_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX3",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX10",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX3",
+      "CLBLM_L_A2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX10",
+      "CLBLM_L_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX0",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX0",
+      "CLBLM_L_A3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX9",
+      "CLBLM_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX19",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX26",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX19",
+      "CLBLM_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX26",
+      "CLBLM_L_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX16",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX16",
+      "CLBLM_L_B3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX25",
+      "CLBLM_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX20",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX21",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX20",
+      "CLBLM_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX21",
+      "CLBLM_L_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX23",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX23",
+      "CLBLM_L_C3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX30",
+      "CLBLM_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX36",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX37",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX36",
+      "CLBLM_L_D2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX37",
+      "CLBLM_L_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX39",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX39",
+      "CLBLM_L_D3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX46",
+      "CLBLM_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A2",
+    "pin_b": "A4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX2",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX11",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX2",
+      "CLBLM_M_A2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX11",
+      "CLBLM_M_A4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A3",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX1",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX8",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX1",
+      "CLBLM_M_A3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX8",
+      "CLBLM_M_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B2",
+    "pin_b": "B4",
+    "branch_pips": 4,
+    "lca": "NR1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END1",
+      "IMUX18",
+      "L"
+    ],
+    "path_b": [
+      "NR1END1",
+      "IMUX27",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX18",
+      "CLBLM_M_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX27",
+      "CLBLM_M_B4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B3",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "NR1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END0",
+      "IMUX17",
+      "L"
+    ],
+    "path_b": [
+      "NR1END0",
+      "IMUX24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX17",
+      "CLBLM_M_B3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX24",
+      "CLBLM_M_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C2",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX29",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX29",
+      "CLBLM_M_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX28",
+      "CLBLM_M_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C3",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX22",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX31",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX22",
+      "CLBLM_M_C3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX31",
+      "CLBLM_M_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D2",
+    "pin_b": "D4",
+    "branch_pips": 4,
+    "lca": "NR1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END2",
+      "IMUX45",
+      "L"
+    ],
+    "path_b": [
+      "NR1END2",
+      "IMUX44",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX45",
+      "CLBLM_M_D2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX44",
+      "CLBLM_M_D4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D3",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "NR1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NR1END3",
+      "IMUX38",
+      "L"
+    ],
+    "path_b": [
+      "NR1END3",
+      "IMUX47",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX38",
+      "CLBLM_M_D3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX47",
+      "CLBLM_M_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A2",
+    "pin_b": "A3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L2",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L1",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX2",
+      "CLBLL_LL_A2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX1",
+      "CLBLL_LL_A3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A4",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END1",
+      "IMUX_L11",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX_L4",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX11",
+      "CLBLL_LL_A4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX4",
+      "CLBLL_LL_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B2",
+    "pin_b": "B3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L17",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX18",
+      "CLBLL_LL_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX17",
+      "CLBLL_LL_B3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX18",
+      "CLBLL_LL_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX24",
+      "CLBLL_LL_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B4",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END1",
+      "IMUX_L27",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX_L12",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX27",
+      "CLBLL_LL_B4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX12",
+      "CLBLL_LL_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C2",
+    "pin_b": "C3",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L29",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L22",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX29",
+      "CLBLL_LL_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX22",
+      "CLBLL_LL_C3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C3",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L22",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX22",
+      "CLBLL_LL_C3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX28",
+      "CLBLL_LL_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A1",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L6",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L5",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX6",
+      "CLBLL_L_A1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX5",
+      "CLBLL_L_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A4",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L10",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX10",
+      "CLBLL_L_A4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX9",
+      "CLBLL_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B1",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L14",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L13",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX14",
+      "CLBLL_L_B1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX13",
+      "CLBLL_L_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C2",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END1",
+      "IMUX_L20",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX_L34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX20",
+      "CLBLL_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX34",
+      "CLBLL_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A2",
+    "pin_b": "A3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX2",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX1",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX2",
+      "CLBLL_LL_A2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX1",
+      "CLBLL_LL_A3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_A",
+    "pin_a": "A4",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END1",
+      "IMUX11",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX4",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX11",
+      "CLBLL_LL_A4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX4",
+      "CLBLL_LL_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B2",
+    "pin_b": "B3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX17",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX18",
+      "CLBLL_LL_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX17",
+      "CLBLL_LL_B3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX18",
+      "CLBLL_LL_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX24",
+      "CLBLL_LL_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_B",
+    "pin_a": "B4",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END1",
+      "IMUX27",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX12",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX27",
+      "CLBLL_LL_B4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX12",
+      "CLBLL_LL_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C2",
+    "pin_b": "C3",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX29",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX22",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX29",
+      "CLBLL_LL_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX22",
+      "CLBLL_LL_C3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C3",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX22",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX22",
+      "CLBLL_LL_C3"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX28",
+      "CLBLL_LL_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A1",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX6",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX5",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX6",
+      "CLBLL_L_A1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX5",
+      "CLBLL_L_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_A",
+    "pin_a": "A4",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX10",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX10",
+      "CLBLL_L_A4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX9",
+      "CLBLL_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B1",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX14",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX13",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX14",
+      "CLBLL_L_B1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX13",
+      "CLBLL_L_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C2",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END1",
+      "IMUX20",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX20",
+      "CLBLL_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX34",
+      "CLBLL_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A1",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L6",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L5",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX6",
+      "CLBLM_L_A1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX5",
+      "CLBLM_L_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A4",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L10",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX10",
+      "CLBLM_L_A4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX9",
+      "CLBLM_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B1",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L14",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L13",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX14",
+      "CLBLM_L_B1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX13",
+      "CLBLM_L_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C2",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END1",
+      "IMUX_L20",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX_L34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX20",
+      "CLBLM_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX34",
+      "CLBLM_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A2",
+    "pin_b": "A3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L2",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L1",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX2",
+      "CLBLM_M_A2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX1",
+      "CLBLM_M_A3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A4",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END1",
+      "IMUX_L11",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX_L4",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX11",
+      "CLBLM_M_A4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX4",
+      "CLBLM_M_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B2",
+    "pin_b": "B3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L17",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX18",
+      "CLBLM_M_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX17",
+      "CLBLM_M_B3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END0",
+      "IMUX_L18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX_L24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX18",
+      "CLBLM_M_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX24",
+      "CLBLM_M_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B4",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END1",
+      "IMUX_L27",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX_L12",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX27",
+      "CLBLM_M_B4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX12",
+      "CLBLM_M_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C2",
+    "pin_b": "C3",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L29",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L22",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX29",
+      "CLBLM_M_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX22",
+      "CLBLM_M_C3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C3",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "ER1END2",
+      "IMUX_L22",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX_L28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX22",
+      "CLBLM_M_C3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX28",
+      "CLBLM_M_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A1",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX6",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX5",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX6",
+      "CLBLM_L_A1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX5",
+      "CLBLM_L_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_A",
+    "pin_a": "A4",
+    "pin_b": "A5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX10",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX9",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX10",
+      "CLBLM_L_A4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX9",
+      "CLBLM_L_A5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B1",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX14",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX13",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX14",
+      "CLBLM_L_B1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX13",
+      "CLBLM_L_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C2",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END1",
+      "IMUX20",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX20",
+      "CLBLM_L_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX34",
+      "CLBLM_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A2",
+    "pin_b": "A3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX2",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX1",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX2",
+      "CLBLM_M_A2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX1",
+      "CLBLM_M_A3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_A",
+    "pin_a": "A4",
+    "pin_b": "A6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END1",
+      "IMUX11",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX4",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX11",
+      "CLBLM_M_A4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX4",
+      "CLBLM_M_A6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B2",
+    "pin_b": "B3",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX17",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX18",
+      "CLBLM_M_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX17",
+      "CLBLM_M_B3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "ER1END0",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END0",
+      "IMUX18",
+      "L"
+    ],
+    "path_b": [
+      "ER1END0",
+      "IMUX24",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX18",
+      "CLBLM_M_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX24",
+      "CLBLM_M_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_B",
+    "pin_a": "B4",
+    "pin_b": "B6",
+    "branch_pips": 4,
+    "lca": "ER1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END1",
+      "IMUX27",
+      "L"
+    ],
+    "path_b": [
+      "ER1END1",
+      "IMUX12",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX27",
+      "CLBLM_M_B4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX12",
+      "CLBLM_M_B6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C2",
+    "pin_b": "C3",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX29",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX22",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX29",
+      "CLBLM_M_C2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX22",
+      "CLBLM_M_C3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C3",
+    "pin_b": "C4",
+    "branch_pips": 4,
+    "lca": "ER1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "ER1END2",
+      "IMUX22",
+      "L"
+    ],
+    "path_b": [
+      "ER1END2",
+      "IMUX28",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX22",
+      "CLBLM_M_C3"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX28",
+      "CLBLM_M_C4"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C4",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END2",
+      "IMUX_L28",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX_L35",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX28",
+      "CLBLL_LL_C4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX35",
+      "CLBLL_LL_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D2",
+    "pin_b": "D3",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END3",
+      "IMUX_L45",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX_L38",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX45",
+      "CLBLL_LL_D2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX38",
+      "CLBLL_LL_D3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D4",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END2",
+      "IMUX_L44",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX_L43",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX44",
+      "CLBLL_LL_D4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX43",
+      "CLBLL_LL_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L19",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX19",
+      "CLBLL_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX25",
+      "CLBLL_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B4",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L26",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX26",
+      "CLBLL_L_B4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX25",
+      "CLBLL_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C1",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L33",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX33",
+      "CLBLL_L_C1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX34",
+      "CLBLL_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D1",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L41",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L42",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX41",
+      "CLBLL_L_D1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX42",
+      "CLBLL_L_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D4",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END3",
+      "IMUX_L37",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX_L46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX37",
+      "CLBLL_L_D4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX46",
+      "CLBLL_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_C",
+    "pin_a": "C4",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END2",
+      "IMUX28",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX35",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX28",
+      "CLBLL_LL_C4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX35",
+      "CLBLL_LL_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D2",
+    "pin_b": "D3",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END3",
+      "IMUX45",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX38",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX45",
+      "CLBLL_LL_D2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX38",
+      "CLBLL_LL_D3"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_LL_D",
+    "pin_a": "D4",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END2",
+      "IMUX44",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX43",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX44",
+      "CLBLL_LL_D4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX43",
+      "CLBLL_LL_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX19",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX19",
+      "CLBLL_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX25",
+      "CLBLL_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_B",
+    "pin_a": "B4",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX26",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX26",
+      "CLBLL_L_B4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX25",
+      "CLBLL_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C1",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX33",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX33",
+      "CLBLL_L_C1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX34",
+      "CLBLL_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D1",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX41",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX42",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX41",
+      "CLBLL_L_D1"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX42",
+      "CLBLL_L_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_D",
+    "pin_a": "D4",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END3",
+      "IMUX37",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX37",
+      "CLBLL_L_D4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX46",
+      "CLBLL_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L19",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX19",
+      "CLBLM_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX25",
+      "CLBLM_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B4",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L26",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX26",
+      "CLBLM_L_B4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX25",
+      "CLBLM_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C1",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L33",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX33",
+      "CLBLM_L_C1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX34",
+      "CLBLM_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D1",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END1",
+      "IMUX_L41",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX_L42",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX41",
+      "CLBLM_L_D1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX42",
+      "CLBLM_L_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D4",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END3",
+      "IMUX_L37",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX_L46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX37",
+      "CLBLM_L_D4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX46",
+      "CLBLM_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C4",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END2",
+      "IMUX_L28",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX_L35",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX28",
+      "CLBLM_M_C4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX35",
+      "CLBLM_M_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D2",
+    "pin_b": "D3",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END3",
+      "IMUX_L45",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX_L38",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX45",
+      "CLBLM_M_D2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX38",
+      "CLBLM_M_D3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D4",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_L",
+    "path_a": [
+      "EL1END2",
+      "IMUX_L44",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX_L43",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX44",
+      "CLBLM_M_D4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX43",
+      "CLBLM_M_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B2",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX19",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX19",
+      "CLBLM_L_B2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX25",
+      "CLBLM_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_B",
+    "pin_a": "B4",
+    "pin_b": "B5",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX26",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX25",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX26",
+      "CLBLM_L_B4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX25",
+      "CLBLM_L_B5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C1",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX33",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX34",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX33",
+      "CLBLM_L_C1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX34",
+      "CLBLM_L_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D1",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END1",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END1",
+      "IMUX41",
+      "L"
+    ],
+    "path_b": [
+      "EL1END1",
+      "IMUX42",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX41",
+      "CLBLM_L_D1"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX42",
+      "CLBLM_L_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_D",
+    "pin_a": "D4",
+    "pin_b": "D5",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END3",
+      "IMUX37",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX46",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX37",
+      "CLBLM_L_D4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX46",
+      "CLBLM_L_D5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_C",
+    "pin_a": "C4",
+    "pin_b": "C6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END2",
+      "IMUX28",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX35",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX28",
+      "CLBLM_M_C4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX35",
+      "CLBLM_M_C6"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D2",
+    "pin_b": "D3",
+    "branch_pips": 4,
+    "lca": "EL1END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END3",
+      "IMUX45",
+      "L"
+    ],
+    "path_b": [
+      "EL1END3",
+      "IMUX38",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX45",
+      "CLBLM_M_D2"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX38",
+      "CLBLM_M_D3"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_M_D",
+    "pin_a": "D4",
+    "pin_b": "D6",
+    "branch_pips": 4,
+    "lca": "EL1END2",
+    "int_type": "INT_R",
+    "path_a": [
+      "EL1END2",
+      "IMUX44",
+      "L"
+    ],
+    "path_b": [
+      "EL1END2",
+      "IMUX43",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX44",
+      "CLBLM_M_D4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX43",
+      "CLBLM_M_D6"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_L",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C4",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NW2END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NW2END3",
+      "IMUX_L21",
+      "L"
+    ],
+    "path_b": [
+      "NW2END3",
+      "IMUX_L30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX21",
+      "CLBLL_L_C4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX30",
+      "CLBLL_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLL_R",
+    "lut": "CLBLL_L_C",
+    "pin_a": "C4",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NW2END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NW2END3",
+      "IMUX21",
+      "L"
+    ],
+    "path_b": [
+      "NW2END3",
+      "IMUX30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLL_IMUX21",
+      "CLBLL_L_C4"
+    ],
+    "site_pip_b": [
+      "CLBLL_IMUX30",
+      "CLBLL_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_L",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C4",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NW2END3",
+    "int_type": "INT_L",
+    "path_a": [
+      "NW2END3",
+      "IMUX_L21",
+      "L"
+    ],
+    "path_b": [
+      "NW2END3",
+      "IMUX_L30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX21",
+      "CLBLM_L_C4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX30",
+      "CLBLM_L_C5"
+    ]
+  },
+  {
+    "clb_type": "CLBLM_R",
+    "lut": "CLBLM_L_C",
+    "pin_a": "C4",
+    "pin_b": "C5",
+    "branch_pips": 4,
+    "lca": "NW2END3",
+    "int_type": "INT_R",
+    "path_a": [
+      "NW2END3",
+      "IMUX21",
+      "L"
+    ],
+    "path_b": [
+      "NW2END3",
+      "IMUX30",
+      "L"
+    ],
+    "site_pip_a": [
+      "CLBLM_IMUX21",
+      "CLBLM_L_C4"
+    ],
+    "site_pip_b": [
+      "CLBLM_IMUX30",
+      "CLBLM_L_C5"
+    ]
+  }
+]

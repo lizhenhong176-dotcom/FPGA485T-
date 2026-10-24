@@ -1,0 +1,59 @@
+{
+  "part": "xc7vx485tffg1761-2",
+  "frames_total": 50176,
+  "regions": {
+    "0": {
+      "base": 31748,
+      "loc": "SLICE_X10Y0"
+    },
+    "1": {
+      "base": 26502,
+      "loc": "SLICE_X10Y50"
+    },
+    "2": {
+      "base": 22000,
+      "loc": "SLICE_X10Y100"
+    },
+    "3": {
+      "base": 5520,
+      "loc": "SLICE_X10Y150"
+    },
+    "4": {
+      "base": 2140,
+      "loc": "SLICE_X10Y200"
+    },
+    "5": {
+      "base": 1000,
+      "loc": "SLICE_X10Y250"
+    }
+  },
+  "dX_at_Y160": {
+    "10": 0,
+    "20": 208,
+    "40": 680,
+    "60": 1224,
+    "80": 1666,
+    "100": 2086,
+    "120": 2588,
+    "140": 3060,
+    "160": 3504,
+    "180": 4048,
+    "200": 4520,
+    "220": 4936
+  },
+  "residuals": {
+    "SLICE_X10Y50": 0,
+    "SLICE_X10Y100": 0,
+    "SLICE_X10Y150": 0,
+    "SLICE_X10Y200": 0,
+    "SLICE_X10Y250": 0,
+    "SLICE_X10Y160": 0,
+    "SLICE_X60Y160": 0,
+    "SLICE_X80Y160": 0,
+    "SLICE_X180Y160": 0,
+    "SLICE_X220Y160": 0
+  },
+  "max_abs_residual": 0,
+  "pass": true,
+  "anomalies": []
+}

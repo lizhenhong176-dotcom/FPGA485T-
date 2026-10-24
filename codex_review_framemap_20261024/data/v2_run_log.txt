@@ -1,0 +1,36 @@
+﻿CSV:    E:\DEEPSEEK\FPGA比特流逆向\phaseA\frame_index_far.csv
+BIT:    E:\v7work\_curated_20261021\probe\SLICE_X10Y10\A6LUT\a.bit
+DB:     E:\v7work\model\v7_model.sqlite
+
+[1] CSV validation (pre-DB):
+  Parsed 50176 rows, all fields valid
+  CSV validation: PASS
+
+[2] Bitstream hash anchors (from E:\v7work\_curated_20261021\probe\SLICE_X10Y10\A6LUT\a.bit):
+  frame 31748: sha256=0441772f66559a1c...  PASS
+  frame 31750: sha256=d44f0364fa633f70...  PASS
+  Hash verification: PASS
+
+[3] DB insert (transactional):
+  Inserted 50176 rows, committed
+
+[4] DB audit checks:
+  5.1 total rows = 50,176: 50176  PASS
+  5.2 block frames (far NOT NULL) = 50,148: 50148  PASS
+  5.3 overhead frames (far IS NULL) = 28: 28  PASS
+  5.4 block frames with far IS NULL = 0: 0  PASS
+  5.5 overhead frames with far NOT NULL = 0: 0  PASS
+  5.6 overhead rows with tile/block_type = 0: 0  PASS
+  5.7 bad frame_address_source = 0: 0  PASS
+  5.8 bad confidence = 0: 0  PASS
+  5.9 duplicate FARs (block) = 0: 0  PASS
+  5.10 frame_index range: [0,50175]  PASS
+  5.11 frame 31748: far=0x004203A0 (expect 0x004203A0)  PASS
+  5.11 frame 31750: far=0x004203A2 (expect 0x004203A2)  PASS
+  5.12 overhead at row ends: 14 rows checked  PASS
+
+============================================================
+FRAME_MAP AUDIT: PASS (all checks green)
+Codex P1/P2 fixes applied: pre-DB validation, transactional insert,
+extended audits (row boundaries, FAR uniqueness, block continuity),
+CHECK constraints in schema.

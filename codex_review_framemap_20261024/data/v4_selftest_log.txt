@@ -1,0 +1,26 @@
+﻿============================================================
+SELF-TEST: negative scenarios
+
+[T1] malformed CSV (corrupted far on line 3):
+  validate_csv rejected malformed CSV: line 3: far '0xZZZZ' is not valid hex
+  DB fingerprint unchanged: d4582e4fdb1253d9... (content), 639430656 bytes
+  T1: PASS
+
+[T2] forced audit failure -> rollback (on temp DB copy):
+  ROLLBACK: 1 audit failure(s) — DB unchanged
+    - (forced) negative-test audit failure
+  full DB fingerprint identical before/after rollback
+    tables=21, frame_map rows=50176,
+    content sha256=d4582e4fdb1253d9..., size=639430656 bytes
+  T2: PASS
+
+[T3] whole-run consistent shift (run at frame_index 32, +1):
+  whole-run shift rejected: line 34: block_addr 0x81 not aligned to 0x80 grid
+  caught by independent battery: line 34: block_addr 0x81 not aligned to 0x80 grid
+  T3: PASS
+
+[T4] first-row-only mutation (frame_index 32, block_addr+far +1):
+  first-row mutation rejected: duplicate FAR values among block frames
+  T4: PASS
+
+SELF-TEST: PASS

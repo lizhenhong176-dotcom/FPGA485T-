@@ -1,0 +1,48 @@
+﻿============================================================
+SELF-TEST: negative scenarios
+  Inserted 50176 rows; all in-transaction audits PASS; committed
+  selftest DB built from E:\DEEPSEEK\FPGA比特流逆向\codex_review_framemap_20261024\data\frame_index_far.csv (no external model DB)
+  selftest DB: C:\user\default\v7re_selftest.sqlite
+
+[T1] malformed CSV (corrupted far on line 3):
+  validate_csv rejected malformed CSV: line 3: far '0xZZZZ' is not valid hex
+  DB full fingerprint unchanged:
+    tables=1, frame_map rows=50176
+    frame_map content sha256=d4582e4fdb1253d9...
+    backup-snapshot sha256=0de205f132cee703... (4513792 bytes)
+    journal=wal (diagnostic), sidecars=(('-wal', True, 0), ('-shm', True, 32768)) (diagnostic)
+  T1: PASS
+
+[T2] forced audit failure -> rollback (on temp DB copy):
+  ROLLBACK: 1 audit failure(s) — DB unchanged
+    - (forced) negative-test audit failure
+  full DB fingerprint identical before/after rollback
+    tables=1, frame_map rows=50176,
+    frame_map content sha256=d4582e4fdb1253d9...
+    backup-snapshot sha256=0de205f132cee703..., size=4513792 bytes
+    journal=wal (diagnostic), sidecars=(('-wal', True, 0), ('-shm', True, 32768)) (diagnostic)
+  T2: PASS
+
+[T3] whole-run consistent shift (run at frame_index 32, +1):
+  whole-run shift rejected: line 34: block_addr 0x81 not aligned to 0x80 grid
+  caught by independent battery: line 34: block_addr 0x81 not aligned to 0x80 grid
+  T3: PASS
+
+[T4] first-row-only mutation (frame_index 32, block_addr+far +1):
+  first-row mutation rejected: duplicate FAR values among block frames
+  T4: PASS
+
+[T5] whole-run relocation to unused 0x80-aligned region:
+  relocation to region 0x200 (shift +0xFF80) rejected:
+    run 1: (start=32, len=36, block_addr=0x10000, row=1, FAR_BLOCK_0) != expected-run table (start=32, len=36, block_addr=0x80, row=1, FAR_BLOCK_0); 1 run(s) mismatch
+  rejected ONLY by the exact expected-run table match — as designed
+  T5: PASS
+
+[T6] end-to-end migration (old schema -> migrate SQL -> re-import):
+  Inserted 50176 rows; all in-transaction audits PASS; committed
+  old-schema DB migrated: post-migration empty (0 rows),
+  re-import committed 50176 rows; row_number/block_addr present;
+  CHECK constraints in migrated DDL: True
+  T6: PASS
+
+SELF-TEST: PASS

@@ -1,0 +1,18 @@
+#### Vivado HL Design Edition Install Configuration (2017.2, lab lzh) ####
+Edition=Vivado HL Design Edition
+
+# Install root; Vivado itself goes to <Destination>/Vivado/2017.2
+Destination=/data/lzh/Xilinx
+
+# 7-series only: enough for the Virtex-7 project, much smaller than a full install.
+Modules=Virtex-7:1,Kintex-7:1,Artix-7:1,Zynq-7000:1
+
+# Skip license wizard and WebTalk prompts.
+InstallOptions=Acquire or Manage a License Key:0,Enable WebTalk for SDK to send usage statistics to Xilinx:0,Enable WebTalk for Vivado to send usage statistics to Xilinx (Always enabled for WebPACK license):0
+
+## Shortcuts and file associations ##
+CreateProgramGroupShortcuts=0
+ProgramGroupFolder=Xilinx Design Tools
+CreateShortcutsForAllUsers=0
+CreateDesktopShortcuts=0
+CreateFileAssociation=0

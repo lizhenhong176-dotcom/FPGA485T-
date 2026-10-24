@@ -1,0 +1,11 @@
+The count difference is exactly `50,176 - 50,148 = 28 = 14 × 2`. The documented constant is described as extra frames “at the end of a configuration row,” which supports interpreting it as two row-overhead frames per row. That interpretation matches the counts; the excerpt does not specify their FARs or how to represent them as objects.
+
+The public API evidence provided associates frames with `Block` (`getFrames()`, `getFrameCount()`, `getFrame(int)`) and rows with blocks (`getConfigRows()` / `row.getBlocks()` in the recorded traversal). It does not document overhead `Frame` objects attached to a `Block` or `ConfigRow`. **Inference:** block-only traversal therefore omits these 28 frames, and the evidence does not establish that `Block.getFrames()` can return them.
+
+The insertion test produces the observed total and places `0x4203A0` at index `31748`, matching the stated M3 anchor. It is consistent with inserting overhead after each row, but the supplied output alone does not prove that this is the correct ordering rule. The target is in row 7 if rows are numbered from 1; six preceding rows would contribute `6 × 2 = 12`, explaining the shift from `31,736` to `31,748`. This row position and explanation are inference from the insertion model, not directly established by the javadoc excerpts.
+
+`word_size` is consistent: `50,176 × 101 = 5,067,776`. This shows that the reported total word count matches 50,176 frames of 101 words each. **Inference:** it suggests `ConfigArray`’s total size includes the overhead frames even though the block traversal returns only 50,148 frame objects. The count does not identify overhead frame objects, FARs, tile associations, or contents. The excerpts also document block lookup for CLB and `BRAM_CONTENT`; they do not establish support for other block types. They do not establish how null or unconfigured frame contents are exported.
+
+For Phase A, the supplied evidence does not document an API that returns overhead frames or their FARs. Inserting two entries per row and incrementing FAR by one for each is therefore an **unverified construction**, not a documented result. Do not treat those generated FARs, or tile associations inferred from them, as confirmed without an independent frame-address map or equivalent validation.
+
+VERDICT: PARTIAL

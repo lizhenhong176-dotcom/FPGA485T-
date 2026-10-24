@@ -1,0 +1,6 @@
+rows=14 blocks=1183 block_frames=50148
+overhead_per_row=2
+with_overhead=50176
+word_size=5067776
+rows=14 total_with_overhead=50176
+idx380=31716 idx3a0=31748 idx314=-1

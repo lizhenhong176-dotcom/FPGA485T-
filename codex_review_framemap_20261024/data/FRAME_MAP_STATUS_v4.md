@@ -1,0 +1,189 @@
+# FRAME_MAP_STATUS — Phase A frame address map
+
+**Date**: 2026-10-24 (v4, post Codex v3-review fixes)
+**Status**: COMPLETE (all checks PASS; 4 negative self-tests PASS)
+**Codex review**: v1 CONDITIONAL_PASS → v2 CONDITIONAL_PASS → v3 CONDITIONAL_PASS → v4 fixes applied; re-review pending
+
+## What was built
+
+`frame_map` table in the model DB (`v7_model.sqlite`): 50,176 rows mapping
+bitstream payload index (0..50175) to FAR (frame address register) values.
+
+| Metric | Value |
+|---|---|
+| Total rows | 50,176 |
+| Block frames (far confirmed) | 50,148 |
+| Overhead frames (far NULL) | 28 |
+| frame_index range | [0, 50175], unique, continuous |
+| Source (block frames) | `rapidwright-configarray` |
+| Source (overhead) | `unresolved` |
+| Confidence (block frames) | `confirmed` |
+| Confidence (overhead) | `unresolved` |
+
+## FAR resolution for the 28 overhead frames
+
+Per the Codex high-model review (verdict: PARTIAL, report at
+`codex_review_overhead_20261022/CODEX_OVERHEAD_VERDICT.md`), the exact FAR
+values for the 28 overhead frames (2 per config row, 14 rows) **are not
+recoverable via the RapidWright public API as currently documented**.
+`ConfigRow.getExtraFrameCount()` exposes the frame count but the FAR of those
+positions is not stored in the device data. `FAR.incrementFAR()` produces
+plausible sequential values, but there is no independent confirmation channel
+within the current toolset: the bitstream does not embed per-frame FAR
+writes, and Vivado's `report_property` on frames does not expose the frame
+address. This is a limitation of the available evidence, not a proven
+impossibility — a future channel (e.g. an ICAP readback capture or a
+prjxray-style frame-map for a 7-series part) could still resolve them.
+
+**Schema decision**: store `far=NULL, frame_address_source='unresolved',
+confidence='unresolved'` for all 28 overhead rows. The CSV also records
+speculative sequential FAR values for reference, but these are NOT imported
+into the DB.
+
+## Table schema (v4, with CHECK constraints + row/block metadata)
+
+Script uses `DROP TABLE IF EXISTS` + `CREATE TABLE` (not CREATE IF NOT
+EXISTS) so a pre-existing table is always rebuilt with the constrained
+schema. Matches `v7re/db/schema_model.sql` (v4, updated). Migration for
+existing DBs: `v7re/scripts/migrate_frame_map_checks.sql` (DROP +
+re-CREATE, then re-import), or simply re-run the importer (it performs
+the equivalent rebuild inside one transaction).
+
+```sql
+CREATE TABLE IF NOT EXISTS frame_map (
+    frame_index           INTEGER PRIMARY KEY      -- 0..50175
+        CHECK (frame_index >= 0 AND frame_index <= 50175),
+    far                   INTEGER NULL,            -- NULL for 28 overhead rows
+    frame_address_source  TEXT NOT NULL
+        CHECK (frame_address_source IN ('rapidwright-configarray', 'unresolved')),
+    confidence            TEXT NOT NULL
+        CHECK (confidence IN ('confirmed', 'unresolved')),
+    tile_name             TEXT NULL,               -- NULL for all rows (Phase A scope)
+    block_type            TEXT NULL,               -- FAR block type field [25:23]
+    is_overhead           INTEGER NOT NULL DEFAULT 0
+        CHECK (is_overhead IN (0, 1)),
+    row_number            INTEGER NULL             -- config row 1..14 (from CSV)
+        CHECK (row_number IS NULL OR (row_number BETWEEN 1 AND 14)),
+    block_addr            INTEGER NULL,            -- block base FAR (block frames only)
+    CHECK ((is_overhead = 1) = (far IS NULL)),
+    CHECK ((is_overhead = 1) = (block_addr IS NULL)),
+    CHECK (block_addr IS NULL OR block_addr % 128 = 0),
+    CHECK (far IS NULL OR (far >= 0 AND far <= 2147483647))
+);
+```
+
+## Audit results (v4 import script, all PASS)
+
+The v4 script performs, in order: (1) full CSV field validation with
+row-numbered errors BEFORE any DB access (ordered exact header match);
+(2) an independent expected-run battery (checks 17-21 below) using
+device-structure invariants and recorded constants, not values derived
+from the row under test; (3) bitstream hash-anchor verification BEFORE
+the DB write (abort on mismatch); (4) ONE transaction containing insert
+AND all DB audits - any audit failure rolls back, leaving the DB
+unchanged (proven by the `--selftest` negative scenarios T1-T4 with
+full logical-fingerprint comparison).
+
+| # | Check | Result |
+|---|---|---|
+| 1 | CSV header ordered exact match | PASS |
+| 2 | CSV per-row field validity (50,176 rows parsed clean) | PASS |
+| 3 | frame_index 0..50175 unique continuous | PASS |
+| 4 | Row values non-decreasing 1..14, each row one contiguous interval | PASS |
+| 5 | FAR uniqueness among block frames | PASS |
+| 6 | Block continuity: far == block_addr + position-in-run (anchored at run start) | PASS |
+| 7 | Bitstream hash anchors 31748/31750 re-computed pre-DB | PASS |
+| 8 | DB total rows = 50,176 (in-transaction) | PASS |
+| 9 | Block/overhead counts 50,148/28 (in-transaction) | PASS |
+| 10 | NULL/provenance/overhead invariants 5.4–5.8 (in-transaction) | PASS |
+| 11 | Duplicate FARs = 0 (in-transaction) | PASS |
+| 12 | frame_index range [0,50175] (in-transaction) | PASS |
+| 13 | FAR anchors 0x004203A0 / 0x004203A2 (in-transaction) | PASS |
+| 14 | DB far == CSV far for EVERY block row (row-by-row cross-check, 5.15) | PASS |
+| 15 | Overhead = 14 disjoint adjacent index pairs (DB-derived, 5.16) | PASS |
+| 16 | block_type non-NULL on block frames + format check | PASS |
+| 17 | **Independent battery**: block_addr 0x80 grid alignment (all 1,183 runs) | PASS |
+| 18 | **Independent battery**: FAR block-type field constant within each run | PASS |
+| 19 | **Independent battery**: each run confined to one 0x80 region; regions unique | PASS |
+| 20 | **Independent battery**: run count 1,183 + length multiset {36:777, 28:245, 128:105, 30:28, 32:14, 42:14} | PASS |
+| 21 | **Independent battery**: per-row block-frame counts (rows 1-7: 5,244; rows 8-14: 1,920) | PASS |
+| 22 | DB row_number == CSV row for EVERY frame (in-transaction, 5.17) | PASS |
+| 23 | DB block_addr == CSV block_addr for EVERY block frame (in-transaction, 5.18) | PASS |
+| 24 | DB-side row interval reconstruction: 14 contiguous intervals (5.19) | PASS |
+| 25 | DB-side overhead at last 2 positions of each row interval (5.20) | PASS |
+| 26 | DB-side run reconstruction: far == block_addr + pos, alignment, block-type, region, length multiset (5.21) | PASS |
+| 27 | DB region uniqueness across runs (5.22) | PASS |
+| 28 | Negative T1: malformed CSV rejected pre-DB; real-DB fingerprint unchanged | PASS |
+| 29 | Negative T2: forced audit failure -> rollback; full fingerprint identical | PASS |
+| 30 | Negative T3: whole-run consistent shift (+1) rejected by grid alignment | PASS |
+| 31 | Negative T4: first-row-only mutation rejected (FAR duplicate + run split) | PASS |
+
+**Expected-run constants provenance** (checks 17-21): the 0x80-region grid
+is a device-structure property of the 7-series FAR address space; the run
+count (1,183), length multiset, and per-row block-frame counts were derived
+from the RapidWright ConfigArray enumeration of xc7vx485t and recorded in
+`phaseA/FRAME_INDEX_MAP.md`. They are constants of this device, not values
+recomputed from the rows under test - this is the independent expected
+block-start/length source.
+
+**Selftest fingerprints** (T1/T2): a full logical fingerprint - all 21
+table names + row counts, frame_map schema + index SQL, sha256 over all
+50,176 frame_map rows, and file size - is compared before and after;
+T2 runs on a temp DB copy and proves the rollback leaves every component
+identical. T1 also compares (not merely captures) the real-DB fingerprint.
+
+Hash anchors were **re-run** (not cited from old conclusions) using
+`E:\v7work\_curated_20261021\probe\SLICE_X10Y10\A6LUT\a.bit` parsed with the
+project's `bitstream/frames.py` loader, and the check runs BEFORE the DB
+write so a mismatch aborts the import. All DB audits run inside the
+transaction before COMMIT.
+
+**Audit scope note**: these audits verify structural integrity, ordering,
+uniqueness, provenance consistency, row-by-row DB<->CSV equality, device-grid
+invariants, and two hash anchors plus 6 prior independent anchor validations
+(see `phaseA/FRAME_INDEX_MAP.md`). They do NOT independently re-derive every
+one of the 50,148 FARs from a second source — that would require a second
+independent frame-map source, which is not currently available.
+
+## Source artifacts
+
+| Artifact | Path |
+|---|---|
+| Validated CSV (50,176 rows) | `phaseA/frame_index_far.csv` |
+| Java dump generator | `phaseA/DumpFrameIndex.java` |
+| Java anchor validator | `phaseA/FrameIndexMap.java` |
+| Import + audit script | `v7re/scripts/import_frame_map.py` |
+| Migration script | `v7re/scripts/migrate_frame_map_checks.sql` |
+| Schema (frame_map added) | `v7re/db/schema_model.sql` |
+| This status doc | `v7re/steps/FRAME_MAP_STATUS.md` |
+
+## How frame_map was generated
+
+RapidWright `ConfigArray` on `xc7vx485t` enumerates 14 config rows →
+1,183 blocks → 50,148 frames, each with a confirmed FAR. The bitstream has
+50,176 configuration frames. The 28-frame difference is 2 overhead frames
+at the end of each of the 14 config rows. The payload order is:
+
+```
+frame_index = 0
+for row in ConfigArray.getConfigRows():       # 14 rows
+    for block in row.getBlocks():             # in row order
+        for i in range(block.getFrameCount()):
+            far = block.getAddress() + i      # confirmed FAR
+            frame_index += 1
+    # 2 overhead positions (far=NULL in DB)
+    frame_index += 2
+```
+
+Validated against 6 independent anchors (see `phaseA/FRAME_INDEX_MAP.md`):
+indices 274, 5520, 21364, 31712, 31748, 31750 all match exactly.
+
+## Next steps
+
+1. Codex re-review of the v4 import script + updated status doc (target:
+   upgrade CONDITIONAL_PASS -> PASS).
+2. Sync `frame_map` table + updated schema to remote
+   `/data/lzh/v7re/work/refs_20261021/model/v7_model.sqlite` (blocked on
+   SSH key recovery).
+3. Phase B: `site_frames` — bind specific sites/BELs to frame/word/bit
+   using the frame_map FAR addresses.
