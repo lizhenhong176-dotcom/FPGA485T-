@@ -18,15 +18,6 @@ $RemoteHost = "s.tschai@172.17.70.41"
 $RemoteKey = "C:\Users\i\.ssh\v7remote"
 $LocalWorkDir = "E:\v7work"
 
-# 远端关键目录列表（从 STATUS.md 提取）
-$SyncPaths = @(
-    "/opt/lzh/v7re/data/model/v7_model.sqlite",
-    "/opt/lzh/v7re/work/refs_20261021/probe/result.json",
-    "/opt/lzh/step03/pip1",
-    "/opt/lzh/step03/pip2",
-    "/opt/lzh/v7re"
-)
-
 # 创建临时脚本文件避免引号问题
 $TempScript = "$env:TEMP\fpga_sync_$($PID).sh"
 $TempContent = @"
@@ -133,18 +124,27 @@ Write-Host ""
 # ========================
 Write-Host "[4/4] 推送到 GitHub..." -ForegroundColor Yellow
 
-try {
-    git push origin main 2>&1
-    Write-Host "✓ 推送成功" -ForegroundColor Green
-} catch {
-    # 如果 main 分支不存在，尝试 master
+$PushSuccess = $false
+
+# 尝试 main 分支
+foreach ($Branch in @("main", "master")) {
     try {
-        git push origin master 2>&1
-        Write-Host "✓ 推送到 master 成功" -ForegroundColor Green
+        $Output = git push origin $Branch 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✓ 推送到 $Branch 成功" -ForegroundColor Green
+            $PushSuccess = $true
+            break
+        }
     } catch {
-        Write-Host "⚠ 推送失败：$_" -ForegroundColor Red
-        Write-Host "提示：可能需要先关联远程分支 `git push --set-upstream origin <branch>`" -ForegroundColor DarkYellow
+        Write-Host "⚠ 推送到 $Branch 失败：$_" -ForegroundColor DarkYellow
     }
+}
+
+if (-not $PushSuccess) {
+    Write-Host "提示：首次推送请运行以下命令并输入 GitHub Token：" -ForegroundColor Yellow
+    Write-Host "   git push --set-upstream origin main" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "   GitHub Token 生成：https://github.com/settings/tokens" -ForegroundColor Gray
 }
 
 Write-Host ""
