@@ -8,7 +8,16 @@ AUX_WORD = 50
 
 
 def expected_word(row: int) -> int:
-    """LUT6 INIT word for a SLICE row (50 rows per clock region)."""
+    """LUT6 INIT word for a SLICE row (50 rows per clock region).
+
+    Word = 2*y within a region, with a +1 flip after the region midpoint.
+    The flip boundary is pinned at y>=25 by three dedicated probes
+    (E:\\v7work\\probe_boundary, batch_boundary.json, 2026-10-24):
+      y=23 -> 46 (no flip), y=24 -> 48 (no flip),
+      y=25 -> 51 (flip),   y=26 -> 53 (flip).
+    y=24 landing on 48 (=2*24, not 49) rules out a flip at 24; y=25
+    landing on 51 (=2*25+1) forces the flip to be exactly at 25.
+    """
     y = row % 50
     return 2 * y + (1 if y >= 25 else 0)
 

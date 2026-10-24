@@ -30,7 +30,7 @@
 | v7re 测试 | `/opt/lzh/v7re/tests`（7 个 `test_*.py`）| pytest **18 collected**（与 §2「18 passed」一致）|
 | Vivado | `/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado` | 存在（2017.06 wrapper）|
 
-> **同步缺口（已定位）**：本机 `E:\v7work\model\v7_model.sqlite` 是**另一份构建**（639,430,656 B，`region_bases`/`column_offsets`/`site_frames` 全 0，**不含 M1**）。要消除缺口：从远端拷 `data/model/v7_model.sqlite` 覆盖本机即可（含 14/420/72/1248）。`site_frames`/`pip_bits` 两张空表是 STEP04/M2 要填的，两边都还没有。
+> **同步（已完成 2026-10-24）**：本机 `E:\v7work\model\v7_model.sqlite` 已从远端 `data/model/v7_model.sqlite` 覆盖同步，逐字节一致（sha256 `eec0473f…9351`；probes 72 / probe_bits 1248 / region_bases 14 / column_offsets 420）。旧 M0 构建（639,430,656 B）备份为 `v7_model.sqlite.preM1.bak`。`site_frames`/`pip_bits` 两张空表是 STEP04/M2 要填的，两边都还没有。
 
 ---
 
@@ -141,7 +141,13 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 ## 4. 待办
 
-0. **[同步 远端→本机]** 把远端 `/opt/lzh/v7re/data/model/v7_model.sqlite`（含 M1：region_bases 14 / column_offsets 420 / probes 72 / probe_bits 1248）拷回本机 `E:\v7work\model\`，消除 §1 记录的同步缺口。
+0. ~~**[同步 远端→本机]**~~ ✅ **已完成 2026-10-24**：远端 `data/model/v7_model.sqlite`（M1：region_bases 14 / column_offsets 420 / probes 72 / probe_bits 1248）已覆盖同步到本机 `E:\v7work\model\v7_model.sqlite`（sha256 校验一致），旧 M0 构建备份为 `v7_model.sqlite.preM1.bak`。
+
+0b. ~~**[prjxray 格式对齐]**~~ ✅ **已完成 2026-10-24（拓扑部分）**：`v7re/export/prjxray_db.py`
+   导出到 `E:\v7work\db\prjxray\xc7vx485t\`：`tilegrid.json`（150,380 tiles）、
+   `tileconn.json`（17,928 条 / 148,622 wire pair）、115 个 `tile_type_<T>.json`（35,126 pips）、
+   `manifest.json`、`README.md`。差异：坐标系是 RapidWright 全局网格（非 prjxray 列网格），
+   tileconn 粒度更细；`segbits_*/ppips_*/mask_*` 仍缺（需 fuzz 结果，ppips 需 site→tile 映射）。
 
 > **STEP03 已有结论但尚未入库**：远端模型库 `pip_bits`/`bit_map` 仍为 **0**；`step03_pip/RESULTS.md` 里的 (变体→帧对,word,bit) 还没写进 DB。填 `pip_bits` 是 STEP04 的输入。
 
