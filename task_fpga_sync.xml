@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-16"?>
+<Task version="1.4" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Date>2026-10-24</Date>
+    <Author>i</Author>
+    <Description>FPGA485T 自动同步远端数据并上传 GitHub（每 24 小时）</Description>
+  </RegistrationInfo>
+  <Triggers>
+    <IntervalTrigger>
+      <StartBoundary>2026-10-24T18:00:00</StartBoundary>
+      <Enabled>true</Enabled>
+      <Repeat>PT1M</Repeat>
+      <StopAtDurationEnd>false</StopAtDurationEnd>
+      <Interval>P1D</Interval>
+    </IntervalTrigger>
+  </Triggers>
+  <Principals>
+    <Principal id="Author">
+      <LogonType>InteractiveToken</LogonType>
+      <RunLevel>HighestAvailable</RunLevel>
+    </Principal>
+  </Principals>
+  <Settings>
+    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
+    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    <StopGoingOnBatteries>false</StopGoingOnBatteries>
+    <AllowHardTerminate>true</AllowHardTerminate>
+    <StartWhenAvailable>true</StartWhenAvailable>
+    <RunOnlyIfNetworkAvailable>true</RunOnlyIfNetworkAvailable>
+    <AllowStartOnDemand>true</AllowStartOnDemand>
+    <Enabled>true</Enabled>
+    <Hidden>false</Hidden>
+    <RunOnlyIfIdle>false</RunOnlyIfIdle>
+    <WakeToRun>false</WakeToRun>
+    <ExecutionTimeLimit>PT72H</ExecutionTimeLimit>
+    <Priority>7</Priority>
+  </Settings>
+  <Actions Context="Author">
+    <Exec>
+      <Command>powershell.exe</Command>
+      <Arguments>-ExecutionPolicy Bypass -File "E:\DEEPSEEK\FPGA比特流逆向\sync_and_push.ps1"</Arguments>
+    </Exec>
+  </Actions>
+</Task>
