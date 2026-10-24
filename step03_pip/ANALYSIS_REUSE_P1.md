@@ -68,3 +68,31 @@
 
 设备实测（RapidWright）：INT_L_X6Y10、INT_L_X6Y11、INT_L_X12Y11 三块 tile 的
 ->IMUX_L8 PIP 数**都是 25**，wire 名完全相同 → 模板里的 25 条就是全部源。
+
+## P3：跨 mux 对照（6 个 IMUX，各 8 源）
+
+设计：把 net n1 从 lut_b 的 A1..A6 输入分别进入，得到 6 个不同的 IMUX 汇
+（A1→IMUX_L7、A2→IMUX_L2、A3→IMUX_L1、A4→IMUX_L11、A5→IMUX_L8、A6→IMUX_L4），
+每个汇换 8 个源，差值得绝对位集（48 个变体 + 6 个参考，xargs -P 12 并行）。
+
+结果：**每个 mux 占一个互不重叠的 2 bit 字段**，且**不同 mux 的位池完全不相交**：
+
+| 输入 | IMUX | word | bit 对 |
+|---|---|---|---|
+| A1 | L7 | **23** | 24, 25 |
+| A2 | L2 | 22 | 16, 17 |
+| A3 | L1 | 22 | 8, 9 |
+| A4 | L11 | 22 | 26, 27 |
+| A5 | L8 | 22 | 2, 3 |
+| A6 | L4 | **23** | 0, 1 |
+
+结论：
+
+1. **复用不是全局的，而是“每 mux 一个 2 bit 字段”**——mux 之间不共享任何配置位。
+2. 字段宽度都是 2 bit、位对相邻（2k, 2k+1），word 22/23 各装 16 个 mux，正好对应 tile 的 32 个 IMUX。
+3. 同一 mux 内，各源用这 2 位的不同组合 + 不同帧（31696–31705）来区分，
+   所以“复用”发生在**同一个 mux 的 N 个源**之间（P1 已量化：单 bit 最多被 21 条 PIP 共享）。
+4. 注意 A1/A6 落 word 23、其余落 word 22 → mux 字段的 word 由 IMUX 编号的高位决定，
+   可以写出 imux → (word, bit_base) 的映射表（下一步要做的）。
+
+数据：p3_bits.json，脚本 p3_make.py / p3_diff.py / p3_analyze.py / p3_detail.py。
