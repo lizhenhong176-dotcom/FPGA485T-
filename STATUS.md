@@ -1,48 +1,44 @@
-# FPGA 比特流逆向 — 项目现状（每个任务开始前先读本文件）
+﻿# FPGA 姣旂壒娴侀€嗗悜 鈥?椤圭洰鐜扮姸锛堟瘡涓换鍔″紑濮嬪墠鍏堣鏈枃浠讹級
 
-最后更新：2026-10-24
+鏈€鍚庢洿鏂帮細2026-10-24
 
-目标：XC7VX485T-2FFG1761（VC707）比特流逆向。
-路线：**拓扑（RapidWright 导出）→ PIP→bit 差分 → frame/bit 数据库 → 完整 bit↔feature 映射**。
-
+鐩爣锛歑C7VX485T-2FFG1761锛圴C707锛夋瘮鐗规祦閫嗗悜銆?璺嚎锛?*鎷撴墤锛圧apidWright 瀵煎嚭锛夆啋 PIP鈫抌it 宸垎 鈫?frame/bit 鏁版嵁搴?鈫?瀹屾暣 bit鈫攆eature 鏄犲皠**銆?
 ---
 
-## 1. 位置
+## 1. 浣嶇疆
 
-| 内容 | 位置 |
+| 鍐呭 | 浣嶇疆 |
 |---|---|
-| 项目代码（本地） | `E:\DEEPSEEK\FPGA比特流逆向\v7re` |
-| STEP03 实验脚本 | `E:\DEEPSEEK\FPGA比特流逆向\step03_pip` |
-| 本地工作数据（DB、bit） | `E:\v7work`（`routing\v7_routing.db`、`routing\out_routing`、`m2\`、`bits\`） |
-| 远端机器 | `172.17.70.41`（DHCP，重启可能变），用户 `s.tschai`，私钥 `C:\Users\i\.ssh\v7remote` |
-| 远端 WSL | Ubuntu 20.04，`/opt/lzh/v7re`、`/opt/lzh/Xilinx/Vivado/2017.2`、`/opt/lzh/venv` |
-| STEP03 实验目录 | 远端 `/opt/lzh/step03/pip1`、`pip2` |
+| 椤圭洰浠ｇ爜锛堟湰鍦帮級 | `E:\DEEPSEEK\FPGA姣旂壒娴侀€嗗悜\v7re` |
+| STEP03 瀹為獙鑴氭湰 | `E:\DEEPSEEK\FPGA姣旂壒娴侀€嗗悜\step03_pip` |
+| 鏈湴宸ヤ綔鏁版嵁锛圖B銆乥it锛?| `E:\v7work`锛坄routing\v7_routing.db`銆乣routing\out_routing`銆乣m2\`銆乣bits\`锛?|
+| 杩滅鏈哄櫒 | `172.17.70.41`锛圖HCP锛岄噸鍚彲鑳藉彉锛夛紝鐢ㄦ埛 `s.tschai`锛岀閽?`C:\Users\i\.ssh\v7remote` |
+| 杩滅 WSL | Ubuntu 20.04锛宍/opt/lzh/v7re`銆乣/opt/lzh/Xilinx/Vivado/2017.2`銆乣/opt/lzh/venv` |
+| STEP03 瀹為獙鐩綍 | 杩滅 `/opt/lzh/step03/pip1`銆乣pip2` |
 
-**远端实测核对（2026-10-24 只读 SSH 验证，非推测）：**
+**杩滅瀹炴祴鏍稿锛?026-10-24 鍙 SSH 楠岃瘉锛岄潪鎺ㄦ祴锛夛細**
 
-| 内容 | 远端权威位置 | 实测 |
+| 鍐呭 | 杩滅鏉冨▉浣嶇疆 | 瀹炴祴 |
 |---|---|---|
-| 模型库（含 M1） | `/opt/lzh/v7re/data/model/v7_model.sqlite` | 635,047,936 B / 2026-10-21 22:09；sites 86,022、site_pins 5,489,706、tiles 150,380、tile_types 115、**probes 72 / probe_bits 1248 / region_bases 14 / column_offsets 420**；`site_frames`/`bit_map`/`pip_bits` 仍 **0** |
-| 模型库副本 | `/opt/lzh/v7re/work/refs_20261021/model/v7_model.sqlite` | 同上（22:10，逐字节同尺寸）|
-| 旧 M0 probe 库 | `/opt/lzh/v7re/work/refs_20261021/db/v7.sqlite` | 8,179,712 B；sites 75,900 / probes 47 / probe_bits 784（= 本机镜像那份）|
-| P0 边界库 | `/opt/lzh/v7re/work/refs_20261021/p0/v7_p0.sqlite` | 361,844,736 B |
-| 逐站点 probe | `/opt/lzh/v7re/data/m1/probe`、`work/probe_smoke`、`work/refs_20261021/probe` | 全片 `result.json` 共 **31** |
-| v7re 测试 | `/opt/lzh/v7re/tests`（7 个 `test_*.py`）| pytest **18 collected**（与 §2「18 passed」一致）|
-| Vivado | `/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado` | 存在（2017.06 wrapper）|
+| 妯″瀷搴擄紙鍚?M1锛?| `/opt/lzh/v7re/data/model/v7_model.sqlite` | 635,047,936 B / 2026-10-21 22:09锛泂ites 86,022銆乻ite_pins 5,489,706銆乼iles 150,380銆乼ile_types 115銆?*probes 72 / probe_bits 1248 / region_bases 14 / column_offsets 420**锛沗site_frames`/`bit_map`/`pip_bits` 浠?**0** |
+| 妯″瀷搴撳壇鏈?| `/opt/lzh/v7re/work/refs_20261021/model/v7_model.sqlite` | 鍚屼笂锛?2:10锛岄€愬瓧鑺傚悓灏哄锛墊
+| 鏃?M0 probe 搴?| `/opt/lzh/v7re/work/refs_20261021/db/v7.sqlite` | 8,179,712 B锛泂ites 75,900 / probes 47 / probe_bits 784锛? 鏈満闀滃儚閭ｄ唤锛墊
+| P0 杈圭晫搴?| `/opt/lzh/v7re/work/refs_20261021/p0/v7_p0.sqlite` | 361,844,736 B |
+| 閫愮珯鐐?probe | `/opt/lzh/v7re/data/m1/probe`銆乣work/probe_smoke`銆乣work/refs_20261021/probe` | 鍏ㄧ墖 `result.json` 鍏?**31** |
+| v7re 娴嬭瘯 | `/opt/lzh/v7re/tests`锛? 涓?`test_*.py`锛墊 pytest **18 collected**锛堜笌 搂2銆?8 passed銆嶄竴鑷达級|
+| Vivado | `/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado` | 瀛樺湪锛?017.06 wrapper锛墊
 
-> **同步（已完成 2026-10-24）**：本机 `E:\v7work\model\v7_model.sqlite` 已从远端 `data/model/v7_model.sqlite` 覆盖同步，逐字节一致（sha256 `eec0473f…9351`；probes 72 / probe_bits 1248 / region_bases 14 / column_offsets 420）。旧 M0 构建（639,430,656 B）备份为 `v7_model.sqlite.preM1.bak`。`site_frames`/`pip_bits` 两张空表是 STEP04/M2 要填的，两边都还没有。
-
+> **鍚屾锛堝凡瀹屾垚 2026-10-24锛?*锛氭湰鏈?`E:\v7work\model\v7_model.sqlite` 宸蹭粠杩滅 `data/model/v7_model.sqlite` 瑕嗙洊鍚屾锛岄€愬瓧鑺備竴鑷达紙sha256 `eec0473f鈥?351`锛沺robes 72 / probe_bits 1248 / region_bases 14 / column_offsets 420锛夈€傛棫 M0 鏋勫缓锛?39,430,656 B锛夊浠戒负 `v7_model.sqlite.preM1.bak`銆俙site_frames`/`pip_bits` 涓ゅ紶绌鸿〃鏄?STEP04/M2 瑕佸～鐨勶紝涓よ竟閮借繕娌℃湁銆?
 ---
 
-## 2. 远端环境怎么用
-
+## 2. 杩滅鐜鎬庝箞鐢?
 ```bash
-# WSL 入口（System32 下的 wsl.exe 是 stub，必须用全路径）
-"C:\Program Files\WSL\wsl.exe" -d Ubuntu -u root -- bash -lc "<命令>"
+# WSL 鍏ュ彛锛圫ystem32 涓嬬殑 wsl.exe 鏄?stub锛屽繀椤荤敤鍏ㄨ矾寰勶級
+"C:\Program Files\WSL\wsl.exe" -d Ubuntu -u root -- bash -lc "<鍛戒护>"
 
 # Vivado
 export XILINXD_LICENSE_FILE=/opt/lzh/Xilinx/Vivado_license_2037.lic
-export LANG=C LC_ALL=C          # 不设会报 locale::facet::_S_create_c_locale
+export LANG=C LC_ALL=C          # 涓嶈浼氭姤 locale::facet::_S_create_c_locale
 /opt/lzh/Xilinx/Vivado/2017.2/bin/vivado -mode batch -notrace -source x.tcl
 
 # Python / RapidWright
@@ -50,46 +46,26 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 /opt/lzh/venv/bin/python ...
 ```
 
-注意：
-
-- **SSH 默认 shell 是 cmd.exe**，嵌套引号极易被吃。复杂命令一律「本地写 `.sh`（LF 换行）→ `scp` → `bash /mnt/c/Users/S.tschai/x.sh`」。
-- PowerShell 的 `Set-Content` 会写 CRLF，bash 脚本必须用 `[IO.File]::WriteAllText(..., ($lines -join "`n"))`。
-- RapidWright 的 pip 包会去 github.com 下 400MB jar（连不通），已改用本机 `rapidwright-2026.1.1-standalone-win64.jar` 复制成 `lin64` 名字放进 site-packages，**Java 跨平台，实测可用**。
-- 远端 `pytest tests`（v7re）当前 **18 passed**。
-
+娉ㄦ剰锛?
+- **SSH 榛樿 shell 鏄?cmd.exe**锛屽祵濂楀紩鍙锋瀬鏄撹鍚冦€傚鏉傚懡浠や竴寰嬨€屾湰鍦板啓 `.sh`锛圠F 鎹㈣锛夆啋 `scp` 鈫?`bash /mnt/c/Users/S.tschai/x.sh`銆嶃€?- PowerShell 鐨?`Set-Content` 浼氬啓 CRLF锛宐ash 鑴氭湰蹇呴』鐢?`[IO.File]::WriteAllText(..., ($lines -join "`n"))`銆?- RapidWright 鐨?pip 鍖呬細鍘?github.com 涓?400MB jar锛堣繛涓嶉€氾級锛屽凡鏀圭敤鏈満 `rapidwright-2026.1.1-standalone-win64.jar` 澶嶅埗鎴?`lin64` 鍚嶅瓧鏀捐繘 site-packages锛?*Java 璺ㄥ钩鍙帮紝瀹炴祴鍙敤**銆?- 杩滅 `pytest tests`锛坴7re锛夊綋鍓?**18 passed**銆?
 ---
 
-## 3. 已完成
+## 3. 宸插畬鎴?
+### STEP01 鎷撴墤瀵煎嚭
 
-### STEP01 拓扑导出
+- RapidWright 閬嶅巻鍏ㄧ墖锛?50,380 tiles / 115 绫诲瀷 / 56,847,864 wires / 207,253,149 PIPs銆?- 鍙戠幇 `Tile.getWireConnections` 鎻愪緵璺?tile 杩炴帴锛圧W 鍐呯疆 tileconn锛夈€?- 浜х墿锛歚out_routing`锛?41 鏂囦欢锛?.7MB锛? `v7_routing.db`銆?
+### STEP02 璺?tile 杩炴帴瑙勮寖鍖?
+- corridor 瑙勫垯锛坱ile 绫诲瀷搴忓垪 鈫?杩炴帴瑙勫垯锛夛紝鍏ㄨ澶囬獙璇?0 conflicts銆?- 鍚庣户鏀瑰仛**绮剧‘杈硅〃**锛歚edges_exact` 39,923,710 琛岋紝150,380 tiles锛?  11,857,917 鏉℃湁澶栬繛 wire锛涘叏閲忔牎楠?bad_wires=0 / missing=0 / extra=0銆?- 瑙勫垯锛氬悓 (grid_x, grid_y) 鍞竴锛宍INT_R_X145Y180` 涓?`CLBLM_R_X145Y180` 鏄笉鍚?grid 鍗曞厓锛?  tile **鍚嶅瓧**閲岀殑 X/Y 浼氭挒鍙凤紝涓嶈兘鐢ㄥ悕瀛楅敭銆?
+### STEP03 PIP鈫抌it锛堣繘琛屼腑锛屽凡鏈夌粨璁猴級
 
-- RapidWright 遍历全片：150,380 tiles / 115 类型 / 56,847,864 wires / 207,253,149 PIPs。
-- 发现 `Tile.getWireConnections` 提供跨 tile 连接（RW 内置 tileconn）。
-- 产物：`out_routing`（241 文件，9.7MB）+ `v7_routing.db`。
+鏂规硶锛歊apidWright 璇?DCP 鈫?鍒犱竴鏉?PIP 鈫?鍐欏洖 DCP 鈫?Vivado 閲嶆柊 bitgen 鈫?閫愪綅宸垎銆?
+**宸茬‘璁ょ殑涓夋潯纭粨璁猴細**
 
-### STEP02 跨 tile 连接规范化
+1. **甯у彿 = 绾挎€у簭鍙?*锛堟寜 config row锛屾瘡琛屾湯灏捐ˉ 2 涓?overhead 甯э級銆?   楠岃瘉锛氬潡鍩哄潃 `0x420300` 鈫?甯?31,680锛沗0x4203A0` 鈫?31,748銆?2. **word 50 鏄?ECC**锛屼笉鏄厤缃綅銆備换浣曟暟鎹綅鍙樺寲閮戒細甯﹀嚭涓€缁?word50 浣嶅彉鍖栵紙6~10 浣嶏級銆?3. **绔欑偣鍐呴儴 PIP锛圕LB 鐨?A鈫扡OGIC_OUTS銆両MUX鈫扐锛夋敼 DCP 鏃犳晥**锛歜itgen 鏄粠缃戣〃+甯冨眬
+   閲嶆柊鎺ㄥ绔欑偣璺敱鐨勶紝涓嶇湅 DCP 鐨?route 灞炴€с€傝 fuzz 绔欑偣鍐呬綅鍙兘鏀圭綉琛?甯冨眬銆?
+**PIP 浣嶄綅缃疄娴嬶紙鍒?X6锛宍LOGIC_OUTS_L20->>NR1BEG2`锛夛細**
 
-- corridor 规则（tile 类型序列 → 连接规则），全设备验证 0 conflicts。
-- 后继改做**精确边表**：`edges_exact` 39,923,710 行，150,380 tiles，
-  11,857,917 条有外连 wire；全量校验 bad_wires=0 / missing=0 / extra=0。
-- 规则：同 (grid_x, grid_y) 唯一，`INT_R_X145Y180` 与 `CLBLM_R_X145Y180` 是不同 grid 单元；
-  tile **名字**里的 X/Y 会撞号，不能用名字键。
-
-### STEP03 PIP→bit（进行中，已有结论）
-
-方法：RapidWright 读 DCP → 删一条 PIP → 写回 DCP → Vivado 重新 bitgen → 逐位差分。
-
-**已确认的三条硬结论：**
-
-1. **帧号 = 线性序号**（按 config row，每行末尾补 2 个 overhead 帧）。
-   验证：块基址 `0x420300` ↔ 帧 31,680；`0x4203A0` ↔ 31,748。
-2. **word 50 是 ECC**，不是配置位。任何数据位变化都会带出一组 word50 位变化（6~10 位）。
-3. **站点内部 PIP（CLB 的 A→LOGIC_OUTS、IMUX→A）改 DCP 无效**：bitgen 是从网表+布局
-   重新推导站点路由的，不看 DCP 的 route 属性。要 fuzz 站点内位只能改网表/布局。
-
-**PIP 位位置实测（列 X6，`LOGIC_OUTS_L20->>NR1BEG2`）：**
-
-| Y | 变化帧 | 配置位 |
+| Y | 鍙樺寲甯?| 閰嶇疆浣?|
 |---|---|---|
 | 20 | 31688, 31694 | (w41, b7) |
 | 22 | 31688, 31694 | (w45, b7) |
@@ -103,71 +79,49 @@ export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 | 52 | 26442, 26448 | (w5, b7) |
 | 60 | 26442, 26448 | (w21, b7) |
 
-规律：
+瑙勫緥锛?
+- 甯у鐢?**(鍒? clock region, PIP 鍙樹綋)** 鍐冲畾锛涘悓鍖哄煙鍐呮亽瀹氾紝鍧楀唴鍋忕Щ鎭掍负 8 鍜?14銆?  region 0锛圷0~49锛夊潡鍩哄潃 `0x420300`锛宺egion 1锛圷50~99锛夊潡鍩哄潃 `0x400300`銆?- **word 鈮?2 脳 (Y 鈭?region 璧峰琛? + k**锛宬 瀹炴祴涓?1 鎴?2锛圷20/22/50/52/60 鏄?1锛?  Y30/31/32/40/41/42 鏄?2锛?*寰呭鏍?*锛夈€?- bit 浣嶇敱 PIP 鍙樹綋鍦?tile 鍐呯殑浣嶇疆鍐冲畾锛堣繖缁勫叏鏄?b7锛夈€?- 鍙︿竴鍙樹綋 `LOGIC_OUTS_L12->>NR1BEG0`锛圷10锛夆啋 甯?31690/31693銆亀ord 20锛岃鏄庡抚瀵逛笌 word
+  閮戒緷璧栧彉浣擄紝涓嶅彧鏄潗鏍囥€?
+**FAR 浣嶅煙锛?6 浣嶏級锛?*
 
-- 帧对由 **(列, clock region, PIP 变体)** 决定；同区域内恒定，块内偏移恒为 8 和 14。
-  region 0（Y0~49）块基址 `0x420300`，region 1（Y50~99）块基址 `0x400300`。
-- **word ≈ 2 × (Y − region 起始行) + k**，k 实测为 1 或 2（Y20/22/50/52/60 是 1，
-  Y30/31/32/40/41/42 是 2，**待复核**）。
-- bit 位由 PIP 变体在 tile 内的位置决定（这组全是 b7）。
-- 另一变体 `LOGIC_OUTS_L12->>NR1BEG0`（Y10）→ 帧 31690/31693、word 20，说明帧对与 word
-  都依赖变体，不只是坐标。
-
-**FAR 位域（26 位）：**
-
-| 位 | 字段 |
+| 浣?| 瀛楁 |
 |---|---|
-| [25:23] | block type（0=逻辑，1=BRAM/DSP） |
+| [25:23] | block type锛?=閫昏緫锛?=BRAM/DSP锛?|
 | [22] | top/bottom |
 | [21:17] | config row |
 | [16:7] | column |
 | [6:0] | minor |
 
-**帧数账：** ConfigArray 14 行 / 1,183 blocks / 50,148 帧；每行末尾 2 个 overhead 帧 →
-14×2=28 → 50,176，与 `.bit` 里 FDRI 的 5,067,776 words ÷ 101 完全一致。
+**甯ф暟璐︼細** ConfigArray 14 琛?/ 1,183 blocks / 50,148 甯э紱姣忚鏈熬 2 涓?overhead 甯?鈫?14脳2=28 鈫?50,176锛屼笌 `.bit` 閲?FDRI 鐨?5,067,776 words 梅 101 瀹屽叏涓€鑷淬€?
+### 澶嶆牳鐘舵€侊紙2026-10-24锛実pt-6.1-sol 瀵规姉寮忥級
 
-### 复核状态（2026-10-24，gpt-6.1-sol 对抗式）
+瀹屾暣鎶ュ憡锛歔codex_review_step03_20261024/REVIEW.md](E:/DEEPSEEK/FPGA姣旂壒娴侀€嗗悜/codex_review_step03_20261024/REVIEW.md)
 
-完整报告：[codex_review_step03_20261024/REVIEW.md](E:/DEEPSEEK/FPGA比特流逆向/codex_review_step03_20261024/REVIEW.md)
-
-| 主张 | 判定 | 备注 |
+| 涓诲紶 | 鍒ゅ畾 | 澶囨敞 |
 |---|---|---|
-| C1 帧号 = 线性序号 | INCONCLUSIVE | 需要从 `.bit` 包流独立解 FAR 交叉验证 |
-| C2 每行末尾 2 个 overhead | INCONCLUSIVE | 同上，目前是“用假设验证假设” |
-| C3 word 50 = ECC | **降级**：word 50 是校验/辅助区 | 分类循环，需多项式/校验子证据 |
-| C4 site PIP 改 DCP 无效 | PASS（限已测案例） | 0 帧差异证明 bitgen 不照抄 site route |
-| C5 位位置模型 | INCONCLUSIVE | 拟合可用，但 k∈{1,2} 是描述性结论 |
-| C6 变体决定帧对 | INCONCLUSIVE | 需同位置只改变体的对照 |
+| C1 甯у彿 = 绾挎€у簭鍙?| INCONCLUSIVE | 闇€瑕佷粠 `.bit` 鍖呮祦鐙珛瑙?FAR 浜ゅ弶楠岃瘉 |
+| C2 姣忚鏈熬 2 涓?overhead | INCONCLUSIVE | 鍚屼笂锛岀洰鍓嶆槸鈥滅敤鍋囪楠岃瘉鍋囪鈥?|
+| C3 word 50 = ECC | **闄嶇骇**锛歸ord 50 鏄牎楠?杈呭姪鍖?| 鍒嗙被寰幆锛岄渶澶氶」寮?鏍￠獙瀛愯瘉鎹?|
+| C4 site PIP 鏀?DCP 鏃犳晥 | PASS锛堥檺宸叉祴妗堜緥锛?| 0 甯у樊寮傝瘉鏄?bitgen 涓嶇収鎶?site route |
+| C5 浣嶄綅缃ā鍨?| INCONCLUSIVE | 鎷熷悎鍙敤锛屼絾 k鈭坽1,2} 鏄弿杩版€х粨璁?|
+| C6 鍙樹綋鍐冲畾甯у | INCONCLUSIVE | 闇€鍚屼綅缃彧鏀瑰彉浣撶殑瀵圭収 |
 
-## 4. 待办
+## 4. 寰呭姙
 
-0. ~~**[同步 远端→本机]**~~ ✅ **已完成 2026-10-24**：远端 `data/model/v7_model.sqlite`（M1：region_bases 14 / column_offsets 420 / probes 72 / probe_bits 1248）已覆盖同步到本机 `E:\v7work\model\v7_model.sqlite`（sha256 校验一致），旧 M0 构建备份为 `v7_model.sqlite.preM1.bak`。
-
-0b. ~~**[prjxray 格式对齐]**~~ ✅ **已完成 2026-10-24（拓扑部分）**：`v7re/export/prjxray_db.py`
-   导出到 `E:\v7work\db\prjxray\xc7vx485t\`：`tilegrid.json`（150,380 tiles）、
-   `tileconn.json`（17,928 条 / 148,622 wire pair）、115 个 `tile_type_<T>.json`（35,126 pips）、
-   `manifest.json`、`README.md`。差异：坐标系是 RapidWright 全局网格（非 prjxray 列网格），
-   tileconn 粒度更细；`segbits_*/ppips_*/mask_*` 仍缺（需 fuzz 结果，ppips 需 site→tile 映射）。
-
-> **STEP03 已有结论但尚未入库**：远端模型库 `pip_bits`/`bit_map` 仍为 **0**；`step03_pip/RESULTS.md` 里的 (变体→帧对,word,bit) 还没写进 DB。填 `pip_bits` 是 STEP04 的输入。
-
-1. **STEP04：frame/bit 数据库生成器** —— 用 (列, region, 行, 变体) → (帧, word, bit) 公式；先把 `RESULTS.md` 的观测填进 `pip_bits`。
-2. **补 C1/C2 的独立证据**（复核意见第 1 条）：解析 `.bit` 的 FAR/FDRI 包流，独立统计行切换与每行末端 2 帧，和 `ConfigArray` 对照。
-3. **补 C3 的独立证据**：查 7 系列 ECC 的多项式/校验子，对已知单 bit 翻转验证 word 50；并测“数据不变时 word 50 是否变”。
-4. **解决 k 的抖动**（复核第 3 条）：同一变体在更多 Y、每个 clock region、多种 tile 上取点，记录 wire/PIP 身份。
-5. **C6 对照实验**：固定位置，只改变体，比较帧对与 bit。
-6. **批量 PIP 表**：固定一个 tile，把所有 PIP 变体跑一遍（脚本已有雏形）。
-7. **站点内部位 fuzz**：改网表/引脚（不是改 route）。
-
+0. ~~**[鍚屾 杩滅鈫掓湰鏈篯**~~ 鉁?**宸插畬鎴?2026-10-24**锛氳繙绔?`data/model/v7_model.sqlite`锛圡1锛歳egion_bases 14 / column_offsets 420 / probes 72 / probe_bits 1248锛夊凡瑕嗙洊鍚屾鍒版湰鏈?`E:\v7work\model\v7_model.sqlite`锛坰ha256 鏍￠獙涓€鑷达級锛屾棫 M0 鏋勫缓澶囦唤涓?`v7_model.sqlite.preM1.bak`銆?
+0b. ~~**[prjxray 鏍煎紡瀵归綈]**~~ 鉁?**宸插畬鎴?2026-10-24锛堟嫇鎵戦儴鍒嗭級**锛歚v7re/export/prjxray_db.py`
+   瀵煎嚭鍒?`E:\v7work\db\prjxray\xc7vx485t\`锛歚tilegrid.json`锛?50,380 tiles锛夈€?   `tileconn.json`锛?7,928 鏉?/ 148,622 wire pair锛夈€?15 涓?`tile_type_<T>.json`锛?5,126 pips锛夈€?   `manifest.json`銆乣README.md`銆傚樊寮傦細鍧愭爣绯绘槸 RapidWright 鍏ㄥ眬缃戞牸锛堥潪 prjxray 鍒楃綉鏍硷級锛?   tileconn 绮掑害鏇寸粏锛沗segbits_*/ppips_*/mask_*` 浠嶇己锛堥渶 fuzz 缁撴灉锛宲pips 闇€ site鈫抰ile 鏄犲皠锛夈€?
+> **STEP03 宸叉湁缁撹浣嗗皻鏈叆搴?*锛氳繙绔ā鍨嬪簱 `pip_bits`/`bit_map` 浠嶄负 **0**锛沗step03_pip/RESULTS.md` 閲岀殑 (鍙樹綋鈫掑抚瀵?word,bit) 杩樻病鍐欒繘 DB銆傚～ `pip_bits` 鏄?STEP04 鐨勮緭鍏ャ€?
+1. **STEP04锛歠rame/bit 鏁版嵁搴撶敓鎴愬櫒** 鈥斺€?鐢?(鍒? region, 琛? 鍙樹綋) 鈫?(甯? word, bit) 鍏紡锛涘厛鎶?`RESULTS.md` 鐨勮娴嬪～杩?`pip_bits`銆?2. **琛?C1/C2 鐨勭嫭绔嬭瘉鎹?*锛堝鏍告剰瑙佺 1 鏉★級锛氳В鏋?`.bit` 鐨?FAR/FDRI 鍖呮祦锛岀嫭绔嬬粺璁¤鍒囨崲涓庢瘡琛屾湯绔?2 甯э紝鍜?`ConfigArray` 瀵圭収銆?3. **琛?C3 鐨勭嫭绔嬭瘉鎹?*锛氭煡 7 绯诲垪 ECC 鐨勫椤瑰紡/鏍￠獙瀛愶紝瀵瑰凡鐭ュ崟 bit 缈昏浆楠岃瘉 word 50锛涘苟娴嬧€滄暟鎹笉鍙樻椂 word 50 鏄惁鍙樷€濄€?4. **瑙ｅ喅 k 鐨勬姈鍔?*锛堝鏍哥 3 鏉★級锛氬悓涓€鍙樹綋鍦ㄦ洿澶?Y銆佹瘡涓?clock region銆佸绉?tile 涓婂彇鐐癸紝璁板綍 wire/PIP 韬唤銆?5. **C6 瀵圭収瀹為獙**锛氬浐瀹氫綅缃紝鍙敼鍙樹綋锛屾瘮杈冨抚瀵逛笌 bit銆?6. **鎵归噺 PIP 琛?*锛氬浐瀹氫竴涓?tile锛屾妸鎵€鏈?PIP 鍙樹綋璺戜竴閬嶏紙鑴氭湰宸叉湁闆忓舰锛夈€?7. **绔欑偣鍐呴儴浣?fuzz**锛氭敼缃戣〃/寮曡剼锛堜笉鏄敼 route锛夈€?
 ---
 
-## 5. 常用命令
+## 5. 甯哥敤鍛戒护
 
 ```bash
-# 建一个 PIP 实验（远端）
+# 寤轰竴涓?PIP 瀹為獙锛堣繙绔級
 cd /opt/lzh/step03/pip2
-bash /mnt/c/Users/S.tschai/run_ymore.sh     # 模板：build → a.bit → 删 PIP → b.bit → diff
+bash /mnt/c/Users/S.tschai/run_ymore.sh     # 妯℃澘锛歜uild 鈫?a.bit 鈫?鍒?PIP 鈫?b.bit 鈫?diff
 
-# 本地看结果
-type E:\DEEPSEEK\FPGA比特流逆向\step03_pip\RESULTS.md
+# 鏈湴鐪嬬粨鏋?type E:\DEEPSEEK\FPGA姣旂壒娴侀€嗗悜\step03_pip\RESULTS.md
 ```
+
