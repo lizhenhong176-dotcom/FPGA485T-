@@ -7,7 +7,7 @@ DCP = os.environ["DCP"]; EDF = os.environ["EDF"]; OUT = os.environ["OUT"]
 d = Design.readCheckpoint(DCP, EDF)
 net = d.getNet("n1")
 pips = list(net.getPIPs())
-tgt = [p for p in pips if str(p).split("->>")[-1].startswith("IMUX_")]
+tgt = [p for p in pips if str(p).split("->>")[-1].startswith("IMUX")]
 print("SINK", " ".join(str(p) for p in tgt))
 if len(tgt) != 1:
     sys.exit(3)
@@ -17,3 +17,4 @@ for p in pips:
         lst.add(p)
 net.setPIPs(lst)
 d.writeCheckpoint(OUT)
+

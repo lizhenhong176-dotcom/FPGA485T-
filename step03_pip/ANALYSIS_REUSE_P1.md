@@ -119,3 +119,27 @@ P1 里 IMUX_L8 的 25 个源正好分布在这 10 帧 × 2 位 = 20 个格子上
 跨 mux 不共享（P3 已验证 6 个 mux 两两交集为空，且公式覆盖 36 个 mux）。
 
 数据：mux32.json、mux32_fields.json，脚本 mux32_run.sh / mux32_diff.py / mux32_fit.py。
+
+## 留出验证（step 2）：24/24 全中
+
+用**没参与拟合**的设计验证公式：把 lut_b 放到 SLICE_X10Y11 的 A/B/C/D6LUT，
+每处 6 个输入脚，共 24 个设计（远端并行 6）。
+
+这些设计的布线落在 **INT_R（右列）** tile，mux 名字是 IMUX0..IMUX47（没有 _L 前缀），
+而且帧窗口整体后移：**31732–31741**（对比左列 31696–31705）。
+
+结果：
+
+`
+holdout hit 24 / 24
+`
+
+即公式 word = 22 + ((L//4)%2)、it = 1 + 8*(L%4) + L//8
+在**另一种 tile 类型、另一列、另一段帧**上依然全中，
+说明：
+
+1. 公式不是对 36 个点的过拟合；
+2. IMUX 编号在 INT_L / INT_R 上语义一致（同一个 L 对应同一 word/bit）；
+3. 帧窗口随列平移（左列 31696 起、右列 31732 起），word/bit 不变。
+
+数据：holdout.json，脚本 holdout_run.sh / holdout_diff.py / holdout_fit.py。
