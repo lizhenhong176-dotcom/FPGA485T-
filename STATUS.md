@@ -5,8 +5,9 @@
 目标：XC7VX485T-2FFG1761（VC707）比特流逆向。
 主线：**RapidWright 拓扑 → PIP→bit 差分 → frame/bit 数据库 → PIP 复用规律**。
 
-> 本文档 2026-10-25 重建过一次：此前被 PowerShell 5.1 以 ANSI 读取再以 UTF-8 写回，造成双重编码损坏。
-> **编辑中文文档请用 `[IO.File]::ReadAllText/WriteAllText(..., UTF8)`，不要用 `Get-Content | Set-Content`。**
+> 本文件是正常 UTF-8。2026-10-25 曾因 PowerShell 5.1 以 ANSI 读取再写回出现一次双重编码，已重写修复；
+> 之后确认过：用 `Get-Content` 直接读会显示乱码，那是控制台按 GBK 解码造成的**显示**问题，文件本身没坏。
+> **编辑中文文档仍请用 `[IO.File]::WriteAllText(..., UTF8)` 或带 `-Encoding utf8` 的方式。**
 
 ---
 
@@ -16,7 +17,7 @@
 |---|---|
 | 项目代码 | `E:\DEEPSEEK\FPGA比特流逆向`（`v7re/`、`step03_pip/`、`tools/`） |
 | 路由模型 | `E:\v7work\_curated_20261021\routing\v7_routing.db`（1.2 GB） |
-| 模型库 | `E:\v7work\model\v7_model.sqlite`（`pip_bits` / `bit_map` 各 28 行） |
+| 模型库 | `E:\v7work\model\v7_model.sqlite`（`pip_bits` 2,652 行 = 2,616 路由位 + 36 默认源；`imux_codes` 2,304 行；`bit_map` 28 行） |
 | prjxray 导出 | `E:\v7work\db\prjxray\xc7vx485t\`（tilegrid / tileconn / tile_type / ppips） |
 | 远端机器 | `172.17.70.41`（DHCP，会变）；用户 `s.tschai`；私钥 `C:\Users\i\.ssh\v7remote` |
 | 远端 WSL | Ubuntu 20.04；Vivado 2017.2 `/opt/lzh/Xilinx/Vivado/2017.2`；venv `/opt/lzh/venv` |
@@ -87,27 +88,65 @@ bit  = 1 + 8 * (L % 4) + (L // 8)      # L = IMUX 编号
 | 字母序序号 → 相同格 | ❌ 0/25 |
 | PIP 声明顺序 → 相同格 | ❌ 0/25 |
 
+**IMUX 物理输入序号（2026-10-25 解出，原 §5 待办 1）**：
+
+- 24 个输入 = **6 行 × 4 列**：行 = `word 16..21` one-hot（行号 = 置位字 − 16）；
+  列 = `word 22..25` 的四选一码 `0001 / 0010 / 1011 / 0111`（顺序即 col 0/1/2/3）。
+- 依据：`prjxray_ref/artix7/segbits_int_{l,r}.db`（7 系列 INT 同构），48 mux × 24 输入/侧。
+- 交叉验证：本机 485T 实测 36 mux × 24 源 = **864 条，行 864/864、列 864/864 全等**。
+- 表：`imux_codes`（2,304 行 = INT_L 1,152 + INT_R 1,152；本地与远端库均已建），
+  工具 `pip_query.py imux [IMUX_Lx]`；文档 `step03_pip/IMUX_INDEX_SOLVED.md`。
+- 边界：INT_R 那 1,152 行尚无硅片实测对照；`idx=row*4+col` 是我们自己的编号，硅片只认 `(row, col_code)`。
+
 **其他**：改 DCP 里的 site 内 PIP 不生效（bitgen 从网表+布局重推站点路由）；跨 tile PIP 生效。
+
+### STEP03 收尾（2026-10-25 19:00–19:30）
+
+- `tilepipe` 完成：36 mux × 25 源 = 900 个变体位流，`tilepipe.json`（131 KB）。
+- 入库：`pip_bits` 新增 2,628 行（`source=tilepipe_20261025`），本地与远端同步。
+- 表结构统一整理（2026-10-25 晚，`step03_pip/migrate_pip_bits.py`）：
+  - 坐标列 `frame/word/bit` 改为**可空**（原来被主键锁成 NOT NULL，只能塞 `-1` 魔数）；
+    主键换成 `UNIQUE(device,tile,wire_a,wire_b,frame,word,bit)` 索引。
+  - 新增 `kind`（`route` / `default`）与 `note` 列：**36 条「默认源」= `kind='default'` + 坐标 NULL**，
+    不再用 `(-1,-1,-1)` 占位。
+  - 旧观测的 tile 归属更正：`INT_L_X6Y11` 的 `NR1END0->>IMUX_L8` 4 行其实是 `CLBLL_L_X6Y11`
+    （IMUX 属于 CLB tile）；与 tilepipe 结果完全重合，去重后保留一条。
+  - 加 `(tile,wire_b)` 索引 + 视图 `pip_bits_mapped`（只看有位坐标的行）。
+  - 结果：2,656 → **2,652 行**（2,616 route + 36 default），`PRAGMA integrity_check = ok`，远端同样迁移。
+  - 注：12 个 `INT_L_X6Y*` 只有 1 条点测量（`LOGIC_OUTS->NR1BEG`），不是完整 mux 扫描，所以没有 default 行；
+    36 个完整 mux（`CLBLL_L_X6Y11`）各恰好 1 个 default 源，符合预期。
+- 导出：`step03_pip/export_pip_csv.py` → `out/pip_bits.csv`（2,652 行，含 kind/note）、`out/bit_map_tilepipe.csv`（2,616 行）。
+- 迁移前备份：本地 `E:\v7work\model\v7_model.sqlite.bak-migrate`；
+  远端 `v7_model.sqlite.bak-20261025`（注意那是入库前的版本，含 2,628 行的中间态只在本机备份里）。
+- 工具：`step03_pip/pip_query.py`（`mux` / `pip` / `decode` / `stats`）。
+- **端到端验证通过**：用 `ref_X8Y11_A6LUT_A1.bit` 反解，`CLBLL_L_X6Y11` 的 5 个 mux
+  与 Vivado route 报告 **5/5 一致**：
+
+  ```
+  route: GFAN1->>L4  GFAN0->>L8  GFAN0->>L11  GFAN0->>L1  GFAN0->>L2
+  decode: L4->GFAN1  L8->GFAN0  L11->GFAN0  L1->GFAN0  L2->GFAN0   (全部 EXACT)
+  ```
+
+**注意**：`bit_map` 的 `UNIQUE(device,frame,word,bit)` 与「一个 tile 内多 mux 共用帧窗口」冲突，
+不要再把 PIP 位写 `bit_map`（1:1 放不下），全量保留在 `pip_bits` + `bit_map_tilepipe.csv`。
 
 ---
 
-## 4. 正在跑
+## 4. 正在跑 / 最近一轮
 
-`/opt/lzh/step03/tilepipe`：整块 `INT_L_X6Y11` 的全量扫描
-（36 个基线设计 × 25 源 ≈ 900 位流，`xargs -P 12`）。
+`tilepipe` **已于 17:53 完成**（900 个 `v_*.bit` + `tilepipe.json`），结果已入库并做完端到端验证。
+当前远端没有长任务在跑（Vivado 进程为 0）。
 
-⚠️ 首次运行是白跑的：守卫 `[ -f "ref_$TAG.dcp" ] && continue` 对每个 tag 都成立
-（`reuse5` 里同时有 `SLICE_*` 和 `ref_SLICE_*`），`p6_make.py` 一次没执行。已修复并重跑，
-当前 900 个 `v_*.dcp` 已生成，正在 bitgen，最终汇总到 `tilepipe.json`。
+下一步实验（尚未开始）：BEL 级位测量，见 §5 第 2 条。
 
 ---
 
 ## 5. 待办
 
-1. tilepipe 跑完后统计：每个位被多少 PIP 复用、各 mux 的使能 cell、`cell = enable(imux) ∪ select(wire)` 是否成立。
-2. 第 6 层：mux 内“物理输入序号”未解出。候选：由 25 源 × 20 格实测表反解 5×5 置换；或用 RapidWright site_pins/belt、prjxray ppips 顺序对照。
-3. 把 reuse3/5/6 的观测写回远端 `v7_model.sqlite`（当前只有本机 28 行）。
-4. STEP04：frame/bit 数据库生成器。
+1. ~~**第 6 层：mux 内「物理输入序号」**~~ **已解（2026-10-25）**：见 §3 与 `step03_pip/IMUX_INDEX_SOLVED.md`；编码规则 = 行 one-hot(`word 16..21`) × 列四码(`word 22..25`)，864/864 实测对齐。剩余：INT_R 未做硅片对照。
+2. **BEL 级位**（下一个主战场）：`reuse4` 已铺好 BEL 级 DCP 的路（`synth_design -top top`）。待测 F7/F8、CE/SR/CLK 选择 mux、CARRY4、BRAM/DSP 配置位。
+3. 批量扩展：tilepipe 流程推到更多 tile（跨列 / 跨 clock region），验证公式在两个 region 的行为。
+4. STEP04：frame/bit 数据库生成器（含 `site_frames` 表）。
 
 ---
 
@@ -119,4 +158,18 @@ cd /opt/lzh/step03/reuse6 && bash /mnt/c/Users/S.tschai/p6_run.sh
 
 # 本地分析
 D:\Anaconda3\python.exe E:\DEEPSEEK\FPGA比特流逆向\step03_pip\p6_analyze.py
+
+# 查询位表 / 反解比特流
+python step03_pip\pip_query.py mux CLBLL_L_X6Y11:IMUX_L7
+python step03_pip\pip_query.py pip "GFAN0->>IMUX_L8"
+python step03_pip\pip_query.py decode step03_pip\ref_X8Y11_A6LUT_A1.bit
+python step03_pip\pip_query.py stats
+
+# 表结构迁移（幂等）/ 导出 CSV
+python step03_pip\migrate_pip_bits.py --db E:\v7work\model\v7_model.sqlite
+python step03_pip\export_pip_csv.py
+
+# 远端跑 Vivado 必须修 locale，否则 locale::facet 崩溃
+printf '#!/bin/bash\nexport LANG=C\nexport LC_ALL=C\nexport HOME=/root\n/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado -mode batch -notrace -source /tmp/x.tcl\n' > /tmp/run_viv.sh
+bash /tmp/run_viv.sh
 ```

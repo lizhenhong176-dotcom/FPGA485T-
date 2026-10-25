@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+import base64, gzip, json, os, subprocess, textwrap
+
+FILES = json.loads(gzip.decompress(base64.b64decode("H4sIAIju3WoC/61We3PaRhD/KhviNFKKToj40XEGzxAgCSnBnsT2uIM8GiEdcEacLjohQ5t+9+6eBNgkaTKd2n+w2udvX3f3Vy1PFStqp1BbpPEy4YDflpBqmUOUzOuQLnOix/YrXwJYL6B7PrwMLs+vOu+gBX5tzbVfgxc23IuMg/R+pDa4ujyGpxbrD/uX1vHh89mbx38924ZkmQchWOzckp5dB9ZvWIjFUJ7lPR83DNnckS935OGOPCpJ+/+CNDaQxhWiCtp/BMRlXNbbl7U61DIxnWGApUhilkcJtUPzHC7bb2GUCBnzFRyE2bSAxq0vMx7GQcEzkaRTMO3zpV7LfBbEXIupBAeZJABHhVkOq+ikWB3+dpRPJlPv5NhzmqjP80BlqeJZvobBeQc+DfqdXnDjeX94DRhNURzxJNFlL27/3cDbNxjvG7zuDaB9jIX+oevvao6/AeL34KI//IS97DdO2x528yeA/8iG4qgkjHhVTaw37sDu6z4T+BXNeDRXqZA5OJM0izgcYLNYHKmNBo/F5JGMxxOf9kpj7NdX/UE3wIHsGZlfK8dAHQeLcM6ZWtME+Oa/txA5NI8cnS7JVRFmIsSo3c6FBvQOIVRdv5+lGjcQxybORME1Sqb4K6H/4eoGtJBzVnr0MQuxUCmORqq3pF7rB4IsVCK+N2Ppy0mWLuAuLEK2zEUClUo7y8L1QOiNQpQu2ErgtK7YA2tWoauMulUVfYkJ4BqmmnFZiCyVI7+GLL+G5e913+yLkGVE5zgYeyJkGREty57IlPaWosUoKmMzWp/Otn0WBq0Durd9SbVrQcxwIIY8t/yaxPlAvhJKoyDBXC3UIflF/0JbNsryKdmMlOmFAiHBaGPvdZ5ZymZaJYJ8OWdn6GzkeLdM57iW+l7kM+RTdwKUIEw0Sri00KUNT1rgndLBBaAywlllU6dDoY4jNA5j01QTj/ijMuAOCPq5tUsX2FzGV4ijSZApGVJGhVGDVLCrPJDhgqMg11vILgGmE8fEeSTaZVNab+rW5YWIuGUTfYl8a+saw+gsotAjtDEgS5SosKtolfIGoVJVAlRPbGy8qZqJD7+aCmyMjCGGYKFSqGpZe5lQ5bfwy9S2DFZlU0dUdgWVaZxYa87XrSRcjOMQVqewKgv27ZYQGPqkX/NtVtY0h/pKPsm3LxNNQ7NdIMuuCrIZn9Nt0sjSINMcyl49yBR9sDCOLVUOLtNVCZGPnJiZU+jBnONiqDCfsTv8snBnCGDGJ8EzbU6tGjyjNEp8BIZ6Vq96RMir0HHzZzaJNCVpxs2vtsmAb+7nT1wK+5niyeZXE1FalRmrzXp9tqFFYwk8waPv8zbwrhhNewP7pwpSYDkeVsQynTXja3+37XEqucnM3ORLyfSMju+nT9yxkO441DNzC4Gz9OXHlpuq3E3+nLk656rx0jWn5CtYzGOR4YUNBx9fQRTjD3z5ArSz4OFzYWVOz0F7+LbVgUEnaA8GSLxvX7eDd+cfei13qTM3EWP3rli4dFQ73omDl568i+dOuIiPD7dObvqD/vCmG9D9PfzUC970B70dqhtzgrvXogjjNEhwmRF70Gy8PGH44cvr76i6zYZ3wpom5cJwfHlwDQ6+cjiMwzyagYNznOHFCpu7bO/Vg++WKMFXjoas7YFDr5tSRtRZReNdDM2zX7AmeYh3kXO045s7pYW21D4aREPjtQvY3RYWFPtFLNhmgLdjYRCrdT5Lcfe296+JAV+gCuJL9LjfOdxUD63xmSHXBj9DKzfmhSuXSULty7MlPvB4NEtpTCKlWwe4n1AELwxEWr+SemQH9xFmb5tHwd//AE/9nkmhCwAA")))
+R = "/opt/lzh/step03/right"
+os.makedirs(R, exist_ok=True)
+for name, txt in FILES.items():
+    open(os.path.join(R, name), "w", newline="\n").write(txt)
+os.chmod(os.path.join(R, "run.sh"), 0o755)
+print("staged", sorted(FILES))
+p = subprocess.run(["bash", os.path.join(R, "run.sh")], capture_output=True, text=True)
+print(p.stdout[-4000:])
+print("STDERR", p.stderr[-2000:])

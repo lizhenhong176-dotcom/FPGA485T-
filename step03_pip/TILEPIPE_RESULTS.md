@@ -70,13 +70,22 @@
 结论：**掩码不是 wire 的固有属性，而是 (wire, mux) 的函数**，也就是取决于“该 wire 在这个 mux 的输入表里排第几”。
 这与“空间编码”一致，但也意味着**必须先拿到 mux 的物理输入序号**才能写公式。
 
-顺带纠正一个可能的误解：	ile_type_INT_L.json 里 PIP 的顺序来自 RapidWright 模板的 pip_defs，
+顺带纠正一个可能的误解：`tile_type_INT_L.json` 里 PIP 的顺序来自 RapidWright 模板的 pip_defs，
 其本身近似字母序（BYP_BOUNCE_N3_2 打头），所以之前“声明序”实验用的不是设备物理序。
 
 ### 下一步（明确）
 
-1. 用 RapidWright 的 	ile.getPIPs() 原始枚举序（不经模板 JSON）重新取 L8 的 25 条输入顺序，作为候选序号；
+1. 用 RapidWright 的 `tile.getPIPs()` 原始枚举序（不经模板 JSON）重新取 L8 的 25 条输入顺序，作为候选序号；
 2. 若仍不对，用“方向分组”语义反推：行 0–3 已经明显是方向组
    （row0 = {SW,SS,NL,SR}、row1 = {NN,NE,WL,ER}、row2 = {EE,SE,EL,WR}、row3 = {WW,NW,SL,NR}），
    行 4–5 是 bounce/logic，列是组内变体 —— 可以用这个语义把 24 个非默认输入排成 6×4 网格，
    再验证同一条 wire 在不同 mux 上是否落在同一网格位置。
+
+---
+
+## 入库口径（2026-10-25 晚统一整理）
+
+- `pip_bits` 新增 2,628 行：默认源 36 行 `kind='default'`（坐标 NULL），其余 2,592 行 `kind='route'`。
+- 加上旧观测去重后全表 2,652 行（2,616 route + 36 default）；`source` 区分 `tilepipe_20261025` 与
+  `step03_pip_20261024`。
+- 查询：`pip_query.py mux|pip|decode|stats`；导出：`export_pip_csv.py` → `out/pip_bits.csv`。

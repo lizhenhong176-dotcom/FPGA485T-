@@ -187,7 +187,11 @@ python scripts\build_model_db.py --out E:\v7work\model\v7_model.sqlite
   vertical frame base; the X120..X220 offsets cross the boundary continuously)
 - `column_offsets` 420: 30 X columns x 14 regions (13 measured at Y=160, 17
   recovered from historical probes)
-- `site_frames`, `bit_map`, `pip_bits`: intentionally empty until M2/M3
+- `site_frames`: 0（BEL 级位测量尚未开始，见下）
+- `bit_map` 28 + `pip_bits` 2,652: STEP03 实测的 PIP→bit 表
+  （`pip_bits` 口径：`kind='route'` 2,616 行带坐标，`kind='default'` 36 行为
+  「默认源，不置任何选择位」，坐标列为 NULL；详见
+  `step03_pip/migrate_pip_bits.py` 与 `step03_pip/TILEPIPE_RESULTS.md`）
 
 Large routing edges and full wire/PIP geometry stay in `v7_routing.db`; attach
 it with `model.connect(..., routing_db=...)` when needed.  M0 details and the
