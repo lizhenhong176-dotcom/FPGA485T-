@@ -1,6 +1,6 @@
 # FPGA 比特流逆向 — 项目现状（每个任务开始前先读本文件）
 
-更新：2026-10-25
+更新：2026-10-26
 
 目标：XC7VX485T-2FFG1761（VC707）比特流逆向。
 主线：**RapidWright 拓扑 → PIP→bit 差分 → frame/bit 数据库 → PIP 复用规律**。
@@ -205,3 +205,81 @@ bash /tmp/run_viv.sh
 结论：形状表（mux 编号 + wire → cell 集合）与 tile 实例、甚至 tile 类型都无关；类型/位置的差别只体现在块地址（帧窗口整体平移）。
 
 数据：step03_pip/tp2.json；脚本：step03_pip/cross_type.py；文档：step03_pip/CROSS_TYPE_RESULTS.md。
+
+## 6. PIP 复用规律（可执行形式，2026-10-25）
+
+`frame = block_start(col, band) + 16 + df`，`word = 2*(Y%50) + ((L//4)%2)`，
+`bit`/`sense` 取形状表。`block_start` 读 `phaseA/frame_index_far.csv`（154 列 × 7 带）。
+
+- 回归：INT_L_X6Y11 2,592/2,592、INT_L_X6Y21 3,024/3,024、INT_R_X9Y11 2,592/2,592，合计 100%。
+- 列不变性：6 个列扫描（列 6/8/9/12/13/15）唯一格 10/10 全中 → **列只改 block_start，不改形状**。
+  先前「奇偶列两套形状」是归一化假象（最小帧当原点 + 公共使能格污染）。
+- 布点陷阱：`SLICE_X(2*col-4)` 反推列会偏 1~2 列（col=11/12/13 实际落在 INT 列 12/13/15），
+  受控实验必须从 DCP 读真实 tile 名。
+
+代码：`step03_pip/pip_law.py`（`--check` 自检，`--tile/--mux/--src` 查询）；说明：`step03_pip/PIP_LAW.md`。
+
+### 6.1 行带 1 与全家族扩展（2026-10-26）
+
+- 行带 1 实测：`SLICE_X8Y61` 的 25 个变体落在 26,450–26,459，word 22
+  （= 2*(61%50) + 0）。预测 `block_start(6, band1) = 26230 + 204 = 26434`，
+  +16…+25 完全吻合 → `block_start` 的行带项成立。
+- 布点注意：`SLICE_X8Y61` 归属 INT 列 **6**（不是 8）。slice X ÷ 2 不能直接当 tile 列，
+  必须从 DCP 读 tile 名。
+- `gen_all_cells.py` → `all_cells.json`：24,336 单元 / 228 家族，覆盖 IMUX 之外的
+  BYP_ALT、FAN_ALT、BEG/END、CLK 家族；`frame = block_start + frame_off`。
+  这些家族的行内字奇偶未实测，`pip_law.py --family ... --parity N` 显式给。
+
+### 6.2 非 IMUX 家族的字奇偶（2026-10-26）
+
+`parity` 不再需要手填：prjxray 把一行两个 32 位字 (2Y, 2Y+1) 打包进 bit 0..63，
+`bit // 32` 即 parity。对 96 个 IMUX 家族逐一核对，`bit//32` 与实测的 `(L//4)%2`
+完全一致（0 个反例），于是 132 个其它家族（BYP_ALT/FAN_ALT/CLK/BEG…）沿用同规则。
+
+`all_cells.json` 每条记录带 `parity`、`frame_off`、`bit`、`sense`；每个家族内部 parity
+唯一（无混合）。查询：`pip_law.py --tile ... --family BYP_ALT2 --src ...`（parity 自动取）。
+
+注意：这是**推断**，尚未对 IMUX 之外的家族做变体实测；证伪成本低（任一 BYP_ALT 家族一次差分）。
+
+---
+
+## 7. 远端数据刷新（2026-10-26 05:40 UTC，DSH 会话）
+
+远端 `172.17.70.41` / `s.tschai` / `C:\PROGRA~1\WSL\wsl.exe -d Ubuntu -u root`，可达。
+
+### 7.1 `/opt/lzh/step03` 现状（files/bits）
+
+| 目录 | files | bits | 用途 |
+|---|---|---|---|
+| pip1 / pip2 | 83 / 170 | 9 / 24 | 首个 PIP 差分实验 |
+| reuse / reuse3 | 144 / 280 | 25 / 60 | P1 绝对位集 |
+| reuse4/5/6 | 7 / 418 / 598 | 0 / 72 / 124 | P2/P6 编码与留出 |
+| tilepipe | 3,914 | 936 | col6 全 36 mux |
+| tilepipe2 | 3,945 | 936 | INT_R 跨类型 |
+| tilepipe3 | 668 | 156 | col6 同类型换行 |
+| tilepipe4 | 3,907 | 936 | col9（奇列）全 36 mux |
+| band1 / lutmap / right | 126 / 88 / 133 | 26 / 65 / 26 | 行带1、LUT 映射、右列 |
+| blkcol / blkcol2 / blkcol3 | 128 / 127 / 127 | 26 each | 换列块基址 |
+
+合计 **~1,700 个位流**（每个 20,273,538 B）。
+
+### 7.2 模型库 `/opt/lzh/v7re/data/model/v7_model.sqlite`（635,883,520 B）
+
+| 表 | 行数 |
+|---|---|
+| tiles | 150,380 |
+| sites | 86,022 |
+| site_pins | 5,489,706 |
+| probe_bits | 1,248 |
+| probes | 72 |
+| **imux_codes** | **2,304** |
+| **pip_bits** | **2,652** |
+| bit_map | 28 |
+
+小表已导出到 `step03_pip/remote_data/model_tables.json`（1.2 MB）。
+注意远端 `v7re` **不是 git 仓库**，代码同步靠本机 `step03_pip/` 为准。
+
+### 7.3 磁盘
+
+`/` = 1007G，已用 201G（21%），剩 756G。
+
