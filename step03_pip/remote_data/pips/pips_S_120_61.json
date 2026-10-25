@@ -1,0 +1,147 @@
+[
+ {
+  "tile": "CLBLL_L_X6Y10",
+  "src": "CLBLL_LL_A",
+  "sink": "CLBLL_LOGIC_OUTS12"
+ },
+ {
+  "tile": "INT_L_X6Y10",
+  "src": "LOGIC_OUTS_L12",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X8Y14",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X10Y18",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X12Y22",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X14Y26",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X16Y30",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X18Y34",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X20Y38",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X22Y42",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X24Y46",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X26Y50",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X28Y54",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X30Y58",
+  "src": "NE6END0",
+  "sink": "NE6BEG0"
+ },
+ {
+  "tile": "INT_L_X32Y62",
+  "src": "NE6END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X36Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X40Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X44Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X48Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X52Y62",
+  "src": "EE4END0",
+  "sink": "EE2BEG0"
+ },
+ {
+  "tile": "INT_L_X54Y62",
+  "src": "EE2END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X64Y62",
+  "src": "EE4END0",
+  "sink": "EE2BEG0"
+ },
+ {
+  "tile": "INT_L_X66Y62",
+  "src": "EE2END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X70Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X74Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X78Y62",
+  "src": "EE4END0",
+  "sink": "EE4BEG0"
+ },
+ {
+  "tile": "INT_L_X82Y62",
+  "src": "EE4END0",
+  "sink": "SE2BEG0"
+ },
+ {
+  "tile": "INT_R_X83Y61",
+  "src": "SE2END0",
+  "sink": "IMUX8"
+ },
+ {
+  "tile": "CLBLM_R_X83Y61",
+  "src": "CLBLM_IMUX8",
+  "sink": "CLBLM_M_A5"
+ }
+]

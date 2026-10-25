@@ -1,0 +1,52 @@
+[
+ {
+  "tile": "CLBLL_L_X6Y10",
+  "src": "CLBLL_LL_A",
+  "sink": "CLBLL_LOGIC_OUTS12"
+ },
+ {
+  "tile": "INT_L_X6Y10",
+  "src": "LOGIC_OUTS_L12",
+  "sink": "NN6BEG0"
+ },
+ {
+  "tile": "INT_L_X6Y16",
+  "src": "NN6END0",
+  "sink": "LV_L0"
+ },
+ {
+  "tile": "INT_L_X6Y34",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y52",
+  "src": "LV_L18",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_L_X6Y58",
+  "src": "NN6END3",
+  "sink": "NL1BEG2"
+ },
+ {
+  "tile": "INT_L_X6Y59",
+  "src": "NL1END2",
+  "sink": "NL1BEG1"
+ },
+ {
+  "tile": "INT_L_X6Y60",
+  "src": "NL1END1",
+  "sink": "NL1BEG0"
+ },
+ {
+  "tile": "INT_L_X6Y61",
+  "src": "NL1END0",
+  "sink": "IMUX_L8"
+ },
+ {
+  "tile": "CLBLL_L_X6Y61",
+  "src": "CLBLL_IMUX8",
+  "sink": "CLBLL_LL_A5"
+ }
+]

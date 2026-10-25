@@ -1,0 +1,107 @@
+[
+ {
+  "tile": "CLBLL_L_X6Y10",
+  "src": "CLBLL_LL_A",
+  "sink": "CLBLL_LOGIC_OUTS12"
+ },
+ {
+  "tile": "INT_L_X6Y10",
+  "src": "LOGIC_OUTS_L12",
+  "sink": "NR1BEG0"
+ },
+ {
+  "tile": "INT_L_X6Y11",
+  "src": "NR1END0",
+  "sink": "LV_L0"
+ },
+ {
+  "tile": "INT_L_X6Y29",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y47",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y65",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y83",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y98",
+  "src": "LV_L0",
+  "sink": "NW6BEG0"
+ },
+ {
+  "tile": "INT_L_X4Y102",
+  "src": "NW6END0",
+  "sink": "LV_L0"
+ },
+ {
+  "tile": "INT_L_X4Y120",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X4Y138",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X4Y156",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X4Y174",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X4Y192",
+  "src": "LV_L18",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_L_X4Y198",
+  "src": "NN6END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_L_X4Y204",
+  "src": "NN6END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_L_X4Y210",
+  "src": "NN6END3",
+  "sink": "NL1BEG2"
+ },
+ {
+  "tile": "INT_L_X4Y211",
+  "src": "NL1END2",
+  "sink": "EL1BEG1"
+ },
+ {
+  "tile": "INT_R_X5Y211",
+  "src": "EL1END1",
+  "sink": "EL1BEG0"
+ },
+ {
+  "tile": "INT_L_X6Y211",
+  "src": "EL1END0",
+  "sink": "IMUX_L8"
+ },
+ {
+  "tile": "CLBLL_L_X6Y211",
+  "src": "CLBLL_IMUX8",
+  "sink": "CLBLL_LL_A5"
+ }
+]

@@ -1,0 +1,132 @@
+[
+ {
+  "tile": "CLBLL_L_X6Y10",
+  "src": "CLBLL_LL_A",
+  "sink": "CLBLL_LOGIC_OUTS12"
+ },
+ {
+  "tile": "INT_L_X6Y10",
+  "src": "LOGIC_OUTS_L12",
+  "sink": "NN6BEG0"
+ },
+ {
+  "tile": "INT_L_X6Y16",
+  "src": "NN6END0",
+  "sink": "LV_L0"
+ },
+ {
+  "tile": "INT_L_X6Y34",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y52",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y70",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y88",
+  "src": "LV_L18",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X8Y92",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X10Y96",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X12Y100",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X14Y104",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X16Y108",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X18Y112",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X20Y116",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X22Y120",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X24Y124",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X26Y128",
+  "src": "NE6END3",
+  "sink": "NE2BEG3"
+ },
+ {
+  "tile": "INT_R_X27Y129",
+  "src": "NE2END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_R_X27Y135",
+  "src": "NN6END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_R_X27Y141",
+  "src": "NN6END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_R_X27Y147",
+  "src": "NN6END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_R_X27Y153",
+  "src": "NN6END3",
+  "sink": "NN6BEG3"
+ },
+ {
+  "tile": "INT_R_X27Y159",
+  "src": "NN6END3",
+  "sink": "NE2BEG3"
+ },
+ {
+  "tile": "INT_L_X28Y160",
+  "src": "NE2END3",
+  "sink": "WR1BEG_S0"
+ },
+ {
+  "tile": "INT_R_X27Y161",
+  "src": "WR1END0",
+  "sink": "IMUX8"
+ },
+ {
+  "tile": "CLBLM_R_X27Y161",
+  "src": "CLBLM_IMUX8",
+  "sink": "CLBLM_M_A5"
+ }
+]

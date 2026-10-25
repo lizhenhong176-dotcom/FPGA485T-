@@ -1,0 +1,162 @@
+[
+ {
+  "tile": "CLBLL_L_X6Y10",
+  "src": "CLBLL_LL_A",
+  "sink": "CLBLL_LOGIC_OUTS12"
+ },
+ {
+  "tile": "INT_L_X6Y10",
+  "src": "LOGIC_OUTS_L12",
+  "sink": "NR1BEG0"
+ },
+ {
+  "tile": "INT_L_X6Y11",
+  "src": "NR1END0",
+  "sink": "LV_L0"
+ },
+ {
+  "tile": "INT_L_X6Y29",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y47",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y65",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y83",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X6Y98",
+  "src": "LV_L0",
+  "sink": "LH12"
+ },
+ {
+  "tile": "INT_L_X18Y98",
+  "src": "LH0",
+  "sink": "LH12"
+ },
+ {
+  "tile": "INT_L_X30Y98",
+  "src": "LV_L0",
+  "sink": "LH0"
+ },
+ {
+  "tile": "INT_L_X30Y116",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X30Y134",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X30Y152",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X30Y170",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X30Y188",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X30Y206",
+  "src": "LV_L0",
+  "sink": "LV_L18"
+ },
+ {
+  "tile": "INT_L_X30Y224",
+  "src": "LV_L18",
+  "sink": "EE4BEG3"
+ },
+ {
+  "tile": "INT_L_X34Y224",
+  "src": "EE4END3",
+  "sink": "EE4BEG3"
+ },
+ {
+  "tile": "INT_L_X38Y224",
+  "src": "EE4END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X40Y228",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X42Y232",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X44Y236",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X46Y240",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X48Y244",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X50Y248",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X52Y252",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X54Y256",
+  "src": "NE6END3",
+  "sink": "NE6BEG3"
+ },
+ {
+  "tile": "INT_L_X56Y260",
+  "src": "NE6END3",
+  "sink": "NL1BEG2"
+ },
+ {
+  "tile": "INT_L_X56Y261",
+  "src": "NL1END2",
+  "sink": "FAN_ALT7"
+ },
+ {
+  "tile": "INT_L_X56Y261",
+  "src": "FAN_ALT7",
+  "sink": "FAN_BOUNCE7"
+ },
+ {
+  "tile": "INT_L_X56Y261",
+  "src": "FAN_BOUNCE7",
+  "sink": "IMUX_L8"
+ },
+ {
+  "tile": "CLBLL_L_X56Y261",
+  "src": "CLBLL_IMUX8",
+  "sink": "CLBLL_LL_A5"
+ }
+]
