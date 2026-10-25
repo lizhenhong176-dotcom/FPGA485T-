@@ -96,3 +96,26 @@
    可以写出 imux → (word, bit_base) 的映射表（下一步要做的）。
 
 数据：p3_bits.json，脚本 p3_make.py / p3_diff.py / p3_analyze.py / p3_detail.py。
+
+## P3b：32 个 IMUX 的字段地址（36 个设计点）
+
+做法：把 lut_b 放到 6 个不同的 BEL（SLICE_X8Y11/A6LUT、SLICE_X8Y11/B6LUT、
+SLICE_X9Y11/A6LUT|B6LUT|C6LUT|D6LUT），每处 6 个输入脚，共 36 个设计；
+每个设计生成 bit 与“删 PIP”参考 bit，差分得到对应 IMUX 的字段。
+
+**拟合结果（36/36 全中，0 失败）：**
+
+`
+word = 22 + ((L // 4) % 2)
+bit  = 1 + 8 * (L % 4) + (L // 8)      # L = IMUX 编号
+`
+
+举例：L0→(22,1)、L4→(23,1)、L8→(22,2)、L12→(23,2)、L16→(22,3)、L33→(22,13)、L46→(23,22)。
+
+每个 IMUX 占 **一个 2 bit 列**（bit 与 bit+1？见下），
+再配合帧 31696–31705 共 10 帧 → 每个 mux 有 **20 个可配置单元**。
+P1 里 IMUX_L8 的 25 个源正好分布在这 10 帧 × 2 位 = 20 个格子上，
+每个源占 2~4 格 —— 这就是“复用”的实质：**同一 mux 的 25 个源共享 20 个配置位**，
+跨 mux 不共享（P3 已验证 6 个 mux 两两交集为空，且公式覆盖 36 个 mux）。
+
+数据：mux32.json、mux32_fields.json，脚本 mux32_run.sh / mux32_diff.py / mux32_fit.py。
