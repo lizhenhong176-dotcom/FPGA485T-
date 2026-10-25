@@ -29,7 +29,9 @@ ROOT = os.path.dirname(HERE)
 CELLS = os.path.join(HERE, "imux_cells.json")
 DOMAIN = os.path.join(HERE, "imux_domain.json")
 FIELD_WORD = {"INT_L": 23, "INT_R": 23}   # 默认值；实际字由 mux 号决定，见 field_word()
-BASE_FRAME = {"INT_L": 31696, "INT_R": 31732}   # 实测：左半 31696、右半 31732（Step03 早期）
+# 帧基址是 (列,行) 的函数，不是 tile 类型的函数。以下只是实测过的两个点：X6Y10 与 X7Y11 都是 31696。
+# 其它 tile 必须用 --base 显式给（从 frame_map / tile 几何查）。
+BASE_FRAME = {"INT_L": 31696, "INT_R": 31696}
 
 sys.path.insert(0, os.path.join(ROOT, "v7re"))
 
@@ -122,11 +124,11 @@ def cmd_list(table, mux):
     return 0
 
 
-def cmd_read(table, bit, mux):
+def cmd_read(table, bit, mux, base=None, word=None):
     frames = load_frames(bit)
     for ttype in ("INT_L", "INT_R"):
         if (ttype, mux) in table.muxes:
-            src, exact = table.read(frames, ttype, mux)
+            src, exact = table.read(frames, ttype, mux, base=base, word=word)
             print("%s %s -> %s%s" % (ttype, mux, src, "" if exact else "  (NOT EXACT)"))
     return 0
 
@@ -171,17 +173,30 @@ def fdri_payload_span(data: bytes):
     return payload_start, payload_end
 
 
-def cmd_write(table, src_path, dst_path, mux, wire, ttype):
+def load_ecc_table():
+    from imux_ecc import EccTable
+    return EccTable()
+
+
+def patch_ecc(frames, old, table=None):
+    """把改过的帧的 word 50 低 13 位按 ECC 表重算。返回补丁帧数。"""
+    from imux_ecc import patch_frames
+    return patch_frames(frames, old, table)
+
+
+def cmd_write(table, src_path, dst_path, mux, wire, ttype, ecc=True, base=None, word=None):
     data = bytearray(open(src_path, "rb").read())
     frames = load_frames(src_path)
-    table.encode(frames, ttype, mux, wire)
+    old = [list(f) for f in frames]
+    table.encode(frames, ttype, mux, wire, base=base, word=word)
+    patched = patch_ecc(frames, old) if ecc else 0
     ps, pe = fdri_payload_span(bytes(data))
     flat = b"".join(struct.pack(">I", w) for fr in frames for w in fr)
     if len(flat) != pe - ps:
         raise ValueError("payload size mismatch: %d vs %d" % (len(flat), pe - ps))
     data[ps:pe] = flat
     open(dst_path, "wb").write(bytes(data))
-    print("wrote", dst_path, "mux=%s src=%s (%s)" % (mux, wire, ttype))
+    print("wrote", dst_path, "mux=%s src=%s (%s) ecc_patched=%d" % (mux, wire, ttype, patched))
     return 0
 
 
@@ -190,17 +205,20 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("list"); a.add_argument("mux")
     b = sub.add_parser("read"); b.add_argument("bit"); b.add_argument("--mux", required=True)
+    b.add_argument("--base", type=int); b.add_argument("--word", type=int)
     c = sub.add_parser("write")
     c.add_argument("src"); c.add_argument("dst"); c.add_argument("--mux", required=True)
     c.add_argument("--src-wire", dest="wire", required=True)
     c.add_argument("--tile-type", default="INT_L")
+    c.add_argument("--no-ecc", dest="ecc", action="store_false")
+    c.add_argument("--base", type=int); c.add_argument("--word", type=int)
     ns = ap.parse_args()
     table = ImuxTable()
     if ns.cmd == "list":
         return cmd_list(table, ns.mux)
     if ns.cmd == "read":
-        return cmd_read(table, ns.bit, ns.mux)
-    return cmd_write(table, ns.src, ns.dst, ns.mux, ns.wire, ns.tile_type)
+        return cmd_read(table, ns.bit, ns.mux, ns.base, ns.word)
+    return cmd_write(table, ns.src, ns.dst, ns.mux, ns.wire, ns.tile_type, ns.ecc, ns.base, ns.word)
 
 
 if __name__ == "__main__":
