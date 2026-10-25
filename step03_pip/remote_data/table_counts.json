@@ -1,0 +1,23 @@
+{
+ "artifacts": 0,
+ "bit_map": 28,
+ "column_offsets": 420,
+ "imux_codes": 2304,
+ "meta": 17,
+ "pip_bits": 2652,
+ "probe_bits": 1248,
+ "probes": 72,
+ "region_bases": 14,
+ "site_bel_pins": 7107,
+ "site_bels": 3439,
+ "site_frames": 0,
+ "site_pins": 5489706,
+ "site_type_pips": 583,
+ "site_types": 30,
+ "site_wires": 3252,
+ "sites": 86022,
+ "sqlite_sequence": 1,
+ "stages": 1,
+ "tile_types": 115,
+ "tiles": 150380
+}

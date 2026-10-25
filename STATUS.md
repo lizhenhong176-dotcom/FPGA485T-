@@ -282,4 +282,23 @@ bash /tmp/run_viv.sh
 ### 7.3 磁盘
 
 `/` = 1007G，已用 201G（21%），剩 756G。
+### 7.4 本机与远端模型库一致性核对（2026-10-26）
+
+逐表比对了 21 张表（行数 + 全量行内容）：
+
+| 表 | 行数 |
+|---|---|
+| tiles | 150,380 |
+| sites | 86,022 |
+| site_pins | 5,489,706 |
+| site_bel_pins / site_bels / site_wires / site_types | 7,107 / 3,439 / 3,252 / 30 |
+| imux_codes | 2,304 |
+| pip_bits | 2,652 |
+| bit_map / probe_bits / probes | 28 / 1,248 / 72 |
+| column_offsets / region_bases / tile_types | 420 / 14 / 115 |
+| site_type_pips / meta / stages / artifacts / site_frames | 583 / 17 / 1 / 0 / 0 |
+
+结论：**21 张表行数与内容完全一致**，本机 `E:\v7work\model\v7_model.sqlite`
+（635,883,520 B）与远端 `/opt/lzh/v7re/data/model/v7_model.sqlite` 已同步，无需合并。
+行数快照存 `step03_pip/remote_data/table_counts.json`。
 
