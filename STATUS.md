@@ -186,3 +186,22 @@ python step03_pip\export_pip_csv.py
 printf '#!/bin/bash\nexport LANG=C\nexport LC_ALL=C\nexport HOME=/root\n/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado -mode batch -notrace -source /tmp/x.tcl\n' > /tmp/run_viv.sh
 bash /tmp/run_viv.sh
 ```
+
+## 5. 跨类型（INT_L vs INT_R）—— 已完成（2026-10-25）
+
+比对方式：按「mux 编号相同 + wire 名相同」配对，(frame, word, bit) 各减最小值归一化后逐条比。
+
+| 项目 | INT_L（INT_L_X6Y11） | INT_R（INT_R_X9Y11 等） |
+|---|---|---|
+| 设计数 | 36 | 36 |
+| 位流数 | 900 | 900 |
+| 每 mux 源数 | 25 | 25 |
+| 掩码大小 | 0x1 / 2x12 / 4x12 | 0x1 / 2x12 / 4x12 |
+| word 取值 | 22 / 23（按 L//4） | 22 / 23（同规则） |
+| 帧窗口 | 31696-31705 | 31804-31813（+108） |
+
+**结果：same = 792，diff = 0。**
+
+结论：形状表（mux 编号 + wire → cell 集合）与 tile 实例、甚至 tile 类型都无关；类型/位置的差别只体现在块地址（帧窗口整体平移）。
+
+数据：step03_pip/tp2.json；脚本：step03_pip/cross_type.py；文档：step03_pip/CROSS_TYPE_RESULTS.md。
