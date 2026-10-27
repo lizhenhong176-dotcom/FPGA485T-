@@ -65,3 +65,14 @@ bit   = 表内 bit（与 artix7 相同，CLBLL 左 site 换 CLBLM_X0 表）
 ## 4. 复现
 远端：`/opt/lzh/step03/s3site/`（`s3_init.tcl` + `s3_run.sh` + `s3_run2.sh` + `s3_diff.py`）。
 本地副本：`step03_pip/` 同名文件；结果文本 `step03_pip/s3_results.txt`、`s3_results2.txt`。
+
+## 5. 勘误（S4 期间推翻的两条）
+- **「V7 CLBLL 左 site 要用 artix7 CLBLM 表」作废**：根因是 SLICE→tile 归属错误
+  （SLICE_X10/X11 其实属 CLBM_R_X7 的 X1/X1，SLICE_X8/X9 才属 CLBLL_L_X6）。
+  修正后 CLBLL inst0=32..35、CLBM inst0=34..37、inst1=26..29——**与 artix7 表完全一致**。
+- **word 公式补全 parity 项**：`word = 2*(Y%50) + (Y%50>=25) + parity`，
+  parity 来自 artix7 表（CLUT/DLUT=1）。实测 CLUT Y20→41、Y40→82，B6LUT→40。
+  word 50 永不产生 → 是 ECC word（100 配置位 + 1 ECC = 101 word，完全对称）。
+- site 实例号不能取 getSites() 顺序（_L tile 颠倒）；**按 slice 名 X 奇偶**：
+  偶 X → X0 实例，奇 X → X1。10 个实测 slice 全部符合。
+
