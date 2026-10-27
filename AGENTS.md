@@ -1,7 +1,8 @@
 # 项目入口
 
-**每个任务开始前，先读 `STATUS.md`**（项目现状、远端环境用法、已完成/待办、已知坑）。
-实验细节见 `step03_pip/RESULTS.md`，代码用法见 `v7re/README.md`。
+**每个任务开始前，先读 `STATUS.md`**（项目现状、已完成/待办、已知坑）。
+**要用远端 Vivado，先读 `REMOTE.md`**（当前地址/用户/私钥、三种调用姿势、DHCP 换址后的重连流程、远端数据清单）。
+实验细节见 `step03_pip/RESULTS.md` 与 `step03_pip/REUSE_RULES.md`，代码用法见 `v7re/README.md`。
 
 # Codex usage policy
 

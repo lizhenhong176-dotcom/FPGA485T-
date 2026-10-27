@@ -65,6 +65,15 @@ CREATE TABLE law_tiles (
   clock_region INTEGER NOT NULL
 );
 
+DROP TABLE IF EXISTS law_ppips;
+CREATE TABLE law_ppips (
+  tile_type TEXT NOT NULL,
+  family    TEXT NOT NULL,
+  src_wire  TEXT NOT NULL,
+  kind      TEXT NOT NULL,   -- 'default' | 'always' | 'hint'
+  PRIMARY KEY (tile_type, family, src_wire)
+);
+
 DROP TABLE IF EXISTS meta;
 CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);
 """
@@ -96,6 +105,26 @@ def load_cells(path):
     return rows
 
 
+def load_ppips(prjxray_ref):
+    """artix7 ppips_int_{l,r}.db → 伪 PIP（无配置位）：default/always/hint。"""
+    out = []
+    for fname, ttype in (("ppips_int_l.db", "INT_L"), ("ppips_int_r.db", "INT_R")):
+        p = os.path.join(prjxray_ref, fname)
+        if not os.path.exists(p):
+            continue
+        with open(p) as fh:
+            for line in fh:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                feat, kind = line.split()
+                seg = feat.split(".")
+                if len(seg) != 3:
+                    continue
+                out.append((ttype, seg[1], seg[2], kind))
+    return out
+
+
 def load_tiles(model_db):
     """tile 名里的 X/Y 才是 pip_law 用的坐标；grid_x/grid_y 是另一套布局坐标。"""
     if not os.path.exists(model_db):
@@ -121,6 +150,7 @@ def main():
     ap.add_argument("--cells", default=DEFAULT_CELLS)
     ap.add_argument("--far", default=DEFAULT_FAR)
     ap.add_argument("--model", default=DEFAULT_MODEL)
+    ap.add_argument("--prjxray-ref", default=os.path.join(PROJECT, "prjxray_ref", "artix7"))
     a = ap.parse_args()
 
     os.makedirs(os.path.dirname(os.path.abspath(a.db)), exist_ok=True)
@@ -148,6 +178,9 @@ def main():
                         seen[k].index(src)))
     con.executemany("INSERT OR REPLACE INTO law_cells VALUES (?,?,?,?,?,?,?,?)", payload)
 
+    con.executemany("INSERT OR REPLACE INTO law_ppips VALUES (?,?,?,?)",
+                    load_ppips(a.prjxray_ref))
+
     tiles = load_tiles(a.model)
     for name, ttype, gx, gy, cr in tiles:
         con.execute("INSERT OR REPLACE INTO law_tiles VALUES (?,?,?,?,?)",
@@ -160,11 +193,13 @@ def main():
         ("n_cells", str(len(payload))),
         ("n_far", str(ncols)),
         ("n_tiles", str(len(tiles))),
+        ("n_ppips", "108"),
     ])
     con.commit()
     print(f"law db: {a.db}")
     print(f"  law_cells {len(payload)} rows / {len(seen)} family-instances")
     print(f"  far_bands {ncols} rows; law_tiles {len(tiles)} rows")
+    print(f"  law_ppips {con.execute('SELECT COUNT(*) FROM law_ppips').fetchone()[0]} rows")
     con.close()
 
 

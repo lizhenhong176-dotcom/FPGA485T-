@@ -2,6 +2,10 @@
 
 Target device: **XC7VX485T-2FFG1761** (VC707), Vivado 2017.2.
 
+> **Remote Vivado host**: the address / user / key and the exact invocation patterns live in
+> [`../REMOTE.md`](../REMOTE.md) (authoritative, updated whenever the DHCP lease changes).
+> Read it before running anything on the remote machine. Project status: [`../STATUS.md`](../STATUS.md).
+
 This toolkit is the reusable core of the V7 reverse-engineering workflow:
 
 1. parse `.bit` / `.bin` into 101-word frames

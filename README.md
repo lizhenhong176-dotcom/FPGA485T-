@@ -45,9 +45,12 @@ lit/、m2_fix/、tools/  辅助脚本（大文件不入库）
 ## 环境
 
 - 器件：XC7VX485T-2FFG1761（VC707）
-- Vivado 2017.2（远程 Linux/WSL，license 为 2037.05）
+- Vivado 2017.2（远端 Windows + WSL Ubuntu，license 为 2037.05）
 - Python 3.8 + numpy/fasm/intervaltree/pyyaml/pytest
 - RapidWright 2026.1.1（Java 17）
+
+**远端连接方式（地址/用户/私钥、调用姿势、换址后怎么重连）见 [REMOTE.md](REMOTE.md)。**
+一句话：`ssh fpga` → Windows cmd → `C:\PROGRA~1\WSL\wsl.exe -d Ubuntu -u root -- bash -s`，脚本走 stdin 管道。
 
 ## 快速开始
 
@@ -57,9 +60,17 @@ python -m pytest tests -q
 python scripts/parse_bit.py <file.bit>
 ```
 
-远端实验（Vivado 生成 bitstream 并差分）：
+远端实验（Vivado 生成 bitstream 并差分）——本地写 LF 的 `.sh`，再管道送进去：
 
-```bash
-cd /opt/lzh/step03/pip2
-bash /mnt/c/Users/S.tschai/run_ymore.sh
+```powershell
+cmd /c 'ssh -o BatchMode=yes fpga "C:\PROGRA~1\WSL\wsl.exe -d Ubuntu -u root -- bash -s" < "step03_pip\_recon.sh"'
+```
+
+本地复核（不需要远端）：
+
+```powershell
+cd step03_pip
+python pip_law.py --check     # 地址律自检：列扫描 + INT_L 124 + INT_R 124
+python verify_reuse.py        # 三种差分语义 × 3,270 条观测
+python reuse_stats.py         # 位域独占性 + 覆盖率
 ```
