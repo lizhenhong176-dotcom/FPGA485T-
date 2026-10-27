@@ -16,6 +16,7 @@ import argparse
 import csv
 import json
 import os
+import re
 import sqlite3
 import sys
 
@@ -96,15 +97,22 @@ def load_cells(path):
 
 
 def load_tiles(model_db):
+    """tile 名里的 X/Y 才是 pip_law 用的坐标；grid_x/grid_y 是另一套布局坐标。"""
     if not os.path.exists(model_db):
         return []
     con = sqlite3.connect(model_db)
     try:
-        return con.execute(
-            "SELECT tile_name, type, grid_x, grid_y, clock_region "
-            "FROM tiles WHERE type LIKE 'INT_%'").fetchall()
+        rows = con.execute(
+            "SELECT tile_name, type FROM tiles WHERE type LIKE 'INT_%'").fetchall()
     finally:
         con.close()
+    out = []
+    for name, ttype in rows:
+        m = re.search(r"_X(\d+)Y(\d+)$", name)
+        if not m:
+            continue
+        out.append((name, ttype, int(m.group(1)), int(m.group(2)), 0))
+    return out
 
 
 def main():

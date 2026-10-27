@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
-"""decode_law.py —— 全器件 PIP 解码器（P0a）。
+"""decode_law.py —— 全器件 PIP 解码器（P0a，判据修正版）。
 
-把一份 .bit 摊成 (frames, 101, 32) 的位矩阵，再用 law_cells 里的
-(tile_type, family, src) → (frame_off, bit, sense, parity) 规则，
-对每个 INT tile × 每个家族实例做向量化预测，判定：
+判定口径（2026-10-27 与用户确认）：
+  只看 sense=1 的位（PIP 启用时应置 1 的格子）：
+    all-ones 且格数 >= --min-cells  → EXACT   （强证据：该 PIP 被使用）
+    all-ones 但格数 <  --min-cells  → WEAK    （2~3 格小掩码，随机命中率不可忽略）
+    否则                            → 不输出（视作未使用）
 
-  EXACT = 该实例的所有预测位都与 sense 一致（PIP 被使用）
-  SUB   = 部分一致（可能是共用位 / 规则偏差）
-  EMPTY = 全部不一致（PIP 未使用）
+可选 --require-zero：额外要求 sense=0 的格子全为 0（更严，先默认关）。
 
 用法：
   python v7re/export/decode_law.py design.bit --out pips.csv
-  python v7re/export/decode_law.py design.bit --tiles pips.json --out pips.csv
 """
 import argparse
-import csv
 import json
 import os
 import sqlite3
 import sys
 import time
+import csv
 
 import numpy as np
 
@@ -38,16 +37,16 @@ def load_cells(db):
         "FROM law_cells ORDER BY tile_type, family, src_index, frame_off, bit"
     ).fetchall()
     bands = {}
-    for band, col, s, e in con.execute("SELECT band,col,start_frame,end_frame FROM far_bands"):
+    for band, col, s in con.execute("SELECT band,col,start_frame FROM far_bands"):
         bands.setdefault(band, {})[col] = s
     tiles = {}
-    for name, ttype, col, y, cr in con.execute(
-            "SELECT tile_name,tile_type,col,y,clock_region FROM law_tiles"):
+    for name, ttype, col, y in con.execute(
+            "SELECT tile_name,tile_type,col,y FROM law_tiles"):
         tiles[name] = (ttype, col, y)
-    band_by_region = json.loads(
-        con.execute("SELECT value FROM meta WHERE key='band_by_region'").fetchone()[0])
+    bbr = json.loads(con.execute(
+        "SELECT value FROM meta WHERE key='band_by_region'").fetchone()[0])
     con.close()
-    return rows, bands, tiles, band_by_region
+    return rows, bands, tiles, bbr
 
 
 def bit_matrix(path):
@@ -69,7 +68,10 @@ def main():
     ap.add_argument("--db", default=r"E:\v7work\model\v7_law.sqlite")
     ap.add_argument("--out", default="pips.csv")
     ap.add_argument("--tiles", help="只解码这些 tile（pips json 里的 tile 字段）")
-    ap.add_argument("--max-tiles", type=int, default=0)
+    ap.add_argument("--min-cells", type=int, default=4,
+                    help="EXACT 要求的 sense=1 格数下限（默认 4）")
+    ap.add_argument("--require-zero", action="store_true",
+                    help="额外要求 sense=0 格全为 0")
     a = ap.parse_args()
 
     t0 = time.time()
@@ -82,73 +84,81 @@ def main():
         wanted = {rec["tile"] for rec in json.load(open(a.tiles))}
         tiles = {k: v for k, v in tiles.items() if k in wanted}
     names = sorted(tiles)
-    if a.max_tiles:
-        names = names[:a.max_tiles]
     print(f"tiles={len(names)} law_cells={len(cells)}")
 
-    # tile 侧数组
     tt_arr = np.array([tiles[n][0] for n in names])
     col_arr = np.array([tiles[n][1] for n in names], dtype=np.int64)
     y_arr = np.array([tiles[n][2] for n in names], dtype=np.int64)
-
-    def base_frames(tt_mask):
-        region = np.minimum(y_arr // BAND_ROWS, len(band_by_region) - 1)
-        band = np.array(band_by_region)[region]
-        base = np.zeros(len(names), dtype=np.int64)
-        for i in range(len(names)):
-            b = band[i]
-            base[i] = bands.get(b, {}).get(int(col_arr[i]), -1)
-        return base
+    band_arr = np.array(band_by_region)[
+        np.minimum(y_arr // BAND_ROWS, len(band_by_region) - 1)]
 
     base_cache = {}
-    out_rows = []
-    # 按 (tile_type, family) 分组
+    for tt in ("INT_L", "INT_R"):
+        sel = tt_arr == tt
+        if not sel.any():
+            continue
+        b = np.full(len(names), -1, dtype=np.int64)
+        bc = bands
+        for i in np.nonzero(sel)[0]:
+            s = bc.get(int(band_arr[i]), {}).get(int(col_arr[i]), -1)
+            b[i] = s
+        base_cache[tt] = b
+
     groups = {}
     for (tt, fam, src, off, bit, sense, parity) in cells:
-        groups.setdefault((tt, fam), {}).setdefault(src, []).append((off, bit, sense, parity))
+        groups.setdefault((tt, fam), {}).setdefault(src, []).append(
+            (off, bit, sense, parity))
 
-    n_exact = n_sub = n_empty = 0
+    out_rows = []
+    n_exact = n_weak = 0
     for (tt, fam), srcs in groups.items():
-        idx = np.nonzero(tt_arr == tt)[0]
+        base = base_cache.get(tt)
+        if base is None:
+            continue
+        idx = np.nonzero((tt_arr == tt) & (base >= 0))[0]
         if idx.size == 0:
             continue
-        if tt not in base_cache:
-            base_cache[tt] = base_frames(tt_arr == tt)
-        base = base_cache[tt][idx]
-        y = y_arr[idx]
+        base_t = base[idx]
+        y_t = y_arr[idx]
         for src, cl in srcs.items():
             arr = np.array(cl, dtype=np.int64)
-            off, bit, sense, parity = arr[:, 0], arr[:, 1], arr[:, 2], arr[:, 3]
-            frames = base[:, None] + off[None, :]        # (n, c)
-            ok_frame = (frames >= 0) & (frames < nframes)
-            words = word_of(y[:, None], parity[None, :])  # (n, c)
+            off, bit, sense, parity = (arr[:, 0], arr[:, 1],
+                                       arr[:, 2], arr[:, 3])
+            m1 = sense > 0
+            if not m1.any():
+                continue
+            frames = base_t[:, None] + off[None, m1]
+            words = word_of(y_t[:, None], parity[None, m1])
             f_safe = np.clip(frames, 0, nframes - 1)
-            vals = M[f_safe, words, bit[None, :]] > 0
-            match = vals == (sense[None, :] > 0)
-            match &= ok_frame
-            total = match.shape[1]
-            hits = match.sum(axis=1)
-            pat = np.where(hits == total, "EXACT", np.where(hits > 0, "SUB", "EMPTY"))
-            for i, t in enumerate(idx):
-                p = pat[i]
-                if p == "EXACT":
-                    n_exact += 1
-                elif p == "SUB":
-                    n_sub += 1
-                else:
-                    n_empty += 1
-                if p != "EMPTY":
-                    out_rows.append((names[t], fam, src, p, int(hits[i]), total))
-        if (len(out_rows) and len(out_rows) % 200000 < 1000):
-            print(f"  ... {fam}: rows={len(out_rows)}", flush=True)
+            vals = M[f_safe, words, bit[None, m1]] > 0
+            ok = (frames >= 0) & (frames < nframes)
+            ones = (vals & ok).all(axis=1)
+            if a.require_zero:
+                m0 = ~m1
+                if m0.any():
+                    f0 = np.clip(base_t[:, None] + off[None, m0], 0, nframes - 1)
+                    v0 = M[f0, word_of(y_t[:, None], parity[None, m0]),
+                           bit[None, m0]] > 0
+                    zeros = (~v0).all(axis=1)
+                    ones &= zeros
+            n1 = int(m1.sum())
+            if n1 >= a.min_cells:
+                sel = np.nonzero(ones)[0]
+                for t in sel:
+                    out_rows.append((names[idx[t]], fam, src, "EXACT", n1))
+                n_exact += sel.size
+            else:
+                sel = np.nonzero(ones)[0]
+                for t in sel:
+                    out_rows.append((names[idx[t]], fam, src, "WEAK", n1))
+                n_weak += sel.size
 
     with open(a.out, "w", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["tile", "family", "src", "pattern", "hits", "cells"])
+        w.writerow(["tile", "family", "src", "pattern", "cells1"])
         w.writerows(out_rows)
 
-    print(f"EXACT={n_exact} SUB={n_sub} EMPTY={n_empty} "
-          f"({time.time()-t0:.1f}s) -> {a.out}")
+    print(f"EXACT={n_exact} WEAK={n_weak} ({time.time()-t0:.1f}s) -> {a.out}")
 
 
 if __name__ == "__main__":
