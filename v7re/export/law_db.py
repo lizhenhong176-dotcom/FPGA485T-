@@ -265,6 +265,39 @@ def main():
                         seen[k].index(src)))
     con.executemany("INSERT OR REPLACE INTO law_cells VALUES (?,?,?,?,?,?,?,?)", payload)
 
+    # ---- P0b 长线族实测覆盖（2026-10-28，见 step03_pip/P0B_LONG_LINE.md）----
+    # artix7 迁移值在 V7 上错位：实测 262/262 extra 位全部归因为
+    #   frame = block_start(col, Y) + off（off ∈ {0,1}）
+    #   word = 2*(Y%50) + (Y%50>=25)   （word_of(Y, parity=0)）
+    #   LV 驱动 = (0,b9)+(1,b6)；LH 驱动 = (0,b2)+(1,b6)
+    # 24 设计 sweep 回归 24/24 EXACT（out_sweep2.json）。
+    #
+    # 方向注意：prjxray feature = DST.SRC。实测的是 RW 'A->B'（A→B）方向的
+    # 4 条 PIP。artix7 反方向键（如 LV_L0.LV_L18）恰好带着与实测正方向相同
+    # 的 cells，会在正方向 PIP 置位时产生假阳性反向解码行——反方向在 V7 的
+    # 真实 cells 未经测量，先删除，待反向布线实验补测。
+    LL_OVERRIDE = [
+        ("INT_L", "LV_L18", "LV_L0", 0, 9, 1, 0),
+        ("INT_L", "LV_L18", "LV_L0", 1, 6, 1, 0),
+        ("INT_L", "LH0", "LV_L0", 0, 2, 1, 0),
+        ("INT_L", "LH0", "LV_L0", 1, 6, 1, 0),
+        ("INT_R", "LV18", "LV0", 0, 9, 1, 0),
+        ("INT_R", "LV18", "LV0", 1, 6, 1, 0),
+        ("INT_R", "LH0", "LV0", 0, 2, 1, 0),
+        ("INT_R", "LH0", "LV0", 1, 6, 1, 0),
+    ]
+    LL_DELETE = [  # 反方向：V7 未实测，且现值与正方向重复 → 必然假阳性
+        ("INT_L", "LV_L0", "LV_L18"),
+        ("INT_L", "LV_L0", "LH0"),
+        ("INT_R", "LV0", "LV18"),
+        ("INT_R", "LV0", "LH0"),
+    ]
+    for tt, fam, src in {r[:3] for r in LL_OVERRIDE} | set(LL_DELETE):
+        con.execute("DELETE FROM law_cells WHERE tile_type=? AND family=? AND src_wire=?",
+                    (tt, fam, src))
+    con.executemany(
+        "INSERT OR REPLACE INTO law_cells VALUES (?,?,?,?,?,?,?,0)", LL_OVERRIDE)
+
     con.executemany("INSERT OR REPLACE INTO law_ppips VALUES (?,?,?,?)",
                     load_ppips(a.prjxray_ref))
 

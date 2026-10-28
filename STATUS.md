@@ -116,6 +116,7 @@ bit  = 1 + 8 * (L % 4) + (L // 8)      # L = IMUX 编号
 ### STEP03 收尾（2026-10-25 19:00–19:30）
 
 - `tilepipe` 完成：36 mux × 25 源 = 900 个变体位流，`tilepipe.json`（131 KB）。
+  - 2026-10-28 补齐 INT_L 侧 12 个 IMUX（详见 §5.5）→ INT_L_X6Y11 现 48 mux；INT_R_X7Y11 亦 48 mux（§5.5）。
 - 入库：`pip_bits` 新增 2,628 行（`source=tilepipe_20261025`），本地与远端同步。
 - 表结构统一整理（2026-10-25 晚，`step03_pip/migrate_pip_bits.py`）：
   - 坐标列 `frame/word/bit` 改为**可空**（原来被主键锁成 NOT NULL，只能塞 `-1` 魔数）；
@@ -159,7 +160,13 @@ ECC（word 50 低 13 位）在 864 个变体里全部被 Vivado 重算，必须�
 
 ## 4. 正在跑 / 最近一轮
 
-最近一轮（2026-10-27）：**PIP 复用规则收尾 + 远端重连**。
+最近一轮（2026-10-27 晚）：**tilegrid bits 批量填充**。
+用 PIP 侧地址律（`block_start` + `_word`）批量填了 91,050/91,050 个 tile 的 `bits` 字段
+（INT_L/INT_R/CLBLL_L/CLBLL_R/CLBLM_L/CLBLM_R 六类），本地与远端各一份输出。
+同时修复了 `pip_law.py` 的右半列折叠 bug（`col = (ba>>7)&0x7F` → 含 half 位）。
+详见 §6.9。
+
+上一轮（2026-10-27 下午）：**PIP 复用规则收尾 + 远端重连**。
 产出 `step03_pip/REUSE_RULES.md`（总纲）+ `verify_reuse.py`（一条命令复现 3,270 条观测判定）
 + `reuse_stats.py`（复用度/分区/覆盖率）。详见 §6.7。
 
@@ -186,13 +193,34 @@ ECC（word 50 低 13 位）在 864 个变体里全部被 Vivado 重算，必须�
    7 个 clock region 全测（§6.6）、列扫描 6 列 + INT_R 4 列（§6.7）、
    `tilepipe`/`tp2`/`tp3` 三个 tile 共 1,872 条 PURE 观测全 EXACT。
 4. STEP04：frame/bit 数据库生成器（含 `site_frames` 表）。
-5. **补齐 12 个未测 IMUX / 侧**（`IMUX_L22/28/29/31/32/35/38/40/43/44/45/47`）：
-   假设它们属 `CLBLM`(SLICEM) 专属输入，基座建在 `CLBLL_L`(SLICEL) 上够不着。
-   验证办法：把基座 LUT 放到 `SLICE_X12`（→ `CLBLM_L_X8`）再跑一遍 tilepipe。
-6. **非 IMUX 家族的多源覆盖**：现在每族只测了 1 个源（124/2,484 = 5%），
-   域内编码唯一性只由 prjxray 表保证。每族再测 3..5 个源即可，成本同 famdiff 那轮。
-7. **长线家族的块归属**（唯一真正的未解项）：`SWEEP_DIAGNOSIS.md`。
-   需要「只保留一段长线」的对照实验，`one/` 那批逐条删除的位流因位集重叠已失效。
+5. **补齐 12 个未测 IMUX / 侧**（`IMUX_L22/28/29/31/32/35/38/40/43/44/45/47`）：**INT_R 侧已完成（2026-10-27）/ INT_L 侧已完成（2026-10-28）→ 两侧 48/48 IMUX 全覆盖**
+   - **INT_R_X7Y11 侧：已定位 base 并在跑 tilepipe。** 12 个缺口全部由 `SLICE_X10Y11` 的
+     `C6LUT`(A1..A6→IMUX32/29/22/28/31/35) 与 `D6LUT`(A1..A6→IMUX40/45/38/44/47/43) 到达
+     （X10 是 SLICEM）。`tilepipe_r/` 300 变体 + 12 ref 生成中，`_tp_diff.py` 后台 bitgen+diff。**已完成（2026-10-27）**：12 个 IMUX（22/28/29/31/32/35/38/40/43/44/45/47）全部补齐，184 源测量；清洗到 IMUX 字段（frame<50176、word 16..25）后 184 源 → 184 组互不相同 bit 集，0 冲突、0 空位；加上此前 36 个 → INT_R_X7Y11 的 48 个 IMUX 全有数据。产物 `tilepipe_r/tilepipe_r.json`（115KB）。分析陷阱：diff 含 frame-50176 的 CRC/帧尾位（每源约 15 位、word 1），按位分析须先过滤 word 16..25。
+   - **INT_L_X6Y11 侧：已完成（2026-10-28），非"没测到"。** 已建 reach 探针确认：那 12 个 mux 其实由 `SLICE_X8Y11` 的 `C6LUT`(A1..A6→IMUX32/29/22/28/31/35) 与 `D6LUT`(A1..A6→IMUX40/45/38/44/47/43) 到达（X8Y11 实为带 C/D 的 SLICEM，非之前假设的 CLBLL_L，故早前"结构性未暴露"判断作废）。走同一 build_bel→p6_make→bitgen→tilepipe_diff 管线补齐：`tilepipe/` 现 48 个 INT_L tag、300 个新变体（12 mux × 25 源）。清洗到 IMUX 字段（frame<50176、word 16..25）后 **300 源 → 300 组互不相同 bit 集，0 冲突**；每 mux 恰 1 个空源 = `VCC_WIRE`（常量源，36 个旧 mux 同样各 1 个），非缺数据。产物 `tilepipe/tilepipe.json`。**→ INT_L_X6Y11 与 INT_R_X7Y11 两侧 48 个 IMUX 现已全有数据。** 已入库：`ingest_tilepipe.py` 以 48-tag `tilepipe.json` 重灌 `pip_bits` source=`tilepipe_20261025`（3,504 行 = 3,456 route + 48 default，48 个不同 mux，integrity ok，本地 `E:\v7work\model\v7_model.sqlite`；**远端已同步（2026-10-28 上午）**：gzip+base64+`tee` 通道推 `pip_bits_tilepipe.csv` 到远端 `/opt/lzh/v7re/data/model/v7_model.sqlite`，重灌 `tilepipe_20261025` 3,504 行（3,456 route + 48 default），远端核验 total=3,528 / wire_b=48 / default=48 / integrity ok，与本地完全一致；推送前远端旧库备份为 `v7_model.sqlite.bak_pre_push`（2,628 行中间态）。传输坑：`wsl -- bash -c "带空格/管道的字符串"` 会被 wsl 二次拆分（引号失效），远端命令只能是单条无引号命令——数据用 `tee /tmp/xxx` 走 stdin、逻辑写脚本先 `tee /tmp/x.sh` 再 `bash /tmp/x.sh`；~380KB 裸 heredoc 会截断在 ~1.3KB。
+6. **非 IMUX 家族的多源覆盖**：**已完成（2026-10-27）**。每族测 4 个源，两侧各 496 变体
+   （`spec_multi_INT_L/R.json`），驱动 `_fam_multi2.py`（famr_run.py 参数化版），后台跑
+   `fam_multi/`+`famr_multi/`。6 变体端到端测试已通过：同族 4 源产生 4 组互不相同 bit 集（域内唯一）。
+   完成后用 `v_bits.py fam` 对 `all_cells.json` 预测做 EXACT 校验并入库。
+   - **INT_R 侧已完成（2026-10-27，490/496 变体，6 个 spec 源被 RapidWright 判 MISS）**：
+     **域内唯一性 PASS——124 族 × ~4 源 0 冲突**（同族不同源 bit 集互不相同），V7 硅片实测证实了
+     此前仅由 prjxray 表假设的唯一性。模型覆盖度 = SUB(396)/MIX(94)/EXACT(0)：实测 cells ⊇
+     `pip_law.predict_family` 预测，即 V7 每个 PIP 实际位集比 prjxray 派生形状多出未建模位
+     （源线自身配置位等）。→ 唯一性成立；`all_cells.json` 按族形状需针对 V7 精修（prjxray 无 V7 表，属预期）。
+     产物 `famr_multi/famdiff_r_multi.json`（380KB）。INT_L 侧同法在跑。
+   - **INT_L 侧已完成（2026-10-27，486/496 变体）**：同样 **域内唯一性 PASS——124 族 × ~4 源 0 冲突**，
+     模型覆盖度 SUB(395)/MIX(90)/SUBSET_ACT(1)/EXACT(0)，与 INT_R 一致（实测 ⊇ prjxray 预测）。
+     产物 `fam_multi/famdiff_l_multi.json`（306KB）。
+   - **§5.6 总结论（两侧合计 976 变体 / 248 族次）：域内编码唯一性 V7 实测确认，0 冲突。**
+     唯一性不再依赖 prjxray 表假设。遗留：`all_cells.json` 按族形状是 prjxray 派生的下界，
+     V7 实测多出未建模位（源线自身配置位等），后续做 bit→netlist 时需按 V7 精修（记为 §5.6-followup）。**[followup 已完成 2026-10-28]** 976 变体对照 all_cells：剔除 INT_R 侧 4 个恒定副产物位（word 23、bit 17、frame_off 17/22/24/25，490 变体逐位相同、族内 4 源一致 → ref 基线噪声非 PIP 位）后 **EXTRA=0、MIX=0（两侧）→ prjxray 形状是 V7 可靠超集**；**EXACT=791 / SUBSET=185**（INT_R 396/94、INT_L 395/91）。SUBSET 缺失位族内逐源不同（23/24、24/24 differ）= 差分盲区（预测位在 ref 对该源已置 1），非形状错误，故不缩形状。产物 `step03_pip/v7_overlay.json`（976 条 observed/predicted/missing+status）+ `v7_overlay_meta.json`（INT_R 4 常量位排除表+用法）。净结论：all_cells 作候选位窗、忽略 4 个 INT_R 常量位、EXACT 已证实、SUBSET 保留完整形状；彻底解决 SUBSET 需绝对值探针 → §5.6-followup2。
+    - **[§5.6-followup2 已完成 2026-10-28] 绝对值探针坐实 185 个 SUBSET。** 取两侧 ref 位流（base64 通道，避开 PowerShell `>` 的 UTF-16 破坏），用与 famdiff 驱动完全一致的坐标（payload 帧索引、`(frames[f][w]>>b)&1`）读每个"预测有、diff 没见到"的缺失位的绝对值。判据：`ref==sense` → 差分盲区（V7 不反驳，保留）；`ref==1−sense` → V7 明确不用（可精修）。**387 个缺失位：383 个差分盲区（INT_L 190 / INT_R 193），仅 4 个 V7 反驳。** 4 个反驳位高度同源：GFAN0/GFAN1 家族、源 `GCLK_B2_EAST`(R)/`GCLK_L_B2`(L)、word 20、bit 11/13、sense=0、ref=1（PIP 想拉 0 未拉动）。→ **prjxray 形状在 V7 上被逐位证实为可靠超集，全 248 族次仅 GFAN GCLK_B2 一处 4 位过预测**；净用法不变（all_cells 作候选位窗，EXACT 已证实、383 盲区保留、4 个 GFAN 位可标注精修）。产物 `step03_pip/followup2_absprobe.py` + `followup2_absprobe.json`。
+7. **长线家族的块归属——已解决（2026-10-28，P0b）**：`P0B_LONG_LINE.md`。
+   262/262 extra 位归因成功：**frame = block_start(col, Y) + off（off ∈ {0,1}）、
+   word = 2*(Y%50)+(Y%50≥25)、LV 驱动=(0,b9)+(1,b6)、LH 驱动=(0,b2)+(1,b6)**；
+   与 CLB 族同块、偏移在 0/1。远端 24/24 EXACT（out_sweep2.json），
+   本地 law_db 已写 LL_OVERRIDE（4 条正方向）+ LL_DELETE（4 条反方向，
+   artix7 反方向值与实测正方向重复 → 必然假阳性，删除待补测）。
 
 ---
 
@@ -500,3 +528,50 @@ Vivado `/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado` + `Vivado_license_2037.lic` �
 **盘点发现的两个小问题**：`/opt/lzh/step03` 下有个名字带 `\r` 的 `bands2` 垃圾目录（0 bit/0 json/0 dcp，
 早期 CRLF 事故产物，可删）；`reuse4` 是半成品（1 个 dcp、0 bit）。
 另外 `/opt/lzh/README.md` 里写的路径全是 `/data/lzh/...`，那是旧路径，**实际都在 `/opt/lzh/...`**。
+
+### 6.9 tilegrid bits 批量填充：91,050/91,050（2026-10-27）
+
+用 PIP 侧推出的地址律批量填 V7 tilegrid.json 的 `bits` 字段，让 **artix7 segbits 库可直接复用**。
+
+**生成器**：`step03_pip/gen_tilegrid_bits.py`
+- 输入：tilegrid.json + `phaseA/frame_index_far.csv`（50,176 条）
+- 对 INT_L/INT_R/CLBLL_L/CLBLL_R/CLBLM_L/CLBLM_R 六类 tile，从名字解析 `(col, Y)`，
+  用 `block_start(col, Y)` 算基址帧、`_word(Y, 0)` 算 offset，反查 fi2far 得 baseaddr（minor 0）。
+- 约定（**artix7-native**）：INT frames=28, CLB frames=36, offset=`_word(Y,0)`, words=2。
+  artix7 segbits 里 CLB LUT INIT 在 frame cols 32-35（相对 minor 0），与 V7 实测 `block_start+32` 完全对齐。
+
+**修复的 bug**：`pip_law.py:65` 的 `col = (block_addr >> 7) & 0x7F` 把右半 cols 128..153
+折叠到 0..25，与左半碰撞。改为 `col = (((ba >> 14) & 1) << 7) | ((ba >> 7) & 0x7F)`
+（half*128 + col_local = tile X 0..153）。修复后 `_STARTS[band]` 有 154 keys，
+`pip_law.py --check` 仍全绿。
+
+**结果**：
+
+| 输出 | tiles | filled | missing | 锚点 |
+|---|---|---|---|---|
+| 本地 `tilegrid_filled.json`（16.8 MB） | 150,380 | 91,050 (60.5%) | 0 | 3/3 OK |
+| 远端 `tilegrid.json.filled`（30.9 MB） | 150,380 | 91,050 (60.5%) | 0 | 3/3 OK |
+
+六类 tile 全部填满：INT_L 26,550 + INT_R 26,550 + CLBLL_L 3,100 + CLBLL_R 2,150 +
+CLBLM_L 15,700 + CLBLM_R 17,000 = 91,050。offset min=0 max=99（ECC 让位）。
+
+**关键验证**：
+- 3 个独立实测 CLB 锚点全中：CLBLL_L_X6Y10->0x00420320/36/20、CLBLL_L_X10Y303->0x00080500/36/6
+  （held-out, region 6, 芯片另一端）、CLBLM_R_X7Y10->0x00420380/36/20。
+- 右半验证：INT_L_X128Y10->0x00424000/28/20、INT_R_X129Y10->0x00424080（delta=0x80）、
+  CLBLM_L_X150Y69->0x00404B00/36/38（=2*19，region 1）。
+- INT 与 CLB 同列共享 baseaddr（minor 0），frames 不同（28 vs 36）——与 artix7 完全一致。
+- 远端输出保留了 clock_region/sites/prohibited_sites 字段。
+
+**与 fasm_shell 的差异（已解决）**：fasm_shell 手动建的 3 个 tile 用绝对地址（baseaddr = minor 32，
+frames=4，只覆盖 LUT INIT）；我们用 artix7 约定（baseaddr = minor 0，frames=36，覆盖全 tile），
+artix7 segbits 可直接复用，无需调整。
+
+**产物路径**：
+- 生成器：`step03_pip/gen_tilegrid_bits.py`
+- 本地输出：`step03_pip/tilegrid_filled.json`（16.8 MB）
+- 远端输出：`/opt/lzh/v7re/data/fasm_shell/db/xc7vx485t/tilegrid.json.filled`（30.9 MB）
+
+**意义**：两条完全独立的实验路径（INT PIP 删位差分 vs CLB one-hot INIT 探测）在地址律上互相验证；
+91,050 个 tile 的 bits 字段现已可被 prjxray 工具链（bit2fasm / fasm2bel）直接使用——
+一旦恢复或自研 bit->FASM 解码器，INT+CLB 侧即可立即解码。
