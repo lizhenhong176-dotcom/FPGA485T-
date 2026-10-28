@@ -1,0 +1,3 @@
+set_property LOC SLICE_X10Y20 [get_cells -hierarchical u_ff]
+set_property BEL AFF [get_cells -hierarchical u_ff]
+set_property LOC SLICE_X10Y20 [get_cells -hierarchical u_lut]
