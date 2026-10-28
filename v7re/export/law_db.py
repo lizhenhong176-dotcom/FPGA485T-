@@ -76,7 +76,46 @@ CREATE TABLE law_ppips (
 
 DROP TABLE IF EXISTS meta;
 CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT);
+
+-- S4：CLB site 特征位（来自 step03_pip/site_cells.json，artix7 表迁移 + V7 受控实验验证）
+DROP TABLE IF EXISTS clb_cells;
+CREATE TABLE clb_cells (
+  tile_type  TEXT NOT NULL,      -- CLBLL_L / CLBLL_R / CLBLM_L / CLBLM_R
+  family     TEXT NOT NULL,      -- 'SLICEM_X0.ALUT'（含 site 实例前缀）
+  src_wire   TEXT NOT NULL,      -- 'INIT[00]' / 'AX' / 'O5' ...
+  frame_off  INTEGER NOT NULL,
+  bit        INTEGER NOT NULL,
+  sense      INTEGER NOT NULL,
+  parity     INTEGER NOT NULL,
+  -- 注意：多 bit 编码（如 AFFMUX 四 bit）同 (family,src) 有多行，PK 必须含 (frame_off,bit)
+  PRIMARY KEY (tile_type, family, src_wire, frame_off, bit)
+);
+
+-- CLB 块基址：(gridCol, band) → 基帧（block_tiles.csv + frame_index_far.csv）
+DROP TABLE IF EXISTS clb_blocks;
+CREATE TABLE clb_blocks (
+  grid_col    INTEGER NOT NULL,
+  band        INTEGER NOT NULL,
+  base_frame  INTEGER NOT NULL,
+  PRIMARY KEY (grid_col, band)
+);
+
+-- SLICE → (tileType, gridCol, inst, Y)。inst 按 slice 名 X 奇偶（偶→X0，奇→X1），
+-- 不取 getSites() 顺序（_L tile 会颠倒）。
+DROP TABLE IF EXISTS clb_tiles;
+CREATE TABLE clb_tiles (
+  slice_name  TEXT PRIMARY KEY,
+  tile_type   TEXT NOT NULL,
+  grid_col    INTEGER NOT NULL,
+  inst        INTEGER NOT NULL,
+  y           INTEGER NOT NULL
+);
 """
+
+CLB_TILES_CSV = os.path.join(PROJECT, "phaseA", "clb_tiles.csv")
+BLOCK_TILES_CSV = os.path.join(PROJECT, "phaseA", "block_tiles.csv")
+SITE_CELLS_JSON = os.path.join(PROJECT, "step03_pip", "site_cells.json")
+
 
 
 def load_far(path):
@@ -144,6 +183,54 @@ def load_tiles(model_db):
     return out
 
 
+def load_clb_parts():
+    """S4 集成：CLB site 特征 + 块基址 + slice 归属，全部进 v7_law.sqlite。
+
+    规则（受控实验定论，见 step03_pip/S2_S3_SITE_LAYOUT.md 勘误后版本）：
+      frame = clb_blocks[(gridCol, Y//50)] + frame_off
+      word  = 2*(Y%50) + (Y%50>=25) + parity（word 50 = ECC，公式永不产生）
+      inst  = slice 名 X 奇偶（偶→X0，奇→X1；getSites() 顺序不可靠）
+    """
+    import re as _re
+
+    cells = []
+    for row in json.load(open(SITE_CELLS_JSON, encoding="utf-8")):
+        cells.append((row["tile_type"], row["family"], row["src_wire"],
+                      int(row["frame_off"]), int(row["bit"]),
+                      int(row["sense"]), int(row["parity"])))
+
+    fi = {}
+    for r in csv.DictReader(open(DEFAULT_FAR, encoding="utf-8")):
+        if r["kind"] == "block":
+            fi.setdefault(int(r["block_addr"], 16), []).append(int(r["frame_index"]))
+    blocks = {}
+    for r in csv.DictReader(open(BLOCK_TILES_CSV, encoding="utf-16")):
+        if not r["subType"].startswith(("CLBLL", "CLBLM")):
+            continue
+        addr = int(r["far"], 16)
+        if addr not in fi:
+            continue
+        m = _re.search(r"_X\d+Y(\d+)$", r["bottomTile"])
+        if not m:
+            continue
+        ylo = int(m.group(1))
+        blocks[(int(r["tileColumn"]), ylo // 50)] = min(fi[addr])
+
+    tiles = []
+    for r in csv.DictReader(open(CLB_TILES_CSV, encoding="utf-8")):
+        for sk in ("site0", "site1"):
+            s = r[sk]
+            if not s:
+                continue
+            m = _re.match(r"SLICE_X(\d+)Y(\d+)$", s)
+            if not m:
+                continue
+            x = int(m.group(1))
+            tiles.append((s, r["type"], int(r["gridCol"]),
+                          0 if x % 2 == 0 else 1, int(m.group(2))))
+    return cells, blocks, tiles
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--db", default=DEFAULT_DB)
@@ -195,11 +282,26 @@ def main():
         ("n_tiles", str(len(tiles))),
         ("n_ppips", "108"),
     ])
+
+    clb_cells, clb_blocks, clb_tiles = load_clb_parts()
+    con.executemany("INSERT OR REPLACE INTO clb_cells VALUES (?,?,?,?,?,?,?)",
+                    clb_cells)
+    con.executemany("INSERT OR REPLACE INTO clb_blocks VALUES (?,?,?)",
+                    [(gc, b, base) for (gc, b), base in clb_blocks.items()])
+    con.executemany("INSERT OR REPLACE INTO clb_tiles VALUES (?,?,?,?,?)",
+                    clb_tiles)
+    con.executemany("INSERT OR REPLACE INTO meta VALUES (?,?)", [
+        ("n_clb_cells", str(len(clb_cells))),
+        ("n_clb_blocks", str(len(clb_blocks))),
+        ("n_clb_tiles", str(len(clb_tiles))),
+    ])
     con.commit()
     print(f"law db: {a.db}")
     print(f"  law_cells {len(payload)} rows / {len(seen)} family-instances")
     print(f"  far_bands {ncols} rows; law_tiles {len(tiles)} rows")
     print(f"  law_ppips {con.execute('SELECT COUNT(*) FROM law_ppips').fetchone()[0]} rows")
+    print(f"  clb_cells {len(clb_cells)}; clb_blocks {len(clb_blocks)}; "
+          f"clb_tiles {len(clb_tiles)}")
     con.close()
 
 

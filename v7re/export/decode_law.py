@@ -62,6 +62,77 @@ def word_of(y, parity):
     return np.where(w >= 50, w + 1, w)
 
 
+def load_clb(db):
+    """S4 集成：CLB site 特征 + 块基址 + slice 归属。
+
+    模型：frame = clb_blocks[(gridCol, Y//50)] + frame_off
+          word  = word_of(Y, parity)（与 INT 同一公式）
+          inst  = slice 名 X 奇偶（偶→X0，奇→X1）。"""
+    con = sqlite3.connect(db)
+    cells = con.execute(
+        "SELECT tile_type, family, src_wire, frame_off, bit, parity "
+        "FROM clb_cells").fetchall()
+    blocks = con.execute(
+        "SELECT grid_col, band, base_frame FROM clb_blocks").fetchall()
+    tiles = con.execute(
+        "SELECT slice_name, tile_type, grid_col, inst, y FROM clb_tiles"
+    ).fetchall()
+    con.close()
+    return cells, blocks, tiles
+
+
+def decode_clb_matrix(M, clb, min_bit=1):
+    """CLB 特征位读出：置 1 的 (slice, family.src) 列表。
+
+    CLB 特征是单 bit 读出（INIT 值 / mux 选择码），不走 INT 的 all-ones EXACT 判据。
+    向量化：按 (tileType, inst) 分组，每特征对全器件 slice 一次 fancy index。"""
+    cells, blocks, tiles = clb
+    blk = {(gc, b): base for gc, b, base in blocks}
+    fam_cells = {}
+    for tt, fam, src, foff, bit, parity in cells:
+        # family 形如 'SLICEM_X0.ALUT'：实例号 = 分隔符 _X 之后的数字
+        inst = int(fam.split("_X")[1].split(".")[0])
+        fam_cells.setdefault((tt, inst), []).append(
+            (fam.split(".")[1] + "." + src, foff, bit, parity))
+    nframes = M.shape[0]
+
+    # slice 表按 (tt, inst) 分组，预取块基址
+    groups = {}
+    for sname, tt, gc, inst, y in tiles:
+        base = blk.get((gc, y // BAND_ROWS))
+        if base is None:
+            continue
+        g = groups.setdefault((tt, inst), ([], [], []))
+        g[0].append(sname)
+        g[1].append(base)
+        g[2].append(y)
+
+    hits = []
+    for key, (names_g, bases_g, ys_g) in groups.items():
+        feats = fam_cells.get(key)
+        if not feats:
+            continue
+        names_a = np.array(names_g)
+        bases = np.array(bases_g, dtype=np.int64)
+        ys = np.array(ys_g, dtype=np.int64)
+        for feat, foff, bit, parity in feats:
+            frames = bases + foff
+            words = word_of(ys, parity)
+            ok = (frames >= 0) & (frames < nframes)
+            if not ok.all():
+                keep = np.nonzero(ok)[0]
+                if keep.size == 0:
+                    continue
+                frames, words = frames[keep], words[keep]
+                names_f = names_a[keep]
+            else:
+                names_f = names_a
+            vals = M[frames, words, bit] > 0
+            for i in np.nonzero(vals)[0]:
+                hits.append((str(names_f[i]), feat, f"{foff}_{bit}"))
+    return hits
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("bit")
@@ -72,6 +143,8 @@ def main():
                     help="EXACT 要求的 sense=1 格数下限（默认 4）")
     ap.add_argument("--require-zero", action="store_true",
                     help="额外要求 sense=0 格全为 0")
+    ap.add_argument("--ref", help="参考位流：行级差分，只输出 design 有而 ref 没有的行")
+    ap.add_argument("--no-clb", action="store_true", help="跳过 CLB site 解码")
     a = ap.parse_args()
 
     t0 = time.time()
@@ -80,85 +153,108 @@ def main():
     print(f"bit matrix {M.shape} = {M.nbytes/1e6:.1f} MB  ({time.time()-t0:.1f}s)")
 
     cells, bands, tiles, band_by_region = load_cells(a.db)
+    clb = None if a.no_clb else load_clb(a.db)
     if a.tiles:
         wanted = {rec["tile"] for rec in json.load(open(a.tiles))}
         tiles = {k: v for k, v in tiles.items() if k in wanted}
     names = sorted(tiles)
     print(f"tiles={len(names)} law_cells={len(cells)}")
 
-    tt_arr = np.array([tiles[n][0] for n in names])
-    col_arr = np.array([tiles[n][1] for n in names], dtype=np.int64)
-    y_arr = np.array([tiles[n][2] for n in names], dtype=np.int64)
-    band_arr = np.array(band_by_region)[
-        np.minimum(y_arr // BAND_ROWS, len(band_by_region) - 1)]
+    def run_all(M):
+        """INT PIP 判定 + CLB site 读出 → [(tile, family, src, pattern, n)]"""
+        tt_arr = np.array([tiles[n][0] for n in names])
+        col_arr = np.array([tiles[n][1] for n in names], dtype=np.int64)
+        y_arr = np.array([tiles[n][2] for n in names], dtype=np.int64)
+        band_arr = np.array(band_by_region)[
+            np.minimum(y_arr // BAND_ROWS, len(band_by_region) - 1)]
 
-    base_cache = {}
-    for tt in ("INT_L", "INT_R"):
-        sel = tt_arr == tt
-        if not sel.any():
-            continue
-        b = np.full(len(names), -1, dtype=np.int64)
-        bc = bands
-        for i in np.nonzero(sel)[0]:
-            s = bc.get(int(band_arr[i]), {}).get(int(col_arr[i]), -1)
-            b[i] = s
-        base_cache[tt] = b
-
-    groups = {}
-    for (tt, fam, src, off, bit, sense, parity) in cells:
-        groups.setdefault((tt, fam), {}).setdefault(src, []).append(
-            (off, bit, sense, parity))
-
-    out_rows = []
-    n_exact = n_weak = 0
-    for (tt, fam), srcs in groups.items():
-        base = base_cache.get(tt)
-        if base is None:
-            continue
-        idx = np.nonzero((tt_arr == tt) & (base >= 0))[0]
-        if idx.size == 0:
-            continue
-        base_t = base[idx]
-        y_t = y_arr[idx]
-        for src, cl in srcs.items():
-            arr = np.array(cl, dtype=np.int64)
-            off, bit, sense, parity = (arr[:, 0], arr[:, 1],
-                                       arr[:, 2], arr[:, 3])
-            m1 = sense > 0
-            if not m1.any():
+        base_cache = {}
+        for tt in ("INT_L", "INT_R"):
+            sel = tt_arr == tt
+            if not sel.any():
                 continue
-            frames = base_t[:, None] + off[None, m1]
-            words = word_of(y_t[:, None], parity[None, m1])
-            f_safe = np.clip(frames, 0, nframes - 1)
-            vals = M[f_safe, words, bit[None, m1]] > 0
-            ok = (frames >= 0) & (frames < nframes)
-            ones = (vals & ok).all(axis=1)
-            if a.require_zero:
-                m0 = ~m1
-                if m0.any():
-                    f0 = np.clip(base_t[:, None] + off[None, m0], 0, nframes - 1)
-                    v0 = M[f0, word_of(y_t[:, None], parity[None, m0]),
-                           bit[None, m0]] > 0
-                    zeros = (~v0).all(axis=1)
-                    ones &= zeros
-            n1 = int(m1.sum())
-            if n1 >= a.min_cells:
-                sel = np.nonzero(ones)[0]
-                for t in sel:
-                    out_rows.append((names[idx[t]], fam, src, "EXACT", n1))
-                n_exact += sel.size
-            else:
-                sel = np.nonzero(ones)[0]
-                for t in sel:
-                    out_rows.append((names[idx[t]], fam, src, "WEAK", n1))
-                n_weak += sel.size
+            b = np.full(len(names), -1, dtype=np.int64)
+            bc = bands
+            for i in np.nonzero(sel)[0]:
+                s = bc.get(int(band_arr[i]), {}).get(int(col_arr[i]), -1)
+                b[i] = s
+            base_cache[tt] = b
+
+        groups = {}
+        for (tt, fam, src, off, bit, sense, parity) in cells:
+            groups.setdefault((tt, fam), {}).setdefault(src, []).append(
+                (off, bit, sense, parity))
+
+        out_rows = []
+        n_exact = n_weak = 0
+        for (tt, fam), srcs in groups.items():
+            base = base_cache.get(tt)
+            if base is None:
+                continue
+            idx = np.nonzero((tt_arr == tt) & (base >= 0))[0]
+            if idx.size == 0:
+                continue
+            base_t = base[idx]
+            y_t = y_arr[idx]
+            for src, cl in srcs.items():
+                arr = np.array(cl, dtype=np.int64)
+                off, bit, sense, parity = (arr[:, 0], arr[:, 1],
+                                           arr[:, 2], arr[:, 3])
+                m1 = sense > 0
+                if not m1.any():
+                    continue
+                frames = base_t[:, None] + off[None, m1]
+                words = word_of(y_t[:, None], parity[None, m1])
+                f_safe = np.clip(frames, 0, M.shape[0] - 1)
+                vals = M[f_safe, words, bit[None, m1]] > 0
+                ok = (frames >= 0) & (frames < M.shape[0])
+                ones = (vals & ok).all(axis=1)
+                if a.require_zero:
+                    m0 = ~m1
+                    if m0.any():
+                        f0 = np.clip(base_t[:, None] + off[None, m0],
+                                     0, M.shape[0] - 1)
+                        v0 = M[f0, word_of(y_t[:, None], parity[None, m0]),
+                               bit[None, m0]] > 0
+                        ones &= (~v0).all(axis=1)
+                n1 = int(m1.sum())
+                if n1 >= a.min_cells:
+                    sel = np.nonzero(ones)[0]
+                    for t in sel:
+                        out_rows.append((names[idx[t]], fam, src, "EXACT", n1))
+                    n_exact += sel.size
+                else:
+                    sel = np.nonzero(ones)[0]
+                    for t in sel:
+                        out_rows.append((names[idx[t]], fam, src, "WEAK", n1))
+                    n_weak += sel.size
+
+        n_clb = 0
+        if clb is not None:
+            for sname, feat, bitdesc in decode_clb_matrix(M, clb):
+                # bitdesc = "foff_bit"：CLB 特征的位位置必须进 row，
+                # 否则 --ref 差分会把同 (slice,feat) 的不同 bit 行折叠抵消
+                out_rows.append((sname, feat, bitdesc, "CLB_SET", 1))
+                n_clb += 1
+        return out_rows, n_exact, n_weak, n_clb
+
+    out_rows, n_exact, n_weak, n_clb = run_all(M)
+    if a.ref:
+        R = bit_matrix(a.ref)
+        ref_rows, _, _, _ = run_all(R)
+        ref_set = set(map(tuple, ref_rows))
+        out_rows = [r for r in out_rows if tuple(r) not in ref_set]
+        n_exact = sum(1 for r in out_rows if r[3] == "EXACT")
+        n_weak = sum(1 for r in out_rows if r[3] == "WEAK")
+        n_clb = sum(1 for r in out_rows if r[3] == "CLB_SET")
 
     with open(a.out, "w", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["tile", "family", "src", "pattern", "cells1"])
         w.writerows(out_rows)
 
-    print(f"EXACT={n_exact} WEAK={n_weak} ({time.time()-t0:.1f}s) -> {a.out}")
+    print(f"EXACT={n_exact} WEAK={n_weak} CLB_SET={n_clb} "
+          f"({time.time()-t0:.1f}s) -> {a.out}")
 
 
 if __name__ == "__main__":
