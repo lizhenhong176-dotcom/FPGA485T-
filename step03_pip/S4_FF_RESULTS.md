@@ -22,12 +22,15 @@ AFFMUX 表（CLBM_R SLICEM_X0，来自 artix7）：frame_off=30，word=word_of(Y
 o5/o6 的 ALUT.INIT 变化位全部落在 f=31748-31751 (块内 32-35)、w=40、bits 15..0——
 与 decode_clb.py 预测逐位一致（LUT6_2 的 O5=INIT 低 32 位、O6 INIT 位序由 Vivado 交换，见两者 k 序差异）。
 
-### f7 变体：Vivado 不肯走 F7→AFF 直连
-- `BEL F7MUX` 在 SLICE 站点里**不存在该名字**（CRITICAL WARNING 12-610），约束失效后布线器自由放置：
-  LUT 落 CLUT/DLUT（w=41 的 INIT 变化证实），MUXF7 输出经 **COUTMUX（w41 b8/b11，F7 源）** 出片，
-  FF 的 D 仍从 **AX** 进入（AFFMUX 无 w40 变化）——即"出片再回环"，没有用 AFFMUX.F7 源。
-- 结论：AFFMUX 的 F7/CY/XOR 三个源**没有拿到实测点**，仍是 artix7 表的迁移值
-  （同表同布局已被 o5/o6 + INIT 全面对证，置信度高，但不是实测）。
+### f7 变体：BEL 名与引脚序两坑（均已解决，F7 源实测通过）
+1. **BEL 名错误**：`BEL F7MUX` 在 7 系列 SLICE 里不存在（12-610 CRITICAL WARNING，但流程继续、
+   布局被放开——这就是"约束失效"的根因）。真实名是 **F7AMUX**（A/B LUT 对）或 F7BMUX（C/D 对）。
+2. **MUXF7 引脚序**（12-1408 Cannot set bel ... Conflicting nets for physical connection A6LUT_O6）：
+   RTL 里 `I0(oa), I1(ob)` 与物理相反——**I0 必须接 B6LUT.O6，I1 接 A6LUT.O6**，交换后 0 critical warning。
+
+f7c（BEL F7AMUX + 引脚交换）解码结果：AFFMUX 在 (f=31746, w=40) **只有 bit0 置位** =
+AX(0100) → F7(1100) 恰好只翻 b0，**与 artix7 表完全一致（30_0+30_1）**。
+→ AFFMUX 六源里 **AX/O5/O6/F7 四个有实测点**，CY/XOR 仍为表迁移值（需 CARRY4 设计）。
 
 ## 遗留
 - 想实测 F7 源需找到 2017.2 里 MUXF7 的合法 BEL 名（或用 LUT6_2 隐式产生 F7 结构）；
