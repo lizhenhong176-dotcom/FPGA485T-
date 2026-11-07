@@ -1,0 +1,289 @@
+{
+  "experiment_id": "T21_BEL_INVARIANCE_1157",
+  "date": "2026-11-06",
+  "env": {
+    "host": "fpga (WSL Ubuntu, Vivado 2017.2)",
+    "vivado": "2017.2"
+  },
+  "part_declared": "xc7vx485tffg1157-3",
+  "diff_semantics": "PURE",
+  "builds": [
+    {
+      "build_id": "A6_X12Y20_z",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "A6_X12Y20_r",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hdeadbeefcafebabe",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "B6_X12Y20_z",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "B6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.B6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "B6_X12Y20_r",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "B6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hdeadbeefcafebabe",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.B6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "C6_X12Y20_z",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "C6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.C6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "C6_X12Y20_r",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "C6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hdeadbeefcafebabe",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.C6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "D6_X12Y20_z",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "D6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.D6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "D6_X12Y20_r",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "D6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hdeadbeefcafebabe",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.D6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "A6_X12Y21_z",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y21",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y21",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "A6_X12Y21_r",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y21",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hdeadbeefcafebabe",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y21",
+        "bel": "SLICEM.A6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "A6_X12Y20_z2",
+      "role": "negative_control",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    }
+  ],
+  "self_check": {
+    "predicted_n": 46,
+    "actual_n": 46,
+    "missing": 0,
+    "extra": 0,
+    "negative_control_diff_frames": 0,
+    "content_bits": 46,
+    "ecc_bits": 14,
+    "unexplained_frames": 0,
+    "unexplained_bits": 0,
+    "unexplained_ranges": []
+  },
+  "cross_check": {
+    "batch": "T19/T20 闭式公式（ffg1761-2 批次 + T21 本批）",
+    "script": "v7re/steps/T19_LOCKED_INIT_MAP.md 闭式公式",
+    "builds": 4,
+    "agree": 4,
+    "disagree": []
+  },
+  "conclusion_level": "verified",
+  "notes": "四个 LUT（A/B/C/D 6LUT）在 INIT 0 -> 0xDEADBEEFCAFEBABE 下各 46 个内容位，集合级 missing=0/extra=0；A/B 用 word 40、C/D 用 word 41；B/D 的位基比 A/C 高 16；X12Y21 与 X12Y20 归一化后完全相同（仅 word 40 vs 42）。 负对照 A6_X12Y20_z2 与 A6_X12Y20_z 差分格数=0。",
+  "parts_allowed": [
+    "xc7vx485tffg1157-3"
+  ]
+}

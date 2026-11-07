@@ -1,0 +1,133 @@
+{
+  "experiment_id": "T20_PART_PAIR",
+  "date": "2026-11-06",
+  "env": {
+    "host": "fpga (WSL Ubuntu, Vivado 2017.2)",
+    "vivado": "2017.2"
+  },
+  "part_declared": "xc7vx485tffg1157-3",
+  "diff_semantics": "PURE",
+  "builds": [
+    {
+      "build_id": "b0_1157",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "b0b_1157",
+      "role": "negative_control",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "r_1157",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hDEADBEEFCAFEBABE",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "64'hDEADBEEFCAFEBABE",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "r_1761",
+      "role": "variant",
+      "part": "xc7vx485tffg1761-2",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hDEADBEEFCAFEBABE",
+      "rb": {
+        "part": "xc7vx485tffg1761-2",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "64'hDEADBEEFCAFEBABE",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    }
+  ],
+  "self_check": {
+    "predicted_n": 46,
+    "actual_n": 46,
+    "missing": 0,
+    "extra": 0,
+    "negative_control_diff_frames": 0,
+    "content_bits": 40,
+    "ecc_bits": 766,
+    "unexplained_frames": 133,
+    "unexplained_bits": 1210,
+    "unexplained_ranges": [
+      "27189-32607"
+    ]
+  },
+  "cross_check": {
+    "batch": "T19_closed_form_from_T17_locked",
+    "script": "闭式公式 vs 本次独立构建差分",
+    "builds": 2,
+    "agree": 2,
+    "disagree": []
+  },
+  "attribution": "",
+  "coverage_exclusion": "本结论不覆盖 part_pair 的 133 帧 / 1210 位（word50 766 位 + word40 40 位）：两封装下未约束端口 a0..a5/o 的默认 IOB 分配不同所致【推断】，未做归因实验；CLB INIT 帧 31784-31787 两封装逐字节相同，故该差异不影响 INIT 映射结论。",
+  "conclusion_level": "unverified",
+  "notes": "part_zero / part_rand 两次差分帧集合完全相同，说明差异由封装默认 IOB 决定而非 INIT。",
+  "parts_allowed": [
+    "xc7vx485tffg1157-3",
+    "xc7vx485tffg1761-2"
+  ]
+}

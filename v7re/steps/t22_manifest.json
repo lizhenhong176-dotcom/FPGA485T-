@@ -1,0 +1,105 @@
+{
+  "experiment_id": "T22_ROW_BOUNDARY_1157",
+  "date": "2026-11-07",
+  "env": {
+    "host": "fpga (WSL Ubuntu, Vivado 2017.2)",
+    "vivado": "2017.2"
+  },
+  "part_declared": "xc7vx485tffg1157-3",
+  "diff_semantics": "PURE",
+  "builds": [
+    {
+      "build_id": "a0_y26",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y26",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y26",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "ar_y26",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y26",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hDEADBEEFCAFEBABE",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y26",
+        "bel": "SLICEM.A6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "a0b_y26",
+      "role": "negative_control",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y26",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y26",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    }
+  ],
+  "self_check": {
+    "predicted_n": 46,
+    "actual_n": 46,
+    "missing": 0,
+    "extra": 0,
+    "negative_control_diff_frames": 0,
+    "content_bits": 46,
+    "ecc_bits": 14,
+    "unexplained_frames": 0,
+    "unexplained_bits": 0,
+    "unexplained_ranges": []
+  },
+  "cross_check": {
+    "batch": "T19_closed_form_shifted_word53",
+    "script": "step03_pip/t22_crosscheck.py",
+    "builds": 1,
+    "agree": 1,
+    "disagree": []
+  },
+  "conclusion_level": "verified",
+  "notes": "SLICE_X12Y26 (Y%50=26) A6LUT INIT 0 -> 0xDEADBEEFCAFEBABE：4 帧 31784..31787，内容位全部落在 word 53 的 bit 0..15（46 位），word 50 有 14 位 ECC；word 52 未被触碰，验证 word = 2*(Y%50) 且 >=50 时 +1 让开 ECC 字的规则。负对照差分 0 帧。",
+  "parts_allowed": [
+    "xc7vx485tffg1157-3"
+  ]
+}

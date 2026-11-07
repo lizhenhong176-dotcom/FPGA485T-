@@ -1,0 +1,223 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "bitstream differential experiment manifest",
+  "type": "object",
+  "required": [
+    "experiment_id",
+    "date",
+    "part_declared",
+    "diff_semantics",
+    "builds",
+    "self_check",
+    "cross_check",
+    "conclusion_level"
+  ],
+  "properties": {
+    "experiment_id": {
+      "type": "string",
+      "description": "实验编号，如 T20_PART_PAIR"
+    },
+    "date": {
+      "type": "string"
+    },
+    "env": {
+      "type": "object",
+      "properties": {
+        "host": {
+          "type": "string"
+        },
+        "vivado": {
+          "type": "string"
+        }
+      }
+    },
+    "part_declared": {
+      "type": "string",
+      "description": "声明的器件 part；所有 build 的 part 必须与之一致"
+    },
+    "diff_semantics": {
+      "enum": [
+        "PURE",
+        "XOR",
+        "FAM"
+      ],
+      "description": "差分语义，必须显式声明"
+    },
+    "builds": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "build_id",
+          "part",
+          "site",
+          "bel",
+          "lock_pins",
+          "init",
+          "rb",
+          "role"
+        ],
+        "properties": {
+          "build_id": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "baseline",
+              "variant",
+              "negative_control"
+            ]
+          },
+          "part": {
+            "type": "string"
+          },
+          "site": {
+            "type": "string"
+          },
+          "bel": {
+            "type": "string"
+          },
+          "lock_pins": {
+            "type": "object",
+            "description": "如 {I0:A1,...,I5:A6}；必须显式给出"
+          },
+          "init": {
+            "type": "string",
+            "description": "如 64'h0 / 64'hDEADBEEFCAFEBABE"
+          },
+          "rb": {
+            "type": "object",
+            "required": [
+              "part",
+              "site",
+              "bel",
+              "init",
+              "lock"
+            ],
+            "properties": {
+              "part": {
+                "type": "string"
+              },
+              "site": {
+                "type": "string"
+              },
+              "bel": {
+                "type": "string"
+              },
+              "init": {
+                "type": "string"
+              },
+              "lock": {
+                "type": "string"
+              }
+            }
+          },
+          "bitstream_sha256": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "self_check": {
+      "type": "object",
+      "required": [
+        "predicted_n",
+        "actual_n",
+        "missing",
+        "extra",
+        "negative_control_diff_frames"
+      ],
+      "properties": {
+        "predicted_n": {
+          "type": "integer"
+        },
+        "actual_n": {
+          "type": "integer"
+        },
+        "missing": {
+          "type": "integer"
+        },
+        "extra": {
+          "type": "integer"
+        },
+        "negative_control_diff_frames": {
+          "type": "integer"
+        },
+        "content_bits": {
+          "type": "integer"
+        },
+        "ecc_bits": {
+          "type": "integer",
+          "description": "word 50 变化位数，单独计数"
+        },
+        "unexplained_frames": {
+          "type": "integer"
+        },
+        "unexplained_bits": {
+          "type": "integer"
+        },
+        "unexplained_ranges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cross_check": {
+      "type": "object",
+      "required": [
+        "batch",
+        "builds",
+        "agree",
+        "disagree"
+      ],
+      "properties": {
+        "batch": {
+          "type": "string",
+          "description": "交叉批次名；必须由另一脚本、另一批独立构建生成"
+        },
+        "script": {
+          "type": "string"
+        },
+        "builds": {
+          "type": "integer"
+        },
+        "agree": {
+          "type": "integer"
+        },
+        "disagree": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "attribution": {
+      "type": "string",
+      "description": "对未解释差异的归因实验结论"
+    },
+    "coverage_exclusion": {
+      "type": "string",
+      "description": "本结论不覆盖的帧/位区间"
+    },
+    "conclusion_level": {
+      "enum": [
+        "verified",
+        "unverified"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "parts_allowed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "跨封装/跨器件实验允许的 part 白名单（含 part_declared）；默认只允许 part_declared。封装对拍实验没有它会被校验器判 FAIL。"
+    }
+  }
+}

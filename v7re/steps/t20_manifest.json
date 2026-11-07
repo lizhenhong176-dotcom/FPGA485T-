@@ -1,0 +1,129 @@
+{
+  "experiment_id": "T20_INIT_LOCKED_1157",
+  "date": "2026-11-06",
+  "env": {
+    "host": "fpga (WSL Ubuntu, Vivado 2017.2)",
+    "vivado": "2017.2"
+  },
+  "part_declared": "xc7vx485tffg1157-3",
+  "diff_semantics": "PURE",
+  "builds": [
+    {
+      "build_id": "b0_1157",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "b0b_1157",
+      "role": "negative_control",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "r_1157",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hDEADBEEFCAFEBABE",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "64'hDEADBEEFCAFEBABE",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "r_1761",
+      "role": "variant",
+      "part": "xc7vx485tffg1761-2",
+      "site": "SLICE_X12Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hDEADBEEFCAFEBABE",
+      "rb": {
+        "part": "xc7vx485tffg1761-2",
+        "site": "SLICE_X12Y20",
+        "bel": "SLICEM.A6LUT",
+        "init": "64'hDEADBEEFCAFEBABE",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    }
+  ],
+  "self_check": {
+    "predicted_n": 46,
+    "actual_n": 46,
+    "missing": 0,
+    "extra": 0,
+    "negative_control_diff_frames": 0,
+    "content_bits": 46,
+    "ecc_bits": 14,
+    "unexplained_frames": 0,
+    "unexplained_bits": 0,
+    "unexplained_ranges": []
+  },
+  "cross_check": {
+    "batch": "T19_closed_form_from_T17_locked",
+    "script": "v7re/steps/T19_LOCKED_INIT_MAP.md 闭式公式 (frame/word/bit)",
+    "builds": 2,
+    "agree": 2,
+    "disagree": []
+  },
+  "conclusion_level": "verified",
+  "notes": "INIT 0 -> 0xDEADBEEFCAFEBABE 差分 60 位 = word40 的 46 位 + word50 的 14 位 ECC；46 位与 T19 公式预测集合完全相等；ffg1157-3 与 ffg1761-2 两边结构相同。",
+  "parts_allowed": [
+    "xc7vx485tffg1157-3",
+    "xc7vx485tffg1761-2"
+  ]
+}

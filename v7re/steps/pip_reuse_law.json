@@ -1,0 +1,6635 @@
+{
+ "device": "xc7vx485t",
+ "tile_type": "INT_L",
+ "version": 1,
+ "law": {
+  "row_frames": "16 + row, row in 0..5",
+  "col_frames": "frame 25-i for bit i (LSB=0) of colcode",
+  "row_phase": {
+   "0": "P",
+   "1": "P",
+   "2": "S",
+   "3": "S",
+   "4": "P",
+   "5": "P"
+  },
+  "grid": "row 0..5 x colcode {1,2,7,11}"
+ },
+ "families": {
+  "BYP_ALT0": {
+   "pair": 6,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SW2END0": [
+     0,
+     1
+    ],
+    "SS2END0": [
+     0,
+     2
+    ],
+    "NW2END0": [
+     1,
+     1
+    ],
+    "WW2END_N0_3": [
+     1,
+     2
+    ],
+    "WR1END0": [
+     0,
+     7
+    ],
+    "SE2END0": [
+     2,
+     1
+    ],
+    "EE2END0": [
+     2,
+     2
+    ],
+    "EL1END0": [
+     0,
+     11
+    ],
+    "ER1END0": [
+     1,
+     7
+    ],
+    "NE2END0": [
+     3,
+     1
+    ],
+    "NN2END0": [
+     3,
+     2
+    ],
+    "SR1END_N3_3": [
+     2,
+     7
+    ],
+    "WL1END0": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L22": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "NL1END0": [
+     2,
+     11
+    ],
+    "NR1END0": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_3": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L0": [
+     4,
+     7
+    ],
+    "SL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L12": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT1": {
+   "pair": 14,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NE2END1": [
+     0,
+     1
+    ],
+    "NN2END1": [
+     0,
+     2
+    ],
+    "SE2END0": [
+     1,
+     1
+    ],
+    "EE2END0": [
+     1,
+     2
+    ],
+    "ER1END0": [
+     0,
+     7
+    ],
+    "NW2END1": [
+     2,
+     1
+    ],
+    "WW2END0": [
+     2,
+     2
+    ],
+    "WL1END0": [
+     0,
+     11
+    ],
+    "WR1END1": [
+     1,
+     7
+    ],
+    "SW2END0": [
+     3,
+     1
+    ],
+    "SS2END0": [
+     3,
+     2
+    ],
+    "SR1BEG_S0": [
+     2,
+     7
+    ],
+    "EL1END1": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L18": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "NL1END1": [
+     2,
+     11
+    ],
+    "NR1END0": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L4": [
+     4,
+     7
+    ],
+    "SL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L8": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT2": {
+   "pair": 6,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SW2END2": [
+     0,
+     1
+    ],
+    "SS2END2": [
+     0,
+     2
+    ],
+    "NW2END2": [
+     1,
+     1
+    ],
+    "WW2END1": [
+     1,
+     2
+    ],
+    "WR1END2": [
+     0,
+     7
+    ],
+    "SE2END2": [
+     2,
+     1
+    ],
+    "EE2END2": [
+     2,
+     2
+    ],
+    "EL1END2": [
+     0,
+     11
+    ],
+    "ER1END2": [
+     1,
+     7
+    ],
+    "NE2END2": [
+     3,
+     1
+    ],
+    "NN2END2": [
+     3,
+     2
+    ],
+    "SR1END1": [
+     2,
+     7
+    ],
+    "WL1END2": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L20": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1END2": [
+     2,
+     11
+    ],
+    "NR1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L2": [
+     4,
+     7
+    ],
+    "SL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L14": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT3": {
+   "pair": 14,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NE2END3": [
+     0,
+     1
+    ],
+    "NN2END3": [
+     0,
+     2
+    ],
+    "SE2END2": [
+     1,
+     1
+    ],
+    "EE2END2": [
+     1,
+     2
+    ],
+    "ER1END2": [
+     0,
+     7
+    ],
+    "NW2END3": [
+     2,
+     1
+    ],
+    "WW2END2": [
+     2,
+     2
+    ],
+    "WL1END2": [
+     0,
+     11
+    ],
+    "WR1END3": [
+     1,
+     7
+    ],
+    "SW2END2": [
+     3,
+     1
+    ],
+    "SS2END2": [
+     3,
+     2
+    ],
+    "EL1END3": [
+     1,
+     11
+    ],
+    "SR1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L16": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     2,
+     11
+    ],
+    "NR1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L6": [
+     4,
+     7
+    ],
+    "SL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L10": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT4": {
+   "pair": 22,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SW2END1": [
+     0,
+     1
+    ],
+    "SS2END1": [
+     0,
+     2
+    ],
+    "NW2END1": [
+     1,
+     1
+    ],
+    "WW2END0": [
+     1,
+     2
+    ],
+    "WR1END1": [
+     0,
+     7
+    ],
+    "SE2END1": [
+     2,
+     1
+    ],
+    "EE2END1": [
+     2,
+     2
+    ],
+    "EL1END1": [
+     0,
+     11
+    ],
+    "ER1END1": [
+     1,
+     7
+    ],
+    "NE2END1": [
+     3,
+     1
+    ],
+    "NN2END1": [
+     3,
+     2
+    ],
+    "SR1BEG_S0": [
+     2,
+     7
+    ],
+    "WL1END1": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L19": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "NL1END1": [
+     2,
+     11
+    ],
+    "NR1END1": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L5": [
+     4,
+     7
+    ],
+    "SL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L9": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT5": {
+   "pair": 30,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NE2END2": [
+     0,
+     1
+    ],
+    "NN2END2": [
+     0,
+     2
+    ],
+    "SE2END1": [
+     1,
+     1
+    ],
+    "EE2END1": [
+     1,
+     2
+    ],
+    "ER1END1": [
+     0,
+     7
+    ],
+    "NW2END2": [
+     2,
+     1
+    ],
+    "WW2END1": [
+     2,
+     2
+    ],
+    "WL1END1": [
+     0,
+     11
+    ],
+    "WR1END2": [
+     1,
+     7
+    ],
+    "SW2END1": [
+     3,
+     1
+    ],
+    "SS2END1": [
+     3,
+     2
+    ],
+    "EL1END2": [
+     1,
+     11
+    ],
+    "SR1END1": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L23": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "NL1END2": [
+     2,
+     11
+    ],
+    "NR1END1": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L1": [
+     4,
+     7
+    ],
+    "SL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L13": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT6": {
+   "pair": 22,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SW2END3": [
+     0,
+     1
+    ],
+    "SS2END3": [
+     0,
+     2
+    ],
+    "NW2END3": [
+     1,
+     1
+    ],
+    "WW2END2": [
+     1,
+     2
+    ],
+    "WR1END3": [
+     0,
+     7
+    ],
+    "SE2END3": [
+     2,
+     1
+    ],
+    "EE2END3": [
+     2,
+     2
+    ],
+    "EL1END3": [
+     0,
+     11
+    ],
+    "ER1END3": [
+     1,
+     7
+    ],
+    "NE2END3": [
+     3,
+     1
+    ],
+    "NN2END3": [
+     3,
+     2
+    ],
+    "SR1END2": [
+     2,
+     7
+    ],
+    "WL1END3": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L17": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     2,
+     11
+    ],
+    "NR1END3": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE3": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L7": [
+     4,
+     7
+    ],
+    "SL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L11": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     11
+    ]
+   }
+  },
+  "BYP_ALT7": {
+   "pair": 30,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NE2END_S3_0": [
+     0,
+     1
+    ],
+    "NN2END_S2_0": [
+     0,
+     2
+    ],
+    "SE2END3": [
+     1,
+     1
+    ],
+    "EE2END3": [
+     1,
+     2
+    ],
+    "ER1END3": [
+     0,
+     7
+    ],
+    "NW2END_S0_0": [
+     2,
+     1
+    ],
+    "WW2END3": [
+     2,
+     2
+    ],
+    "WR1END_S1_0": [
+     1,
+     7
+    ],
+    "WL1END3": [
+     0,
+     11
+    ],
+    "SW2END3": [
+     3,
+     1
+    ],
+    "SS2END3": [
+     3,
+     2
+    ],
+    "EL1END_S3_0": [
+     1,
+     11
+    ],
+    "SR1END3": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L21": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1END_S3_0": [
+     2,
+     11
+    ],
+    "NR1END3": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE6": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L3": [
+     4,
+     7
+    ],
+    "SL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L15": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT0": {
+   "pair": 0,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "WW2END_N0_3": [
+     0,
+     1
+    ],
+    "NW2END0": [
+     0,
+     2
+    ],
+    "SS2END_N0_3": [
+     1,
+     1
+    ],
+    "SW2END_N0_3": [
+     1,
+     2
+    ],
+    "WL1END_N1_3": [
+     0,
+     7
+    ],
+    "NN2END0": [
+     2,
+     1
+    ],
+    "NE2END0": [
+     2,
+     2
+    ],
+    "ER1END_N3_3": [
+     0,
+     11
+    ],
+    "EL1END0": [
+     1,
+     7
+    ],
+    "EE2END0": [
+     3,
+     1
+    ],
+    "SE2END0": [
+     3,
+     2
+    ],
+    "SL1END0": [
+     2,
+     7
+    ],
+    "WR1END0": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_2": [
+     4,
+     2
+    ],
+    "NL1END0": [
+     3,
+     7
+    ],
+    "NR1END0": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L22": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE4": [
+     4,
+     7
+    ],
+    "SR1END_N3_3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L12": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L0": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT1": {
+   "pair": 16,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "WW2END2": [
+     0,
+     1
+    ],
+    "NW2END3": [
+     0,
+     2
+    ],
+    "SS2END2": [
+     1,
+     1
+    ],
+    "SW2END2": [
+     1,
+     2
+    ],
+    "WL1END2": [
+     0,
+     7
+    ],
+    "NN2END3": [
+     2,
+     1
+    ],
+    "NE2END3": [
+     2,
+     2
+    ],
+    "EL1END3": [
+     1,
+     7
+    ],
+    "ER1END2": [
+     0,
+     11
+    ],
+    "EE2END3": [
+     3,
+     1
+    ],
+    "SE2END3": [
+     3,
+     2
+    ],
+    "SL1END3": [
+     2,
+     7
+    ],
+    "WR1END3": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE2": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     3,
+     7
+    ],
+    "NR1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L17": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "SR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L11": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L7": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT2": {
+   "pair": 16,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "WW2END0": [
+     0,
+     1
+    ],
+    "NW2END1": [
+     0,
+     2
+    ],
+    "SS2END0": [
+     1,
+     1
+    ],
+    "SW2END0": [
+     1,
+     2
+    ],
+    "WL1END0": [
+     0,
+     7
+    ],
+    "NN2END1": [
+     2,
+     1
+    ],
+    "NE2END1": [
+     2,
+     2
+    ],
+    "EL1END1": [
+     1,
+     7
+    ],
+    "ER1END0": [
+     0,
+     11
+    ],
+    "EE2END1": [
+     3,
+     1
+    ],
+    "SE2END1": [
+     3,
+     2
+    ],
+    "SL1END1": [
+     2,
+     7
+    ],
+    "WR1END1": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     2
+    ],
+    "NL1END1": [
+     3,
+     7
+    ],
+    "NR1END1": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L19": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     7
+    ],
+    "SR1BEG_S0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L9": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L5": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT3": {
+   "pair": 24,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "EE2END3": [
+     0,
+     1
+    ],
+    "SE2END3": [
+     0,
+     2
+    ],
+    "NN2END3": [
+     1,
+     1
+    ],
+    "NE2END3": [
+     1,
+     2
+    ],
+    "EL1END3": [
+     0,
+     7
+    ],
+    "SS2END3": [
+     2,
+     1
+    ],
+    "SW2END3": [
+     2,
+     2
+    ],
+    "WL1END3": [
+     1,
+     7
+    ],
+    "WR1END3": [
+     0,
+     11
+    ],
+    "WW2END3": [
+     3,
+     1
+    ],
+    "NW2END_S0_0": [
+     3,
+     2
+    ],
+    "ER1END3": [
+     1,
+     11
+    ],
+    "SL1END3": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE3": [
+     4,
+     2
+    ],
+    "NL1END_S3_0": [
+     3,
+     7
+    ],
+    "NR1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L21": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     7
+    ],
+    "SR1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L15": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L3": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT4": {
+   "pair": 8,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "EE2END0": [
+     0,
+     1
+    ],
+    "SE2END0": [
+     0,
+     2
+    ],
+    "NN2END0": [
+     1,
+     1
+    ],
+    "NE2END0": [
+     1,
+     2
+    ],
+    "EL1END0": [
+     0,
+     7
+    ],
+    "SS2END0": [
+     2,
+     1
+    ],
+    "SW2END0": [
+     2,
+     2
+    ],
+    "WL1END0": [
+     1,
+     7
+    ],
+    "WR1END0": [
+     0,
+     11
+    ],
+    "WW2END0": [
+     3,
+     1
+    ],
+    "NW2END1": [
+     3,
+     2
+    ],
+    "ER1END0": [
+     1,
+     11
+    ],
+    "SL1END0": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE_N3_3": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "NL1END1": [
+     3,
+     7
+    ],
+    "NR1END0": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L18": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     7
+    ],
+    "SR1BEG_S0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L8": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L4": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT5": {
+   "pair": 8,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "EE2END2": [
+     0,
+     1
+    ],
+    "SE2END2": [
+     0,
+     2
+    ],
+    "NN2END2": [
+     1,
+     1
+    ],
+    "NE2END2": [
+     1,
+     2
+    ],
+    "EL1END2": [
+     0,
+     7
+    ],
+    "SS2END2": [
+     2,
+     1
+    ],
+    "SW2END2": [
+     2,
+     2
+    ],
+    "WL1END2": [
+     1,
+     7
+    ],
+    "WR1END2": [
+     0,
+     11
+    ],
+    "WW2END2": [
+     3,
+     1
+    ],
+    "NW2END3": [
+     3,
+     2
+    ],
+    "ER1END2": [
+     1,
+     11
+    ],
+    "SL1END2": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     3,
+     7
+    ],
+    "NR1END2": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L16": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "SR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L10": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L6": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT6": {
+   "pair": 24,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "EE2END1": [
+     0,
+     1
+    ],
+    "SE2END1": [
+     0,
+     2
+    ],
+    "NN2END1": [
+     1,
+     1
+    ],
+    "NE2END1": [
+     1,
+     2
+    ],
+    "EL1END1": [
+     0,
+     7
+    ],
+    "SS2END1": [
+     2,
+     1
+    ],
+    "SW2END1": [
+     2,
+     2
+    ],
+    "WL1END1": [
+     1,
+     7
+    ],
+    "WR1END1": [
+     0,
+     11
+    ],
+    "WW2END1": [
+     3,
+     1
+    ],
+    "NW2END2": [
+     3,
+     2
+    ],
+    "ER1END1": [
+     1,
+     11
+    ],
+    "SL1END1": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "NL1END2": [
+     3,
+     7
+    ],
+    "NR1END1": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L23": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "SR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L13": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L1": [
+     5,
+     11
+    ]
+   }
+  },
+  "FAN_ALT7": {
+   "pair": 0,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "WW2END1": [
+     0,
+     1
+    ],
+    "NW2END2": [
+     0,
+     2
+    ],
+    "SS2END1": [
+     1,
+     1
+    ],
+    "SW2END1": [
+     1,
+     2
+    ],
+    "WL1END1": [
+     0,
+     7
+    ],
+    "NN2END2": [
+     2,
+     1
+    ],
+    "NE2END2": [
+     2,
+     2
+    ],
+    "EL1END2": [
+     1,
+     7
+    ],
+    "ER1END1": [
+     0,
+     11
+    ],
+    "EE2END2": [
+     3,
+     1
+    ],
+    "SE2END2": [
+     3,
+     2
+    ],
+    "SL1END2": [
+     2,
+     7
+    ],
+    "WR1END2": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     2
+    ],
+    "NL1END2": [
+     3,
+     7
+    ],
+    "NR1END2": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L20": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "SR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L14": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L2": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L0": {
+   "pair": 0,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NE2END0": [
+     0,
+     1
+    ],
+    "NN2END0": [
+     0,
+     2
+    ],
+    "SE2END0": [
+     1,
+     1
+    ],
+    "EE2END0": [
+     1,
+     2
+    ],
+    "NR1END0": [
+     0,
+     7
+    ],
+    "NW2END0": [
+     2,
+     1
+    ],
+    "WW2END_N0_3": [
+     2,
+     2
+    ],
+    "SR1END_N3_3": [
+     1,
+     7
+    ],
+    "SL1END0": [
+     0,
+     11
+    ],
+    "SW2END_N0_3": [
+     3,
+     1
+    ],
+    "SS2END_N0_3": [
+     3,
+     2
+    ],
+    "ER1END_N3_3": [
+     2,
+     7
+    ],
+    "NL1END0": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L22": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "WL1END_N1_3": [
+     2,
+     11
+    ],
+    "WR1END0": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L0": [
+     4,
+     7
+    ],
+    "EL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L12": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L1": {
+   "pair": 8,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SW2END0": [
+     0,
+     1
+    ],
+    "SS2END0": [
+     0,
+     2
+    ],
+    "NW2END1": [
+     1,
+     1
+    ],
+    "WW2END0": [
+     1,
+     2
+    ],
+    "NR1END0": [
+     0,
+     7
+    ],
+    "SE2END0": [
+     2,
+     1
+    ],
+    "EE2END0": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     1,
+     7
+    ],
+    "SL1END0": [
+     0,
+     11
+    ],
+    "NE2END0": [
+     3,
+     1
+    ],
+    "NN2END0": [
+     3,
+     2
+    ],
+    "NL1END1": [
+     1,
+     11
+    ],
+    "WR1END0": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L18": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "EL1END0": [
+     2,
+     11
+    ],
+    "ER1END0": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_3": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L4": [
+     4,
+     7
+    ],
+    "WL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L8": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L10": {
+   "pair": 18,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "SS2END0": [
+     0,
+     1
+    ],
+    "SW2END0": [
+     0,
+     2
+    ],
+    "NN2END1": [
+     1,
+     1
+    ],
+    "NE2END1": [
+     1,
+     2
+    ],
+    "NL1END1": [
+     0,
+     7
+    ],
+    "EE2END1": [
+     2,
+     1
+    ],
+    "SE2END1": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     0,
+     11
+    ],
+    "WL1END0": [
+     1,
+     7
+    ],
+    "WW2END0": [
+     3,
+     1
+    ],
+    "NW2END1": [
+     3,
+     2
+    ],
+    "EL1END1": [
+     2,
+     7
+    ],
+    "ER1END0": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     2
+    ],
+    "SL1END1": [
+     3,
+     7
+    ],
+    "WR1END1": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L19": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "NR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L9": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L5": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L11": {
+   "pair": 26,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "NN2END1": [
+     0,
+     1
+    ],
+    "NE2END1": [
+     0,
+     2
+    ],
+    "SS2END1": [
+     1,
+     1
+    ],
+    "SW2END1": [
+     1,
+     2
+    ],
+    "NL1END2": [
+     0,
+     7
+    ],
+    "WW2END1": [
+     2,
+     1
+    ],
+    "NW2END2": [
+     2,
+     2
+    ],
+    "EL1END1": [
+     1,
+     7
+    ],
+    "SR1END1": [
+     0,
+     11
+    ],
+    "EE2END1": [
+     3,
+     1
+    ],
+    "SE2END1": [
+     3,
+     2
+    ],
+    "WL1END1": [
+     2,
+     7
+    ],
+    "WR1END1": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "ER1END1": [
+     2,
+     11
+    ],
+    "SL1END1": [
+     3,
+     7
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L23": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "NR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L13": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L12": {
+   "pair": 2,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "SS2END1": [
+     0,
+     1
+    ],
+    "SW2END1": [
+     0,
+     2
+    ],
+    "NN2END2": [
+     1,
+     1
+    ],
+    "NE2END2": [
+     1,
+     2
+    ],
+    "NL1END2": [
+     0,
+     7
+    ],
+    "EE2END2": [
+     2,
+     1
+    ],
+    "SE2END2": [
+     2,
+     2
+    ],
+    "SR1END1": [
+     0,
+     11
+    ],
+    "WL1END1": [
+     1,
+     7
+    ],
+    "WW2END1": [
+     3,
+     1
+    ],
+    "NW2END2": [
+     3,
+     2
+    ],
+    "EL1END2": [
+     2,
+     7
+    ],
+    "ER1END1": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     2
+    ],
+    "SL1END2": [
+     3,
+     7
+    ],
+    "WR1END2": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L20": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "NR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L14": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L2": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L13": {
+   "pair": 10,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "NN2END2": [
+     0,
+     1
+    ],
+    "NE2END2": [
+     0,
+     2
+    ],
+    "SS2END2": [
+     1,
+     1
+    ],
+    "SW2END2": [
+     1,
+     2
+    ],
+    "NL1BEG_N3": [
+     0,
+     7
+    ],
+    "WW2END2": [
+     2,
+     1
+    ],
+    "NW2END3": [
+     2,
+     2
+    ],
+    "EL1END2": [
+     1,
+     7
+    ],
+    "SR1END2": [
+     0,
+     11
+    ],
+    "EE2END2": [
+     3,
+     1
+    ],
+    "SE2END2": [
+     3,
+     2
+    ],
+    "WL1END2": [
+     2,
+     7
+    ],
+    "WR1END2": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     2
+    ],
+    "ER1END2": [
+     2,
+     11
+    ],
+    "SL1END2": [
+     3,
+     7
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L16": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "NR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L10": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L6": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L14": {
+   "pair": 18,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "SS2END2": [
+     0,
+     1
+    ],
+    "SW2END2": [
+     0,
+     2
+    ],
+    "NN2END3": [
+     1,
+     1
+    ],
+    "NE2END3": [
+     1,
+     2
+    ],
+    "NL1BEG_N3": [
+     0,
+     7
+    ],
+    "EE2END3": [
+     2,
+     1
+    ],
+    "SE2END3": [
+     2,
+     2
+    ],
+    "SR1END2": [
+     0,
+     11
+    ],
+    "WL1END2": [
+     1,
+     7
+    ],
+    "WW2END2": [
+     3,
+     1
+    ],
+    "NW2END3": [
+     3,
+     2
+    ],
+    "EL1END3": [
+     2,
+     7
+    ],
+    "ER1END2": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE2": [
+     4,
+     2
+    ],
+    "SL1END3": [
+     3,
+     7
+    ],
+    "WR1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L17": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     7
+    ],
+    "NR1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L11": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L7": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L15": {
+   "pair": 26,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "NN2END3": [
+     0,
+     1
+    ],
+    "NE2END3": [
+     0,
+     2
+    ],
+    "SS2END3": [
+     1,
+     1
+    ],
+    "SW2END3": [
+     1,
+     2
+    ],
+    "NL1END_S3_0": [
+     0,
+     7
+    ],
+    "WW2END3": [
+     2,
+     1
+    ],
+    "NW2END_S0_0": [
+     2,
+     2
+    ],
+    "EL1END3": [
+     1,
+     7
+    ],
+    "SR1END3": [
+     0,
+     11
+    ],
+    "EE2END3": [
+     3,
+     1
+    ],
+    "SE2END3": [
+     3,
+     2
+    ],
+    "WL1END3": [
+     2,
+     7
+    ],
+    "WR1END3": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE3": [
+     4,
+     2
+    ],
+    "ER1END3": [
+     2,
+     11
+    ],
+    "SL1END3": [
+     3,
+     7
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L21": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     7
+    ],
+    "NR1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L15": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L16": {
+   "pair": 2,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SE2END0": [
+     0,
+     1
+    ],
+    "EE2END0": [
+     0,
+     2
+    ],
+    "NW2END0": [
+     1,
+     1
+    ],
+    "WW2END_N0_3": [
+     1,
+     2
+    ],
+    "WR1END0": [
+     0,
+     7
+    ],
+    "SW2END_N0_3": [
+     2,
+     1
+    ],
+    "SS2END_N0_3": [
+     2,
+     2
+    ],
+    "EL1END0": [
+     0,
+     11
+    ],
+    "NR1END0": [
+     1,
+     7
+    ],
+    "NE2END0": [
+     3,
+     1
+    ],
+    "NN2END0": [
+     3,
+     2
+    ],
+    "SR1END_N3_3": [
+     2,
+     7
+    ],
+    "SL1END0": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L22": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "ER1END_N3_3": [
+     3,
+     7
+    ],
+    "NL1END0": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE_N3_2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L0": [
+     4,
+     7
+    ],
+    "WL1END_N1_3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L12": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L17": {
+   "pair": 10,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NW2END1": [
+     0,
+     1
+    ],
+    "WW2END0": [
+     0,
+     2
+    ],
+    "SE2END0": [
+     1,
+     1
+    ],
+    "EE2END0": [
+     1,
+     2
+    ],
+    "ER1END0": [
+     0,
+     7
+    ],
+    "NE2END0": [
+     2,
+     1
+    ],
+    "NN2END0": [
+     2,
+     2
+    ],
+    "NR1END0": [
+     1,
+     7
+    ],
+    "WL1END0": [
+     0,
+     11
+    ],
+    "SW2END0": [
+     3,
+     1
+    ],
+    "SS2END0": [
+     3,
+     2
+    ],
+    "SR1BEG_S0": [
+     2,
+     7
+    ],
+    "SL1END0": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L18": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "NL1END1": [
+     2,
+     11
+    ],
+    "WR1END0": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_3": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L4": [
+     4,
+     7
+    ],
+    "EL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L8": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L18": {
+   "pair": 18,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SE2END1": [
+     0,
+     1
+    ],
+    "EE2END1": [
+     0,
+     2
+    ],
+    "NW2END1": [
+     1,
+     1
+    ],
+    "WW2END0": [
+     1,
+     2
+    ],
+    "WR1END1": [
+     0,
+     7
+    ],
+    "SW2END0": [
+     2,
+     1
+    ],
+    "SS2END0": [
+     2,
+     2
+    ],
+    "EL1END1": [
+     0,
+     11
+    ],
+    "NR1END1": [
+     1,
+     7
+    ],
+    "NE2END1": [
+     3,
+     1
+    ],
+    "NN2END1": [
+     3,
+     2
+    ],
+    "SR1BEG_S0": [
+     2,
+     7
+    ],
+    "SL1END1": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L19": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "ER1END0": [
+     3,
+     7
+    ],
+    "NL1END1": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L5": [
+     4,
+     7
+    ],
+    "WL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L9": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L19": {
+   "pair": 26,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NW2END2": [
+     0,
+     1
+    ],
+    "WW2END1": [
+     0,
+     2
+    ],
+    "SE2END1": [
+     1,
+     1
+    ],
+    "EE2END1": [
+     1,
+     2
+    ],
+    "ER1END1": [
+     0,
+     7
+    ],
+    "NE2END1": [
+     2,
+     1
+    ],
+    "NN2END1": [
+     2,
+     2
+    ],
+    "NR1END1": [
+     1,
+     7
+    ],
+    "WL1END1": [
+     0,
+     11
+    ],
+    "SW2END1": [
+     3,
+     1
+    ],
+    "SS2END1": [
+     3,
+     2
+    ],
+    "SL1END1": [
+     1,
+     11
+    ],
+    "SR1END1": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L23": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "NL1END2": [
+     2,
+     11
+    ],
+    "WR1END1": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L1": [
+     4,
+     7
+    ],
+    "EL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L13": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L2": {
+   "pair": 16,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NE2END1": [
+     0,
+     1
+    ],
+    "NN2END1": [
+     0,
+     2
+    ],
+    "SE2END1": [
+     1,
+     1
+    ],
+    "EE2END1": [
+     1,
+     2
+    ],
+    "NR1END1": [
+     0,
+     7
+    ],
+    "NW2END1": [
+     2,
+     1
+    ],
+    "WW2END0": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     1,
+     7
+    ],
+    "SL1END1": [
+     0,
+     11
+    ],
+    "SW2END0": [
+     3,
+     1
+    ],
+    "SS2END0": [
+     3,
+     2
+    ],
+    "ER1END0": [
+     2,
+     7
+    ],
+    "NL1END1": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L19": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "WL1END0": [
+     2,
+     11
+    ],
+    "WR1END1": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L5": [
+     4,
+     7
+    ],
+    "EL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L9": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L20": {
+   "pair": 2,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SE2END2": [
+     0,
+     1
+    ],
+    "EE2END2": [
+     0,
+     2
+    ],
+    "NW2END2": [
+     1,
+     1
+    ],
+    "WW2END1": [
+     1,
+     2
+    ],
+    "WR1END2": [
+     0,
+     7
+    ],
+    "SW2END1": [
+     2,
+     1
+    ],
+    "SS2END1": [
+     2,
+     2
+    ],
+    "EL1END2": [
+     0,
+     11
+    ],
+    "NR1END2": [
+     1,
+     7
+    ],
+    "NE2END2": [
+     3,
+     1
+    ],
+    "NN2END2": [
+     3,
+     2
+    ],
+    "SL1END2": [
+     1,
+     11
+    ],
+    "SR1END1": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L20": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "ER1END1": [
+     3,
+     7
+    ],
+    "NL1END2": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L2": [
+     4,
+     7
+    ],
+    "WL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L14": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L21": {
+   "pair": 10,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NW2END3": [
+     0,
+     1
+    ],
+    "WW2END2": [
+     0,
+     2
+    ],
+    "SE2END2": [
+     1,
+     1
+    ],
+    "EE2END2": [
+     1,
+     2
+    ],
+    "ER1END2": [
+     0,
+     7
+    ],
+    "NE2END2": [
+     2,
+     1
+    ],
+    "NN2END2": [
+     2,
+     2
+    ],
+    "NR1END2": [
+     1,
+     7
+    ],
+    "WL1END2": [
+     0,
+     11
+    ],
+    "SW2END2": [
+     3,
+     1
+    ],
+    "SS2END2": [
+     3,
+     2
+    ],
+    "SL1END2": [
+     1,
+     11
+    ],
+    "SR1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L16": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     2,
+     11
+    ],
+    "WR1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L6": [
+     4,
+     7
+    ],
+    "EL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L10": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L22": {
+   "pair": 18,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SE2END3": [
+     0,
+     1
+    ],
+    "EE2END3": [
+     0,
+     2
+    ],
+    "NW2END3": [
+     1,
+     1
+    ],
+    "WW2END2": [
+     1,
+     2
+    ],
+    "WR1END3": [
+     0,
+     7
+    ],
+    "SW2END2": [
+     2,
+     1
+    ],
+    "SS2END2": [
+     2,
+     2
+    ],
+    "EL1END3": [
+     0,
+     11
+    ],
+    "NR1END3": [
+     1,
+     7
+    ],
+    "NE2END3": [
+     3,
+     1
+    ],
+    "NN2END3": [
+     3,
+     2
+    ],
+    "SL1END3": [
+     1,
+     11
+    ],
+    "SR1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L17": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     2,
+     11
+    ],
+    "ER1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L7": [
+     4,
+     7
+    ],
+    "WL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L11": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L23": {
+   "pair": 26,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NW2END_S0_0": [
+     0,
+     1
+    ],
+    "WW2END3": [
+     0,
+     2
+    ],
+    "SE2END3": [
+     1,
+     1
+    ],
+    "EE2END3": [
+     1,
+     2
+    ],
+    "ER1END3": [
+     0,
+     7
+    ],
+    "NE2END3": [
+     2,
+     1
+    ],
+    "NN2END3": [
+     2,
+     2
+    ],
+    "NR1END3": [
+     1,
+     7
+    ],
+    "WL1END3": [
+     0,
+     11
+    ],
+    "SW2END3": [
+     3,
+     1
+    ],
+    "SS2END3": [
+     3,
+     2
+    ],
+    "SL1END3": [
+     1,
+     11
+    ],
+    "SR1END3": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L21": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "NL1END_S3_0": [
+     2,
+     11
+    ],
+    "WR1END3": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE3": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L3": [
+     4,
+     7
+    ],
+    "EL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L15": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L24": {
+   "pair": 4,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "WW2END_N0_3": [
+     0,
+     1
+    ],
+    "NW2END0": [
+     0,
+     2
+    ],
+    "EE2END0": [
+     1,
+     1
+    ],
+    "SE2END0": [
+     1,
+     2
+    ],
+    "SL1END0": [
+     0,
+     7
+    ],
+    "NN2END0": [
+     2,
+     1
+    ],
+    "NE2END0": [
+     2,
+     2
+    ],
+    "EL1END0": [
+     1,
+     7
+    ],
+    "NR1END0": [
+     0,
+     11
+    ],
+    "SS2END0": [
+     3,
+     1
+    ],
+    "SW2END0": [
+     3,
+     2
+    ],
+    "WL1END0": [
+     2,
+     7
+    ],
+    "WR1END0": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_2": [
+     4,
+     2
+    ],
+    "ER1END0": [
+     2,
+     11
+    ],
+    "NL1END0": [
+     3,
+     7
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L22": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     7
+    ],
+    "SR1END_N3_3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L12": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L0": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L25": {
+   "pair": 12,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "EE2END0": [
+     0,
+     1
+    ],
+    "SE2END0": [
+     0,
+     2
+    ],
+    "WW2END0": [
+     1,
+     1
+    ],
+    "NW2END1": [
+     1,
+     2
+    ],
+    "SL1END0": [
+     0,
+     7
+    ],
+    "SS2END0": [
+     2,
+     1
+    ],
+    "SW2END0": [
+     2,
+     2
+    ],
+    "NR1END0": [
+     0,
+     11
+    ],
+    "WL1END0": [
+     1,
+     7
+    ],
+    "NN2END1": [
+     3,
+     1
+    ],
+    "NE2END1": [
+     3,
+     2
+    ],
+    "EL1END1": [
+     2,
+     7
+    ],
+    "ER1END0": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE_N3_3": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "NL1END1": [
+     3,
+     7
+    ],
+    "WR1END1": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L18": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     7
+    ],
+    "SR1BEG_S0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L8": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L4": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L26": {
+   "pair": 20,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "WW2END0": [
+     0,
+     1
+    ],
+    "NW2END1": [
+     0,
+     2
+    ],
+    "EE2END1": [
+     1,
+     1
+    ],
+    "SE2END1": [
+     1,
+     2
+    ],
+    "SL1END1": [
+     0,
+     7
+    ],
+    "NN2END1": [
+     2,
+     1
+    ],
+    "NE2END1": [
+     2,
+     2
+    ],
+    "EL1END1": [
+     1,
+     7
+    ],
+    "NR1END1": [
+     0,
+     11
+    ],
+    "SS2END1": [
+     3,
+     1
+    ],
+    "SW2END1": [
+     3,
+     2
+    ],
+    "WL1END1": [
+     2,
+     7
+    ],
+    "WR1END1": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     2
+    ],
+    "ER1END1": [
+     2,
+     11
+    ],
+    "NL1END1": [
+     3,
+     7
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L19": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "SR1BEG_S0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L9": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L5": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L27": {
+   "pair": 28,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "EE2END1": [
+     0,
+     1
+    ],
+    "SE2END1": [
+     0,
+     2
+    ],
+    "WW2END1": [
+     1,
+     1
+    ],
+    "NW2END2": [
+     1,
+     2
+    ],
+    "SL1END1": [
+     0,
+     7
+    ],
+    "SS2END1": [
+     2,
+     1
+    ],
+    "SW2END1": [
+     2,
+     2
+    ],
+    "NR1END1": [
+     0,
+     11
+    ],
+    "WL1END1": [
+     1,
+     7
+    ],
+    "NN2END2": [
+     3,
+     1
+    ],
+    "NE2END2": [
+     3,
+     2
+    ],
+    "EL1END2": [
+     2,
+     7
+    ],
+    "ER1END1": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "NL1END2": [
+     3,
+     7
+    ],
+    "WR1END2": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L23": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "SR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L13": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L28": {
+   "pair": 4,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "WW2END1": [
+     0,
+     1
+    ],
+    "NW2END2": [
+     0,
+     2
+    ],
+    "EE2END2": [
+     1,
+     1
+    ],
+    "SE2END2": [
+     1,
+     2
+    ],
+    "SL1END2": [
+     0,
+     7
+    ],
+    "NN2END2": [
+     2,
+     1
+    ],
+    "NE2END2": [
+     2,
+     2
+    ],
+    "EL1END2": [
+     1,
+     7
+    ],
+    "NR1END2": [
+     0,
+     11
+    ],
+    "SS2END2": [
+     3,
+     1
+    ],
+    "SW2END2": [
+     3,
+     2
+    ],
+    "WL1END2": [
+     2,
+     7
+    ],
+    "WR1END2": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     2
+    ],
+    "ER1END2": [
+     2,
+     11
+    ],
+    "NL1END2": [
+     3,
+     7
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L20": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "SR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L14": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L2": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L29": {
+   "pair": 12,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "EE2END2": [
+     0,
+     1
+    ],
+    "SE2END2": [
+     0,
+     2
+    ],
+    "WW2END2": [
+     1,
+     1
+    ],
+    "NW2END3": [
+     1,
+     2
+    ],
+    "SL1END2": [
+     0,
+     7
+    ],
+    "SS2END2": [
+     2,
+     1
+    ],
+    "SW2END2": [
+     2,
+     2
+    ],
+    "NR1END2": [
+     0,
+     11
+    ],
+    "WL1END2": [
+     1,
+     7
+    ],
+    "NN2END3": [
+     3,
+     1
+    ],
+    "NE2END3": [
+     3,
+     2
+    ],
+    "EL1END3": [
+     2,
+     7
+    ],
+    "ER1END2": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     3,
+     7
+    ],
+    "WR1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L16": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "SR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L10": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L6": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L3": {
+   "pair": 24,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SW2END1": [
+     0,
+     1
+    ],
+    "SS2END1": [
+     0,
+     2
+    ],
+    "NW2END2": [
+     1,
+     1
+    ],
+    "WW2END1": [
+     1,
+     2
+    ],
+    "NR1END1": [
+     0,
+     7
+    ],
+    "SE2END1": [
+     2,
+     1
+    ],
+    "EE2END1": [
+     2,
+     2
+    ],
+    "SL1END1": [
+     0,
+     11
+    ],
+    "SR1END1": [
+     1,
+     7
+    ],
+    "NE2END1": [
+     3,
+     1
+    ],
+    "NN2END1": [
+     3,
+     2
+    ],
+    "NL1END2": [
+     1,
+     11
+    ],
+    "WR1END1": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L23": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "EL1END1": [
+     2,
+     11
+    ],
+    "ER1END1": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L1": [
+     4,
+     7
+    ],
+    "WL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L13": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L30": {
+   "pair": 20,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "WW2END2": [
+     0,
+     1
+    ],
+    "NW2END3": [
+     0,
+     2
+    ],
+    "EE2END3": [
+     1,
+     1
+    ],
+    "SE2END3": [
+     1,
+     2
+    ],
+    "SL1END3": [
+     0,
+     7
+    ],
+    "NN2END3": [
+     2,
+     1
+    ],
+    "NE2END3": [
+     2,
+     2
+    ],
+    "EL1END3": [
+     1,
+     7
+    ],
+    "NR1END3": [
+     0,
+     11
+    ],
+    "SS2END3": [
+     3,
+     1
+    ],
+    "SW2END3": [
+     3,
+     2
+    ],
+    "WL1END3": [
+     2,
+     7
+    ],
+    "WR1END3": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE2": [
+     4,
+     2
+    ],
+    "NL1BEG_N3": [
+     3,
+     7
+    ],
+    "ER1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L17": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     7
+    ],
+    "SR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L11": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L7": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L31": {
+   "pair": 28,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "EE2END3": [
+     0,
+     1
+    ],
+    "SE2END3": [
+     0,
+     2
+    ],
+    "WW2END3": [
+     1,
+     1
+    ],
+    "NW2END_S0_0": [
+     1,
+     2
+    ],
+    "SL1END3": [
+     0,
+     7
+    ],
+    "SS2END3": [
+     2,
+     1
+    ],
+    "SW2END3": [
+     2,
+     2
+    ],
+    "NR1END3": [
+     0,
+     11
+    ],
+    "WL1END3": [
+     1,
+     7
+    ],
+    "NN2END_S2_0": [
+     3,
+     1
+    ],
+    "NE2END_S3_0": [
+     3,
+     2
+    ],
+    "EL1END_S3_0": [
+     2,
+     7
+    ],
+    "ER1END3": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE3": [
+     4,
+     2
+    ],
+    "NL1END_S3_0": [
+     3,
+     7
+    ],
+    "WR1END_S1_0": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L21": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     7
+    ],
+    "SR1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L15": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L32": {
+   "pair": 4,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NE2END0": [
+     0,
+     1
+    ],
+    "NN2END0": [
+     0,
+     2
+    ],
+    "SW2END0": [
+     1,
+     1
+    ],
+    "SS2END0": [
+     1,
+     2
+    ],
+    "ER1END0": [
+     0,
+     7
+    ],
+    "NW2END0": [
+     2,
+     1
+    ],
+    "WW2END_N0_3": [
+     2,
+     2
+    ],
+    "SR1END_N3_3": [
+     1,
+     7
+    ],
+    "WL1END0": [
+     0,
+     11
+    ],
+    "SE2END0": [
+     3,
+     1
+    ],
+    "EE2END0": [
+     3,
+     2
+    ],
+    "NL1END0": [
+     1,
+     11
+    ],
+    "NR1END0": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L22": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "SL1END0": [
+     2,
+     11
+    ],
+    "WR1END0": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L0": [
+     4,
+     7
+    ],
+    "EL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L12": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L33": {
+   "pair": 12,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SW2END0": [
+     0,
+     1
+    ],
+    "SS2END0": [
+     0,
+     2
+    ],
+    "NE2END1": [
+     1,
+     1
+    ],
+    "NN2END1": [
+     1,
+     2
+    ],
+    "WR1END1": [
+     0,
+     7
+    ],
+    "SE2END0": [
+     2,
+     1
+    ],
+    "EE2END0": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     1,
+     7
+    ],
+    "EL1END1": [
+     0,
+     11
+    ],
+    "NW2END1": [
+     3,
+     1
+    ],
+    "WW2END0": [
+     3,
+     2
+    ],
+    "NL1END1": [
+     1,
+     11
+    ],
+    "NR1END0": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L18": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "ER1END0": [
+     3,
+     7
+    ],
+    "SL1END0": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE_N3_3": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L4": [
+     4,
+     7
+    ],
+    "WL1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L8": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L34": {
+   "pair": 20,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "NE2END1": [
+     0,
+     1
+    ],
+    "NN2END1": [
+     0,
+     2
+    ],
+    "SW2END1": [
+     1,
+     1
+    ],
+    "SS2END1": [
+     1,
+     2
+    ],
+    "ER1END1": [
+     0,
+     7
+    ],
+    "NW2END1": [
+     2,
+     1
+    ],
+    "WW2END0": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     1,
+     7
+    ],
+    "WL1END1": [
+     0,
+     11
+    ],
+    "SE2END1": [
+     3,
+     1
+    ],
+    "EE2END1": [
+     3,
+     2
+    ],
+    "NL1END1": [
+     1,
+     11
+    ],
+    "NR1END1": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L19": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "SL1END1": [
+     2,
+     11
+    ],
+    "WR1END1": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE_N3_6": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L5": [
+     4,
+     7
+    ],
+    "EL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L9": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L35": {
+   "pair": 28,
+   "parity": 0,
+   "primary": "S",
+   "slots": {
+    "SW2END1": [
+     0,
+     1
+    ],
+    "SS2END1": [
+     0,
+     2
+    ],
+    "NE2END2": [
+     1,
+     1
+    ],
+    "NN2END2": [
+     1,
+     2
+    ],
+    "WR1END2": [
+     0,
+     7
+    ],
+    "SE2END1": [
+     2,
+     1
+    ],
+    "EE2END1": [
+     2,
+     2
+    ],
+    "EL1END2": [
+     0,
+     11
+    ],
+    "SR1END1": [
+     1,
+     7
+    ],
+    "NW2END2": [
+     3,
+     1
+    ],
+    "WW2END1": [
+     3,
+     2
+    ],
+    "NL1END2": [
+     1,
+     11
+    ],
+    "NR1END1": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L23": [
+     4,
+     1
+    ],
+    "GFAN0": [
+     4,
+     2
+    ],
+    "ER1END1": [
+     3,
+     7
+    ],
+    "SL1END1": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE_N3_7": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L1": [
+     4,
+     7
+    ],
+    "WL1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L13": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L36": {
+   "pair": 4,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NE2END2": [
+     0,
+     1
+    ],
+    "NN2END2": [
+     0,
+     2
+    ],
+    "SW2END2": [
+     1,
+     1
+    ],
+    "SS2END2": [
+     1,
+     2
+    ],
+    "ER1END2": [
+     0,
+     7
+    ],
+    "NW2END2": [
+     2,
+     1
+    ],
+    "WW2END1": [
+     2,
+     2
+    ],
+    "SR1END1": [
+     1,
+     7
+    ],
+    "WL1END2": [
+     0,
+     11
+    ],
+    "SE2END2": [
+     3,
+     1
+    ],
+    "EE2END2": [
+     3,
+     2
+    ],
+    "NL1END2": [
+     1,
+     11
+    ],
+    "NR1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L20": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "SL1END2": [
+     2,
+     11
+    ],
+    "WR1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L2": [
+     4,
+     7
+    ],
+    "EL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L14": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L37": {
+   "pair": 12,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SW2END2": [
+     0,
+     1
+    ],
+    "SS2END2": [
+     0,
+     2
+    ],
+    "NE2END3": [
+     1,
+     1
+    ],
+    "NN2END3": [
+     1,
+     2
+    ],
+    "WR1END3": [
+     0,
+     7
+    ],
+    "SE2END2": [
+     2,
+     1
+    ],
+    "EE2END2": [
+     2,
+     2
+    ],
+    "EL1END3": [
+     0,
+     11
+    ],
+    "SR1END2": [
+     1,
+     7
+    ],
+    "NW2END3": [
+     3,
+     1
+    ],
+    "WW2END2": [
+     3,
+     2
+    ],
+    "NL1BEG_N3": [
+     1,
+     11
+    ],
+    "NR1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L16": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "ER1END2": [
+     3,
+     7
+    ],
+    "SL1END2": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L6": [
+     4,
+     7
+    ],
+    "WL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L10": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L38": {
+   "pair": 20,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NE2END3": [
+     0,
+     1
+    ],
+    "NN2END3": [
+     0,
+     2
+    ],
+    "SW2END3": [
+     1,
+     1
+    ],
+    "SS2END3": [
+     1,
+     2
+    ],
+    "ER1END3": [
+     0,
+     7
+    ],
+    "NW2END3": [
+     2,
+     1
+    ],
+    "WW2END2": [
+     2,
+     2
+    ],
+    "SR1END2": [
+     1,
+     7
+    ],
+    "WL1END3": [
+     0,
+     11
+    ],
+    "SE2END3": [
+     3,
+     1
+    ],
+    "EE2END3": [
+     3,
+     2
+    ],
+    "NL1BEG_N3": [
+     1,
+     11
+    ],
+    "NR1END3": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L17": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "SL1END3": [
+     2,
+     11
+    ],
+    "WR1END3": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L7": [
+     4,
+     7
+    ],
+    "EL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L11": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L39": {
+   "pair": 28,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SW2END3": [
+     0,
+     1
+    ],
+    "SS2END3": [
+     0,
+     2
+    ],
+    "NE2END_S3_0": [
+     1,
+     1
+    ],
+    "NN2END_S2_0": [
+     1,
+     2
+    ],
+    "WR1END_S1_0": [
+     0,
+     7
+    ],
+    "SE2END3": [
+     2,
+     1
+    ],
+    "EE2END3": [
+     2,
+     2
+    ],
+    "EL1END_S3_0": [
+     0,
+     11
+    ],
+    "SR1END3": [
+     1,
+     7
+    ],
+    "NW2END_S0_0": [
+     3,
+     1
+    ],
+    "WW2END3": [
+     3,
+     2
+    ],
+    "NL1END_S3_0": [
+     1,
+     11
+    ],
+    "NR1END3": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L21": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "ER1END3": [
+     3,
+     7
+    ],
+    "SL1END3": [
+     2,
+     11
+    ],
+    "BYP_BOUNCE3": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L3": [
+     4,
+     7
+    ],
+    "WL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L15": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L4": {
+   "pair": 0,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NE2END2": [
+     0,
+     1
+    ],
+    "NN2END2": [
+     0,
+     2
+    ],
+    "SE2END2": [
+     1,
+     1
+    ],
+    "EE2END2": [
+     1,
+     2
+    ],
+    "NR1END2": [
+     0,
+     7
+    ],
+    "NW2END2": [
+     2,
+     1
+    ],
+    "WW2END1": [
+     2,
+     2
+    ],
+    "SL1END2": [
+     0,
+     11
+    ],
+    "SR1END1": [
+     1,
+     7
+    ],
+    "SW2END1": [
+     3,
+     1
+    ],
+    "SS2END1": [
+     3,
+     2
+    ],
+    "ER1END1": [
+     2,
+     7
+    ],
+    "NL1END2": [
+     1,
+     11
+    ],
+    "LOGIC_OUTS_L20": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "WL1END1": [
+     2,
+     11
+    ],
+    "WR1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE0": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L2": [
+     4,
+     7
+    ],
+    "EL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L14": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L40": {
+   "pair": 6,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "EE2END0": [
+     0,
+     1
+    ],
+    "SE2END0": [
+     0,
+     2
+    ],
+    "NN2END0": [
+     1,
+     1
+    ],
+    "NE2END0": [
+     1,
+     2
+    ],
+    "NL1END0": [
+     0,
+     7
+    ],
+    "SS2END0": [
+     2,
+     1
+    ],
+    "SW2END0": [
+     2,
+     2
+    ],
+    "SR1END_N3_3": [
+     0,
+     11
+    ],
+    "SL1END0": [
+     1,
+     7
+    ],
+    "WW2END_N0_3": [
+     3,
+     1
+    ],
+    "NW2END0": [
+     3,
+     2
+    ],
+    "EL1END0": [
+     2,
+     7
+    ],
+    "NR1END0": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_2": [
+     4,
+     2
+    ],
+    "WL1END0": [
+     3,
+     7
+    ],
+    "WR1END0": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L22": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     7
+    ],
+    "ER1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L12": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L0": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L41": {
+   "pair": 14,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "WW2END0": [
+     0,
+     1
+    ],
+    "NW2END1": [
+     0,
+     2
+    ],
+    "SS2END0": [
+     1,
+     1
+    ],
+    "SW2END0": [
+     1,
+     2
+    ],
+    "NL1END1": [
+     0,
+     7
+    ],
+    "NN2END1": [
+     2,
+     1
+    ],
+    "NE2END1": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     0,
+     11
+    ],
+    "SL1END0": [
+     1,
+     7
+    ],
+    "EE2END0": [
+     3,
+     1
+    ],
+    "SE2END0": [
+     3,
+     2
+    ],
+    "NR1END0": [
+     1,
+     11
+    ],
+    "WL1END0": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE_N3_3": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "EL1END1": [
+     3,
+     7
+    ],
+    "ER1END0": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L18": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     7
+    ],
+    "WR1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L8": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L4": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L42": {
+   "pair": 22,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "EE2END1": [
+     0,
+     1
+    ],
+    "SE2END1": [
+     0,
+     2
+    ],
+    "NN2END1": [
+     1,
+     1
+    ],
+    "NE2END1": [
+     1,
+     2
+    ],
+    "NL1END1": [
+     0,
+     7
+    ],
+    "SS2END1": [
+     2,
+     1
+    ],
+    "SW2END1": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     0,
+     11
+    ],
+    "SL1END1": [
+     1,
+     7
+    ],
+    "WW2END0": [
+     3,
+     1
+    ],
+    "NW2END1": [
+     3,
+     2
+    ],
+    "EL1END1": [
+     2,
+     7
+    ],
+    "NR1END1": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     2
+    ],
+    "WL1END1": [
+     3,
+     7
+    ],
+    "WR1END1": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L19": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "ER1END1": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L9": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L5": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L43": {
+   "pair": 30,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "WW2END1": [
+     0,
+     1
+    ],
+    "NW2END2": [
+     0,
+     2
+    ],
+    "SS2END1": [
+     1,
+     1
+    ],
+    "SW2END1": [
+     1,
+     2
+    ],
+    "NL1END2": [
+     0,
+     7
+    ],
+    "NN2END2": [
+     2,
+     1
+    ],
+    "NE2END2": [
+     2,
+     2
+    ],
+    "SL1END1": [
+     1,
+     7
+    ],
+    "SR1END1": [
+     0,
+     11
+    ],
+    "EE2END1": [
+     3,
+     1
+    ],
+    "SE2END1": [
+     3,
+     2
+    ],
+    "NR1END1": [
+     1,
+     11
+    ],
+    "WL1END1": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "EL1END2": [
+     3,
+     7
+    ],
+    "ER1END1": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L23": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "WR1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L13": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L1": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L44": {
+   "pair": 6,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "EE2END2": [
+     0,
+     1
+    ],
+    "SE2END2": [
+     0,
+     2
+    ],
+    "NN2END2": [
+     1,
+     1
+    ],
+    "NE2END2": [
+     1,
+     2
+    ],
+    "NL1END2": [
+     0,
+     7
+    ],
+    "SS2END2": [
+     2,
+     1
+    ],
+    "SW2END2": [
+     2,
+     2
+    ],
+    "SL1END2": [
+     1,
+     7
+    ],
+    "SR1END1": [
+     0,
+     11
+    ],
+    "WW2END1": [
+     3,
+     1
+    ],
+    "NW2END2": [
+     3,
+     2
+    ],
+    "EL1END2": [
+     2,
+     7
+    ],
+    "NR1END2": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE0": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     2
+    ],
+    "WL1END2": [
+     3,
+     7
+    ],
+    "WR1END2": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L20": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE1": [
+     4,
+     7
+    ],
+    "ER1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L14": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L2": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L45": {
+   "pair": 14,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "WW2END2": [
+     0,
+     1
+    ],
+    "NW2END3": [
+     0,
+     2
+    ],
+    "SS2END2": [
+     1,
+     1
+    ],
+    "SW2END2": [
+     1,
+     2
+    ],
+    "NL1BEG_N3": [
+     0,
+     7
+    ],
+    "NN2END3": [
+     2,
+     1
+    ],
+    "NE2END3": [
+     2,
+     2
+    ],
+    "SL1END2": [
+     1,
+     7
+    ],
+    "SR1END2": [
+     0,
+     11
+    ],
+    "EE2END2": [
+     3,
+     1
+    ],
+    "SE2END2": [
+     3,
+     2
+    ],
+    "NR1END2": [
+     1,
+     11
+    ],
+    "WL1END2": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE1": [
+     4,
+     2
+    ],
+    "EL1END3": [
+     3,
+     7
+    ],
+    "ER1END2": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L16": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE3": [
+     4,
+     7
+    ],
+    "WR1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L10": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L6": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L46": {
+   "pair": 22,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "EE2END3": [
+     0,
+     1
+    ],
+    "SE2END3": [
+     0,
+     2
+    ],
+    "NN2END3": [
+     1,
+     1
+    ],
+    "NE2END3": [
+     1,
+     2
+    ],
+    "NL1BEG_N3": [
+     0,
+     7
+    ],
+    "SS2END3": [
+     2,
+     1
+    ],
+    "SW2END3": [
+     2,
+     2
+    ],
+    "SL1END3": [
+     1,
+     7
+    ],
+    "SR1END2": [
+     0,
+     11
+    ],
+    "WW2END2": [
+     3,
+     1
+    ],
+    "NW2END3": [
+     3,
+     2
+    ],
+    "EL1END3": [
+     2,
+     7
+    ],
+    "NR1END3": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE4": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE2": [
+     4,
+     2
+    ],
+    "WL1END3": [
+     3,
+     7
+    ],
+    "WR1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L17": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_0": [
+     4,
+     7
+    ],
+    "ER1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L11": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L7": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L47": {
+   "pair": 30,
+   "parity": 1,
+   "primary": "P",
+   "slots": {
+    "WW2END3": [
+     0,
+     1
+    ],
+    "NW2END_S0_0": [
+     0,
+     2
+    ],
+    "SS2END3": [
+     1,
+     1
+    ],
+    "SW2END3": [
+     1,
+     2
+    ],
+    "NL1END_S3_0": [
+     0,
+     7
+    ],
+    "NN2END_S2_0": [
+     2,
+     1
+    ],
+    "NE2END_S3_0": [
+     2,
+     2
+    ],
+    "SL1END3": [
+     1,
+     7
+    ],
+    "SR1END3": [
+     0,
+     11
+    ],
+    "EE2END3": [
+     3,
+     1
+    ],
+    "SE2END3": [
+     3,
+     2
+    ],
+    "NR1END3": [
+     1,
+     11
+    ],
+    "WL1END3": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE5": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE3": [
+     4,
+     2
+    ],
+    "EL1END_S3_0": [
+     3,
+     7
+    ],
+    "ER1END3": [
+     2,
+     11
+    ],
+    "GFAN1": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L21": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE_S3_4": [
+     4,
+     7
+    ],
+    "WR1END_S1_0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L15": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L5": {
+   "pair": 8,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SW2END2": [
+     0,
+     1
+    ],
+    "SS2END2": [
+     0,
+     2
+    ],
+    "NW2END3": [
+     1,
+     1
+    ],
+    "WW2END2": [
+     1,
+     2
+    ],
+    "NR1END2": [
+     0,
+     7
+    ],
+    "SE2END2": [
+     2,
+     1
+    ],
+    "EE2END2": [
+     2,
+     2
+    ],
+    "SL1END2": [
+     0,
+     11
+    ],
+    "SR1END2": [
+     1,
+     7
+    ],
+    "NE2END2": [
+     3,
+     1
+    ],
+    "NN2END2": [
+     3,
+     2
+    ],
+    "NL1BEG_N3": [
+     1,
+     11
+    ],
+    "WR1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L16": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "EL1END2": [
+     2,
+     11
+    ],
+    "ER1END2": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE1": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L6": [
+     4,
+     7
+    ],
+    "WL1END2": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L10": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE3": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L6": {
+   "pair": 16,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "NE2END3": [
+     0,
+     1
+    ],
+    "NN2END3": [
+     0,
+     2
+    ],
+    "SE2END3": [
+     1,
+     1
+    ],
+    "EE2END3": [
+     1,
+     2
+    ],
+    "NR1END3": [
+     0,
+     7
+    ],
+    "NW2END3": [
+     2,
+     1
+    ],
+    "WW2END2": [
+     2,
+     2
+    ],
+    "SL1END3": [
+     0,
+     11
+    ],
+    "SR1END2": [
+     1,
+     7
+    ],
+    "SW2END2": [
+     3,
+     1
+    ],
+    "SS2END2": [
+     3,
+     2
+    ],
+    "NL1BEG_N3": [
+     1,
+     11
+    ],
+    "ER1END2": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L17": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "WL1END2": [
+     2,
+     11
+    ],
+    "WR1END3": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE2": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE4": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L7": [
+     4,
+     7
+    ],
+    "EL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_2": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L11": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_0": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L7": {
+   "pair": 24,
+   "parity": 1,
+   "primary": "S",
+   "slots": {
+    "SW2END3": [
+     0,
+     1
+    ],
+    "SS2END3": [
+     0,
+     2
+    ],
+    "NW2END_S0_0": [
+     1,
+     1
+    ],
+    "WW2END3": [
+     1,
+     2
+    ],
+    "NR1END3": [
+     0,
+     7
+    ],
+    "SE2END3": [
+     2,
+     1
+    ],
+    "EE2END3": [
+     2,
+     2
+    ],
+    "SL1END3": [
+     0,
+     11
+    ],
+    "SR1END3": [
+     1,
+     7
+    ],
+    "NE2END3": [
+     3,
+     1
+    ],
+    "NN2END3": [
+     3,
+     2
+    ],
+    "NL1END_S3_0": [
+     1,
+     11
+    ],
+    "WR1END3": [
+     2,
+     7
+    ],
+    "LOGIC_OUTS_L21": [
+     4,
+     1
+    ],
+    "GFAN1": [
+     4,
+     2
+    ],
+    "EL1END3": [
+     2,
+     11
+    ],
+    "ER1END3": [
+     3,
+     7
+    ],
+    "BYP_BOUNCE3": [
+     5,
+     1
+    ],
+    "BYP_BOUNCE5": [
+     5,
+     2
+    ],
+    "LOGIC_OUTS_L3": [
+     4,
+     7
+    ],
+    "WL1END3": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE_S3_6": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L15": [
+     4,
+     11
+    ],
+    "FAN_BOUNCE_S3_4": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L8": {
+   "pair": 2,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "SS2END_N0_3": [
+     0,
+     1
+    ],
+    "SW2END_N0_3": [
+     0,
+     2
+    ],
+    "NN2END0": [
+     1,
+     1
+    ],
+    "NE2END0": [
+     1,
+     2
+    ],
+    "NL1END0": [
+     0,
+     7
+    ],
+    "EE2END0": [
+     2,
+     1
+    ],
+    "SE2END0": [
+     2,
+     2
+    ],
+    "SR1END_N3_3": [
+     0,
+     11
+    ],
+    "WL1END_N1_3": [
+     1,
+     7
+    ],
+    "WW2END_N0_3": [
+     3,
+     1
+    ],
+    "NW2END0": [
+     3,
+     2
+    ],
+    "ER1END_N3_3": [
+     1,
+     11
+    ],
+    "EL1END0": [
+     2,
+     7
+    ],
+    "BYP_BOUNCE_N3_6": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_2": [
+     4,
+     2
+    ],
+    "SL1END0": [
+     3,
+     7
+    ],
+    "WR1END0": [
+     2,
+     11
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L22": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE7": [
+     4,
+     7
+    ],
+    "NR1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE2": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L12": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L0": [
+     5,
+     11
+    ]
+   }
+  },
+  "IMUX_L9": {
+   "pair": 10,
+   "parity": 0,
+   "primary": "P",
+   "slots": {
+    "NN2END0": [
+     0,
+     1
+    ],
+    "NE2END0": [
+     0,
+     2
+    ],
+    "SS2END0": [
+     1,
+     1
+    ],
+    "SW2END0": [
+     1,
+     2
+    ],
+    "NL1END1": [
+     0,
+     7
+    ],
+    "WW2END0": [
+     2,
+     1
+    ],
+    "NW2END1": [
+     2,
+     2
+    ],
+    "SR1BEG_S0": [
+     0,
+     11
+    ],
+    "EL1END0": [
+     1,
+     7
+    ],
+    "EE2END0": [
+     3,
+     1
+    ],
+    "SE2END0": [
+     3,
+     2
+    ],
+    "WL1END0": [
+     2,
+     7
+    ],
+    "WR1END0": [
+     1,
+     11
+    ],
+    "BYP_BOUNCE_N3_3": [
+     4,
+     1
+    ],
+    "BYP_BOUNCE_N3_7": [
+     4,
+     2
+    ],
+    "ER1END0": [
+     2,
+     11
+    ],
+    "SL1END0": [
+     3,
+     7
+    ],
+    "GFAN0": [
+     5,
+     1
+    ],
+    "LOGIC_OUTS_L18": [
+     5,
+     2
+    ],
+    "FAN_BOUNCE5": [
+     4,
+     7
+    ],
+    "NR1END0": [
+     3,
+     11
+    ],
+    "FAN_BOUNCE6": [
+     4,
+     11
+    ],
+    "LOGIC_OUTS_L8": [
+     5,
+     7
+    ],
+    "LOGIC_OUTS_L4": [
+     5,
+     11
+    ]
+   }
+  }
+ },
+ "combo_check": {
+  "families": 64,
+  "distinct_combos": 64,
+  "max_per_combo": 1,
+  "pairs": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14,
+   16,
+   18,
+   20,
+   22,
+   24,
+   26,
+   28,
+   30
+  ]
+ }
+}

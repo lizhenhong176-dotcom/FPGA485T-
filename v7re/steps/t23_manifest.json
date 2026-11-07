@@ -1,0 +1,105 @@
+{
+  "experiment_id": "T23_SLICEL_INIT_ORDER_1157",
+  "date": "2026-11-07",
+  "env": {
+    "host": "fpga (WSL Ubuntu, Vivado 2017.2)",
+    "vivado": "2017.2"
+  },
+  "part_declared": "xc7vx485tffg1157-3",
+  "diff_semantics": "PURE",
+  "builds": [
+    {
+      "build_id": "l0_y20",
+      "role": "baseline",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X11Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X11Y20",
+        "bel": "SLICEL.A6LUT",
+        "init": "0x0000000000000000",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "lr_y20",
+      "role": "variant",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X11Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'hDEADBEEFCAFEBABE",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X11Y20",
+        "bel": "SLICEL.A6LUT",
+        "init": "0xdeadbeefcafebabe",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    },
+    {
+      "build_id": "l0b_y20",
+      "role": "negative_control",
+      "part": "xc7vx485tffg1157-3",
+      "site": "SLICE_X11Y20",
+      "bel": "A6LUT",
+      "lock_pins": {
+        "I0": "A1",
+        "I1": "A2",
+        "I2": "A3",
+        "I3": "A4",
+        "I4": "A5",
+        "I5": "A6"
+      },
+      "init": "64'h0000000000000000",
+      "rb": {
+        "part": "xc7vx485tffg1157-3",
+        "site": "SLICE_X11Y20",
+        "bel": "SLICEL.A6LUT",
+        "init": "0x0",
+        "lock": "I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6"
+      }
+    }
+  ],
+  "self_check": {
+    "predicted_n": 46,
+    "actual_n": 46,
+    "missing": 0,
+    "extra": 0,
+    "negative_control_diff_frames": 0,
+    "content_bits": 46,
+    "ecc_bits": 14,
+    "unexplained_frames": 0,
+    "unexplained_bits": 0,
+    "unexplained_ranges": []
+  },
+  "cross_check": {
+    "batch": "law_SLICEL_order_vs_T19_affine_permutation",
+    "script": "step03_pip/gen_locked_init_map.py",
+    "builds": 1,
+    "agree": 1,
+    "disagree": []
+  },
+  "conclusion_level": "verified",
+  "notes": "SLICE_X11Y20 (SLICEL, CLBLM_R inst1) A6LUT INIT 0 -> 0xDEADBEEFCAFEBABE：4 帧 31742..31745 (=31716+26..29)，内容位 46 全落 word 40 的 bit 0..15，word 50 ECC 14 位；与 law SLICEL 顺序 46/46 全等，与 T19 SLICEM 顺序不等（帧集合同、位分布不同）→ INIT 索引顺序随 slice 种类不同，law 两套都对。负对照 0 帧。",
+  "parts_allowed": [
+    "xc7vx485tffg1157-3"
+  ]
+}

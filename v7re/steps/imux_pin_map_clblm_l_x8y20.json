@@ -1,0 +1,290 @@
+[
+ {
+  "mux": "IMUX_L0",
+  "site_pin": "CLBLM_L_A3",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L1",
+  "site_pin": "CLBLM_M_A3",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L2",
+  "site_pin": "CLBLM_M_A2",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L3",
+  "site_pin": "CLBLM_L_A2",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L4",
+  "site_pin": "CLBLM_M_A6",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L5",
+  "site_pin": "CLBLM_L_A6",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L6",
+  "site_pin": "CLBLM_L_A1",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L7",
+  "site_pin": "CLBLM_M_A1",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L8",
+  "site_pin": "CLBLM_M_A5",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L9",
+  "site_pin": "CLBLM_L_A5",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L10",
+  "site_pin": "CLBLM_L_A4",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L11",
+  "site_pin": "CLBLM_M_A4",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L12",
+  "site_pin": "CLBLM_M_B6",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L13",
+  "site_pin": "CLBLM_L_B6",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L14",
+  "site_pin": "CLBLM_L_B1",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L15",
+  "site_pin": "CLBLM_M_B1",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L16",
+  "site_pin": "CLBLM_L_B3",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L17",
+  "site_pin": "CLBLM_M_B3",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L18",
+  "site_pin": "CLBLM_M_B2",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L19",
+  "site_pin": "CLBLM_L_B2",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L20",
+  "site_pin": "CLBLM_L_C2",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L21",
+  "site_pin": "CLBLM_L_C4",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L22",
+  "site_pin": "CLBLM_M_C3",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L23",
+  "site_pin": "CLBLM_L_C3",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L24",
+  "site_pin": "CLBLM_M_B5",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L25",
+  "site_pin": "CLBLM_L_B5",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L26",
+  "site_pin": "CLBLM_L_B4",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L27",
+  "site_pin": "CLBLM_M_B4",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L28",
+  "site_pin": "CLBLM_M_C4",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L29",
+  "site_pin": "CLBLM_M_C2",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L30",
+  "site_pin": "CLBLM_L_C5",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L31",
+  "site_pin": "CLBLM_M_C5",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L32",
+  "site_pin": "CLBLM_M_C1",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L33",
+  "site_pin": "CLBLM_L_C1",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L34",
+  "site_pin": "CLBLM_L_C6",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L35",
+  "site_pin": "CLBLM_M_C6",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L36",
+  "site_pin": "CLBLM_L_D2",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L37",
+  "site_pin": "CLBLM_L_D4",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L38",
+  "site_pin": "CLBLM_M_D3",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L39",
+  "site_pin": "CLBLM_L_D3",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L40",
+  "site_pin": "CLBLM_M_D1",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L41",
+  "site_pin": "CLBLM_L_D1",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L42",
+  "site_pin": "CLBLM_L_D6",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L43",
+  "site_pin": "CLBLM_M_D6",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L44",
+  "site_pin": "CLBLM_M_D4",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L45",
+  "site_pin": "CLBLM_M_D2",
+  "used_in_test": true,
+  "previously_untested": true
+ },
+ {
+  "mux": "IMUX_L46",
+  "site_pin": "CLBLM_L_D5",
+  "used_in_test": true,
+  "previously_untested": false
+ },
+ {
+  "mux": "IMUX_L47",
+  "site_pin": "CLBLM_M_D5",
+  "used_in_test": true,
+  "previously_untested": true
+ }
+]
