@@ -1,15 +1,72 @@
 # FPGA 比特流逆向 — 项目现状（每个任务开始前先读本文件）
 
-更新：2026-11-08（最新：§108 family 名字核对、§109 family 定义澄清〔全文 `v7re/steps/family_definition.md`〕）
+更新：2026-11-11（最新：S47–S50 —— IOB 属性位、IO pad 字段、OLOGIC 非家族、时钟网定位）
 
 目标：XC7VX485T-2FFG1761（VC707）比特流逆向。
 主线（2026-11-08 起，用户口径）：**PIP 复用分析** —— 复用发生在哪几层、复用规律是什么、这套规律能否反过来生成/判定位库（见 §97）。
+**第一优先度（2026-11-11 决策）**：主线即唯一第一优先度；优先序与「明确不做」清单见 §161。
 前序（RapidWright 拓扑 → PIP→bit 差分 → frame/bit 数据库）已完成，作为支撑；
 **旁支**（不在主线）：ECC 与帧地址耦合、`site_frames` 补全、跨 tile 类型位库迁移、篡改定位器上板。
 
 > 本文件是正常 UTF-8。2026-10-25 曾因 PowerShell 5.1 以 ANSI 读取再写回出现一次双重编码，已重写修复；
 > 之后确认过：用 `Get-Content` 直接读会显示乱码，那是控制台按 GBK 解码造成的**显示**问题，文件本身没坏。
 > **编辑中文文档仍请用 `[IO.File]::WriteAllText(..., UTF8)` 或带 `-Encoding utf8` 的方式。**
+
+
+---
+
+## 0. 当前进度总览（2026-11-11）
+
+### 0.1 子系统覆盖
+
+| 子系统 | 规模 | 位表状态 | 验证强度 | 缺口 |
+|---|---|---|---|---|
+| **INT 互连** | 53,100 tile | 172 族/侧，1,598/1,664 格（96.03%） | 6/6 输入网 token 级与 Vivado ROUTE 一致；181 PIP 解码 0 歧义；S16 逐位 2,035/2,035（含 421 sense=0），负对照 2/698 | off0..3 的 66 格（GCLK 直通/BYP 旁路族）；END 侧位表（Vivado 多出 111 族，已证**不占位**） |
+| **CLB 逻辑** | 75,900 slice | 62 特征；INIT 4 帧 off32..35；FF 30/31 | e0/e7 解出 INIT 64/64 精确；s8 网表复原 | CE/SR/CLKINV mux、A5FFMUX、DI1MUX、CARRY4 CY0 |
+| **BRAM** | 1,030 tile | 60 三路 mux（off26，三态码 `C=A&!B` 全验证）；INIT_xx → 帧 46716+xx（36 位宽，步长 1） | 三态 60/60 直接观测；FIFO 属性 5 族 + ZEMPTY/ZFULL 13/13 | 29 个 FIFO 属性位（EN_SYN/FWFT 已验证，余下按码表补） |
+| **DSP** | 1,400 tile | 78 三态族（GND/VCC/走线），基址 31960，28 帧 | **78/78** 绝对态判读通过（单 site 39 + 双 site 78） | 280 个属性位（AREG 等已验 4 条） |
+| **IO pad** | 700 pad | 属性：`law_iob` 37 行（PULLTYPE/DRIVE/SLEW/IOSTANDARD）；逻辑：io72 off0..33 @ pad 行字 | 9 个变体差分；OLOGIC 6 变体矩阵 | IDELAY/ISERDES/OSERDES（placement 受限未测）；其余 pad 属性（IN_TERM/ODT） |
+| **IO↔fabric 通路** | 700 通路 | **无配置位**（纯 tileconn） | `get_pips` 单源全固定；A4 缺口已补齐后 6/6 | — |
+| **时钟网络** | edge30/HCLK | edge30 off26..29 = 29 格（时钟进 fabric 时固定出现） | 三设计共有、两设计为 0 | BUFG/BUFH/CMT/CLK_FEED 未测 |
+| **GTX / PCIE** | 1,120 + 700 | 未开始 | — | 全部 |
+
+### 0.2 编码形态（全片最终四类）
+
+| 形态 | 对象 | 判据 | 反解 |
+|---|---|---|---|
+| 家族（one-hot 网格） | INT PIP、IMUX、AFFMUX、DSP GND/VCC、BRAM CASCIN | `N=a×b`、`K=a+b`、每源 2 位 | C1/C2 + CSP |
+| 单位开关 | OLOGIC INIT、ZINI/ZRST、BYP/FAN 旁路、GCLK 直通 | 1 位 = 1 特征、可共现 | 直接读位 |
+| 码字 | PULLTYPE/DRIVE/SLEW/IOSTANDARD、ZALMOST_*、LUT INIT | 每值一组固定位、无网格律 | 码表比对 |
+| 时钟网络 | edge30 off26..29 | 与“是否有时钟进 fabric”相关 | 静态推断 |
+
+### 0.3 地址模型（已三次独立印证）
+
+```
+frame = 块基址 + frame_off
+word  = wof(Y) + parity ,  wof(y) = 2*(y%50) + (1 if y%50 >= 25 else 0)
+bit   = raw % 32
+块清单：frame_blocks 1,038 块 / 36,260 帧 = 7 × 5,180（每 band 精确闭合）
+```
+
+`tile_blocks` 53,102 行（INT 全量派生 + 实测锚点）；`tile_block_gt` 45 条地面真值。
+
+### 0.4 已验证的闭环（可引用的“硬证据”）
+
+1. **6/6 输入网**：bitstream → 解码 → 走线复原，token 级与 Vivado `ROUTE` 完全一致（含 IO 入口段）。
+2. **写回 864/864**：按表写位后硬件不报错、载荷与理论一致（含 ECC 位）。
+3. **181 PIP / 0 歧义**；S16 反向检验 366 TP / 0 FP / 0 AMBIG / 6 FN（全为 always ppip）。
+4. **LUT INIT 64/64**：e0/e7 两份 bitstream 解出 `0x9E3779B97F4A7C15` 与设计真值逐位一致。
+5. **DSP 78/78**、**BRAM 三态 60/60**、**FIFO 阈值 26/26**（ZEMPTY 13 + ZFULL 13）。
+6. **审计**：clb 未知格 = 0；io72 残差已归属为 IOB 属性/逻辑 + 时钟网，非 PIP 位。
+
+### 0.5 关键文件
+
+| 内容 | 文件 |
+|---|---|
+| 路由/选择律总表 | `step03_pip/ROUTING_SELECTION.md`（§6 位域边界含四类形态） |
+| 解码器 | `v7re/tilemap.py`、`step03_pip/decode_clb.py`、`emit_netlist2.py`、`csp_imux.py`、`s13_solve2.py` |
+| 最新报告 | `S47_IOB_ATTR.md`、`S48_IO_LOGIC_REGS.md`、`S49_OLOGIC_SPLIT.md`、`S50_OLOGIC_NOT_FAMILY.md` |
+| 律库 | `E:\v7work\model\v7_law.sqlite`（`v7_verified` 126、`law_iob` 37、`io_features` 5、`frame_blocks` 1,038） |
 
 ---
 
@@ -3166,7 +3223,7 @@ python step03_pip/gen_slots.py   # 期望：mux 64/64、BEG 64/96
 文档：`v7re/steps/T48_HCLK_CMT_ENUM.md`。
 
 
-## 81. HCLK_CMT：PLL 源编码解出（2026-11-08）
+## 81.1. HCLK_CMT：PLL 源编码解出（2026-11-08）
 
 `/opt/lzh/v7re/work/hclk6`：PLL0..5（`PLLE2_ADV_X0Y6`，参数逐字相同，只换 CLKOUT）。
 
@@ -3191,7 +3248,7 @@ MUX_CLK_PLL n:  字 = 22144 + (n & 1)，位 = 25 + (n >> 1)
 文档：`v7re/steps/T49_HCLK_CMT_PLL.md`。
 
 
-## 82. PLL6/PLL7 补测失败（2026-11-08）
+## 82.1. PLL6/PLL7 补测失败（2026-11-08）
 
 尝试在 `PLLE2_ADV_X1Y6` 上取样本：三个构建成功，但**没有产生任何 `MUX_CLK_PLL*` PIP**，
 与 p0 的差异 163–164 格且跨多帧。
@@ -3203,7 +3260,7 @@ MUX_CLK_PLL n:  字 = 22144 + (n & 1)，位 = 25 + (n >> 1)
 `PLL6/PLL7` 无法用现有构造产生。因此 PLL 公式标注为**部分验证（6/8）**，不当作全组定律。
 
 
-## 83. HCLK_CMT 源可达性（2026-11-08）
+## 83.1. HCLK_CMT 源可达性（2026-11-08）
 
 `/opt/lzh/v7re/work/hclk8`：`BUFG(X0Y0/8/16/24) → BUFH → FF` 四个设计，
 路由全为 `BUFG → GCLK{n} → HROW CK_MUX_OUT_L0 → HCLK_OUT_L0 → BUFHCLK_L0`，
@@ -3227,7 +3284,7 @@ MUX_CLK_PLL n:  字 = 22144 + (n & 1)，位 = 25 + (n >> 1)
 文档：`v7re/steps/T50_HCLK_CMT_REACH.md`。
 
 
-## 84. MMCM 14 源补测受阻（2026-11-08）
+## 84.1. MMCM 14 源补测受阻（2026-11-08）
 
 三次尝试均失败：
 - MMCM@X1Y6 + FF 锁到 X0 列 `SLICE_X12Y20` → `[Place 30-176] Unroutable Placement`（跨 CMT 列时钟不可布线）；
@@ -3247,7 +3304,7 @@ MUX_CLK_PLL n:  字 = 22144 + (n & 1)，位 = 25 + (n >> 1)
 而非合成小设计。
 
 
-## 85. 「为什么是 6×4」—— 6 类 × 4 槽（2026-11-08）
+## 85.1. 「为什么是 6×4」—— 6 类 × 4 槽（2026-11-08）
 
 本地全量统计（64 个 mux 族）：
 
@@ -3269,7 +3326,7 @@ MUX_CLK_PLL n:  字 = 22144 + (n & 1)，位 = 25 + (n >> 1)
 文档：`v7re/steps/T52_WHY_6X4.md`、`v7re/steps/T51_GENERATIVE_LAW_LOCAL.md`。
 
 
-## 86. LOGIC/BOUNCE 行顺序的可预测规则（2026-11-08）
+## 86.1. LOGIC/BOUNCE 行顺序的可预测规则（2026-11-08）
 
 ```
 row20 放 LOGIC ⟺ (IMUX 编号 // 8) 为偶数，或 family ∈ BYP_ALT
@@ -3282,7 +3339,7 @@ row20 放 LOGIC ⟺ (IMUX 编号 // 8) 为偶数，或 family ∈ BYP_ALT
 
 文档：`v7re/steps/T52_WHY_6X4.md` §8–§9。
 
-## 87. 路由级 PIP 表大规模实证：698/698 全通过（2026-11-08）
+## 87.1. 路由级 PIP 表大规模实证：698/698 全通过（2026-11-08）
 
 32 个独立设计自由布线 → 采集 717 条活跃 PIP（85 tile / 40 家族 / 448 去重三元组）→ 698 条能映射到迁移表者，在各自比特流里逐一核对 **2,035 个 cell**：
 
@@ -3299,7 +3356,7 @@ entries 698/698 pass (100.0%)   bits 2035/2035 (100.0%)   failures 0
 文档：`step03_pip/S16_PIP_HARVEST_VALIDATE.md`；脚本：`E:\v7work\validate_pip.py`。
 
 
-## 87. 位对/parity 的闭式公式（2026-11-08）
+## 87.2. 位对/parity 的闭式公式（2026-11-08）
 
 ```
 g = i // 16 ;  h = (i // 8) % 2
@@ -3310,7 +3367,7 @@ parity = 1 if (i % 8) >= 4 else 0
 「位对 / parity / 行类别 / LOGIC-BOUNCE 顺序」四项已可纯计算；
 只有「源→槽位」和「方向线 4 分组」是 per-mux 数据。
 
-## 88. PIP 覆盖面盘点（回答「是不是只做了 CLB 的 PIP」）
+## 88.1. PIP 覆盖面盘点（回答「是不是只做了 CLB 的 PIP」）
 
 **不是 CLB，是 INT（布线开关盒）的 PIP。**
 
@@ -3325,7 +3382,7 @@ CLB 自身也有 PIP（`CLBLL_L/R` 各 146、`CLBLM_L/R` 各 151，全器件约 
 单 tile 未做的最大块：`CLK_HROW_BOT/TOP_R` 各 2,840、`PCIE_BOT` 各 1,736、
 `HCLK_CMT` 各 982、`BRAM_L/R` 各 974、`DSP_L/R` 各 794、`GTX_CHANNEL_*` 各 628、`LIOI/RIOI` 各 467。
 
-## 88. 反向检验：INT PIP 表精度 100%（2026-11-08）
+## 88.2. 反向检验：INT PIP 表精度 100%（2026-11-08）
 
 第二波 32 设计（含 LUT→LUT 内部网、去 PACKAGE_PIN），每设计 8 tile 全 PIP 落表 + Tcl driver map：
 
@@ -3341,7 +3398,7 @@ truth 372  TP 366  AMBIG 0  WRONG 0  FN 6  FP 0
 文档：`step03_pip/S16_PIP_HARVEST_VALIDATE.md` 附录 B；脚本 `E:\v7work\reverse_check.py`。
 
 
-## 89. 槽位表从 48 张压到 16 张 + 2 个常数置换（2026-11-08）
+## 89.1. 槽位表从 48 张压到 16 张 + 2 个常数置换（2026-11-08）
 
 48 个 IMUX 族按「源集合」分成 **16 组 × 3 族**（组内三族共用同一套 24 条源线），
 例如 `{IMUX_L0, IMUX_L8, IMUX_L16}`。组内相邻族的槽位表之间是**固定置换**：
@@ -3357,7 +3414,7 @@ truth 372  TP 366  AMBIG 0  WRONG 0  FN 6  FP 0
 剩余的 16 张基础表之间**没有共有源线**（`L0..L7` 两两交集为 0），
 说明它们对应 24 条各不相同的物理线，属于布线图事实，暂未见生成规则。
 
-## 90. 方向线 4 分组：仍未导出
+## 90.1. 方向线 4 分组：仍未导出
 
 例 `IMUX_L0` 的 4 组方向线：
 ```
@@ -3368,7 +3425,7 @@ r2 {NW2END0, WW2END_N0_3, ER1END_N3_3, WL1END_N1_3}   r3 {SW2END_N0_3, SS2END_N0
 **补记（同日）**：6 条 FN 经查是 `always` ppips（`ppips_int_{l,r}.db` 各 108 行全为 always），`BYP_BOUNCEk←BYP_ALTk`/`FAN_BOUNCEk←FAN_ALTk` 共 16 条**不占配置位**。修正召回口径：truth 372 = TP 366 + PPIP 6 → **召回 100%、精度 100%**。旁路结构为三段串联（BYP_ALTk mux → BYP_BOUNCEk(always) → IMUX），解码器应把这 16 条当零成本通路预置。见 S16 附录 B.5/B.6。
 
 
-## 91. PIP 地址编码规律：列 = 线长类别（768/768 无例外）
+## 91.1. PIP 地址编码规律：列 = 线长类别（768/768 无例外）
 
 把 48 个 IMUX 族的 768 个布线源按「列码 × wire kind」统计：
 
@@ -3390,7 +3447,7 @@ r2 {NW2END0, WW2END_N0_3, ER1END_N3_3, WL1END_N1_3}   r3 {SW2END_N0_3, SS2END_N0
 文档：`v7re/steps/T53_PIP_ADDRESS_LAW.md`。
 
 
-## 92. 方向类 → 列：48/48 可预测（2026-11-08）
+## 92.1. 方向类 → 列：48/48 可预测（2026-11-08）
 
 全器件只有 **2 种**「列 → 方向类」签名，按 8 段交替：
 
@@ -3405,7 +3462,7 @@ r2 {NW2END0, WW2END_N0_3, ER1END_N3_3, WL1END_N1_3}   r3 {SW2END_N0_3, SS2END_N0
 文档：`v7re/steps/T53_PIP_ADDRESS_LAW.md` §7–§9。
 
 
-## 93. 类内行序按段变化：否（负结果）+ 编码律定稿
+## 93.1. 类内行序按段变化：否（负结果）+ 编码律定稿
 
 按 8 段、按半段分别检验，段内仍有 2–4 种行序变体 → **类内行序的最小变化单位是族本身**，
 不再由任何段号决定，属布线邻接事实。
@@ -3417,7 +3474,7 @@ class(S) 由名字判定 → 列由 (i//8) 奇偶决定（48/48）→ 行由类�
 可计算：类判定、列、位对、parity、帧/字映射。不可计算：类内 4 条线谁在哪一行。
 
 
-## 94. 编码律定稿文档（2026-11-08，收尾）
+## 94.1. 编码律定稿文档（2026-11-08，收尾）
 
 `v7re/steps/PIP_ADDRESS_ENCODING_LAW.md`（v1.0）：
 
@@ -3431,7 +3488,7 @@ class(S) 由名字判定 → 列由 (i//8) 奇偶决定（48/48）→ 行由类�
 编码规律这条线**收尾**。
 
 
-## 95. 类内行序只有 8 种（4 块类 × 2 奇偶）
+## 95.1. 类内行序只有 8 种（4 块类 × 2 奇偶）
 
 按行序序列分组，48 个族严格按 **i 的奇偶**二分，且块 1≡块 4、块 2≡块 3
 → **8 种行序**，不是 48 种（此前说的 8/24 种是"类"粒度，实际是块类×奇偶）。
@@ -3442,7 +3499,7 @@ class(S) 由名字判定 → 列由 (i//8) 奇偶决定（48/48）→ 行由类�
 文档：`v7re/steps/T53_PIP_ADDRESS_LAW.md` §12。
 
 
-## 96. 更正：行映射 36 种（不是 8 种）；列码 744/744 零例外
+## 96.1. 更正：行映射 36 种（不是 8 种）；列码 744/744 零例外
 
 - §12「8 种行序」只对 DIAG 单类成立；四类合并后按行映射分组 = **36 组 / 48 族**
   （仅 `i%8 ∈ {0,3}` 的族与 `i+4` 共用，其余各自独立）。该结论作废。
@@ -3452,7 +3509,7 @@ class(S) 由名字判定 → 列由 (i//8) 奇偶决定（48/48）→ 行由类�
 
 **最终边界：列/位对/parity/帧映射可算，行序是每族数据（36 种）。**
 
-## 89. BRAM/DSP 并行采集 + BRAM 配置块实测（2026-11-08）
+## 89.2. BRAM/DSP 并行采集 + BRAM 配置块实测（2026-11-08）
 
 32 设计并发（RAMB18E1@RAMB18_X0Y1 + DSP48E1@DSP48_X0Y0，属性随设计变化）：
 
@@ -3472,7 +3529,7 @@ wall 226 s   ok=32 fail=0   (MAXP=32 / 44 核)
 文档：`step03_pip/S17_BRAM_DSP_FLEET.md`；脚本：`E:\v7work\_harvest_bd.sh`、`_h3pair.sh`、`_h3span.sh`、`span_diff.py`。
 
 
-## 97. 主文档更新到 v1.1（2026-11-08）
+## 97.1. 主文档更新到 v1.1（2026-11-08）
 
 `v7re/steps/PIP_ADDRESS_ENCODING_LAW.md`：
 - 边界章节重写为「36 种行映射」（更正 v1.0 的「8 种」）；
@@ -3483,7 +3540,7 @@ wall 226 s   ok=32 fail=0   (MAXP=32 / 44 核)
 - 文末加修订记录 v1.0 → v1.1。
 
 
-## 98. 独立复算（T51 子任务）与主结论一致 + 一条新预测（2026-11-08）
+## 98.1. 独立复算（T51 子任务）与主结论一致 + 一条新预测（2026-11-08）
 
 子任务产出 `v7re/scripts/t51_generative_law.py`（`gen(tile_type, family, source, tile_y=None)`）
 与 `v7re/steps/T51_GENERATIVE_LAW_CANDIDATE.md`；本地重跑退出码 0。
@@ -3501,7 +3558,7 @@ wall 226 s   ok=32 fail=0   (MAXP=32 / 44 核)
 **新增可证伪预测**：`LV_L0` 缺失的位对候选为 `{(0,0,2),(1,0,6)}`，尚未实测。
 
 
-## 99. LV_L0「补齐 2 条」判定：不需要跑，预测是假设的产物（2026-11-08）
+## 99.1. LV_L0「补齐 2 条」判定：不需要跑，预测是假设的产物（2026-11-08）
 
 用户要求验证 T51 留下的预测 `LV_L0 缺位对 = {(0,0,2),(1,0,6)}`。离线查完，结论是**不必跑 Vivado**：
 
@@ -3518,7 +3575,7 @@ wall 226 s   ok=32 fail=0   (MAXP=32 / 44 核)
 `GFAN0/GFAN1` 15 vs 16、`LH0` 11 vs 12、`LVB_L0` 17 vs 18、`LV_L0` 9 vs 10、`LV_L18` 10 vs 12。
 
 
-## 100. INIT 表跨 tile 类型验证（2026-11-08）
+## 100.1. INIT 表跨 tile 类型验证（2026-11-08）
 
 两构建法（INIT=0 vs 0xDEADBEEFCAFEBABE）在另外两个 tile 上验证：
 
@@ -3537,7 +3594,7 @@ wall 226 s   ok=32 fail=0   (MAXP=32 / 44 核)
 文档：`v7re/steps/T54_INIT_TILE_TYPE_CHECK.md`。
 
 
-## 101. 对象澄清：主线是 PIP 开关盒，INIT 是另一回事（2026-11-08）
+## 101.1. 对象澄清：主线是 PIP 开关盒，INIT 是另一回事（2026-11-08）
 
 用户指出「我想测试的是同类 tile，现在做的不是 pip 开关盒吗」——判断正确。澄清两者的观测对象：
 
@@ -3558,7 +3615,7 @@ wall 226 s   ok=32 fail=0   (MAXP=32 / 44 核)
 比对归一化后的格集合（判据仍是 missing=0 且 extra=0）。
 
 
-## 102. CLBLL_L 的 LUT INIT 布局独立实测（2026-11-08）
+## 102.1. CLBLL_L 的 LUT INIT 布局独立实测（2026-11-08）
 
 T54 用 CLBLM 表预测 CLBLL 失败（13 缺/13 多）→ 本轮用 CLBLL 自己的 64 个单最小项构建重建。
 
@@ -3572,7 +3629,7 @@ T54 用 CLBLM 表预测 CLBLL 失败（13 缺/13 多）→ 本轮用 CLBLL 自�
 产物：`v7re/steps/T57_CLBLL_INIT_LAYOUT.md`、`v7re/steps/clb_init_clbll_x8y20_a6lut.json`。
 
 
-## 103. 计划 r1 收敛：T2b 由离线数据直接回答（2026-11-08）
+## 103.1. 计划 r1 收敛：T2b 由离线数据直接回答（2026-11-08）
 
 计划的 T2b 问题是「同类型 tile 的 PIP 位坐标可否直接复用」。这个问题**已有实测答案**，不需要新构建：
 
@@ -3586,7 +3643,7 @@ T54 用 CLBLM 表预测 CLBLL 失败（13 缺/13 多）→ 本轮用 CLBLL 自�
 不可复用的只有「族内行序」（36 种，per-family 固化）。
 
 
-## 104. 计划 r2 收口（2026-11-08）
+## 104.1. 计划 r2 收口（2026-11-08）
 
 计划 wp-eb065939（同类 tile / PIP 开关盒）重规划 r2：T5、T6 因上游取消而撤销，其目标已由主 Agent 直接完成。
 最终 3 项 done（T1 对象判定、T2b 同类型 tile 可移植性、T3 脚本盘点）。
@@ -3599,7 +3656,7 @@ T54 用 CLBLM 表预测 CLBLL 失败（13 缺/13 多）→ 本轮用 CLBLL 自�
 
 统一结论：**地址 = 块基址 + 族/类型内相对坐标；不可复用的只有 per-family 行序与 per-tile-type 排列。**
 
-## 105. 「两个一样的」指代解析：三条互斥候选（2026-11-08）
+## 105.1. 「两个一样的」指代解析：三条互斥候选（2026-11-08）
 
 用户原句（status 101 末尾的实验提议）里的「两个一样的」有两种以上读法，锁错则机制解释作废。
 逐条落成候选、判定条件与记录位置：`v7re/steps/T1_REFERENT_RESOLUTION.md`；复算脚本
@@ -3866,7 +3923,7 @@ CLB site family 是 f-string 自造名（`step03_pip/gen_site_cells.py:49`，79 
 数据：`out/hclk_diff_raw.json`、`out/hclk_regions.json`、`out/hclk_mux13_cells.json`；脚本：`hclk_cells.py`、`_q_hclk_mux13.py`、`_q_hclk_a1c.py`、`_q_hclk_a1h.py`、`_remote_hclk_{diff,regions,pips}.sh`。
 
 
-## 114. y24/y25/y26 实验：+1 位移确认正确；残差归因改为 BEG 长线层（2026-11-09）
+## 114.1. y24/y25/y26 实验：+1 位移确认正确；残差归因改为 BEG 长线层（2026-11-09）
 
 `SLICE_X12Y{24,25,26}` 各一对构建（INIT 0 / 0xDEADBEEFCAFEBABE），实测：
 
@@ -3961,7 +4018,7 @@ all_int_tiles_check.py --bit cov2.bit → 12565 tile（23.66%）、64686 位、�
 证据表：FULL=4/6/7/0x1FF8/0x1FF9/0x0FFC 在两种模式下各读数（见 `step03_pip/S28_DSP_FIFO_ABSOLUTE.md` §3.1）。
 ⇒ ② 的 BRAM 属性面剩余：`CASCOUT_ARD_ACTIVE`(26,170)、`CASCOUT_BWR_ACTIVE`(26,172) 未测（需 FIFO36 级联设计），其余全部完成。`v7_verified` 109→110。
 
-## 115. S29 半带边界探针：残差不是字位移伪影（2026-11-09）
+## 115.1. S29 半带边界探针：残差不是字位移伪影（2026-11-09）
 
 问题（承 §113）：高半区 20 个残差位是否来自 `wof` 的 +1 位移边界（y%50=24 vs 25）。
 
@@ -3978,7 +4035,7 @@ all_int_tiles_check.py --bit cov2.bit → 12565 tile（23.66%）、64686 位、�
 产物：`/opt/lzh/step07/br6/{yh24,yh25}.bit`、`dif.py`、`ydiff.json`（994 格）。
 
 
-## 117. 尾部 CRC 被学习出来（2026-11-09）
+## 117.1. 尾部 CRC 被学习出来（2026-11-09）
 
 新增 `v7re/scripts/crc_learn.py`、模型 `v7re/steps/crc_model.json`。
 
@@ -4043,3 +4100,2978 @@ INT_L 96 个 BEG 族的编码规则已抽齐：
 span 的物理含义：span2 = 8 帧×2 位，span4/6 = 6 帧×4 位 —— 帧与位两种资源的权衡。
 
 文档：`v7re/steps/T61_BEG_SPAN.md`。
+
+## 119. BEG 变体 32 族列归属收口：640/640 由名字推出（2026-11-09）
+
+【数据事实】96 个 20 源 BEG 族中最后 32 个「变体族」（`EE4BEG0..3`、`WW4BEG0..3`、`NE6/NN6/NW6/SE6/SS6/SW6` 各 `0..3`）的列归属此前只能逐族查表；现在**全部由名字推出，640/640 条 (源→列) 0 差异**，INT_L 与 INT_R 各 32/32。
+
+规则（实现在 `step03_pip/gen_slots.py::beg_variant_cols()`）：
+- C0/C1：6 条 `len2` 按「轴 vs 斜」3+3；方向位 `b(D)`：{EE,NE,WW,SW} 轴进 C1，{NN,NW,SE,SS} 轴进 C0；`LOGIC_OUTS` 的 `L_i/L_{i+4}` 与 `L_{i+8}/L_{i+12}` 跟随同一方向位。
+- C2：长线（4 行表，仅由族序号定）+ 方向桶表（4 桶）给出的 3 条长距离线。
+- C3：余下 3 条长距离线 + `L≥16` 的两格（`16+((i+2) mod 4)` 与 `+4`）。
+
+复算：
+```
+python step03_pip/gen_slots.py                 # [mux] 64/64；[BEG] 96/96，需回落 0（变体规则 32/32）
+python step03_pip/gen_slots.py --tile INT_R    # 同（需线名归一：LOGIC_OUTS0→LOGIC_OUTS_L0、LV0→LV_L0）
+```
+
+三档账更新：公式 **3,456/3,634 = 95.1%**（原 2,816 = 77.5%）；表只剩复合 6 族 96 条；未解仍 82 条（6 个长线族）。
+
+边界：只覆盖 `len2` 六线齐全的族；两张常数表（4+4 行）为什么按该桶分组【未测】；6 个长线族与 6 个复合族仍未进「公式」档。
+
+详见 `step03_pip/PIP_REUSE_STRUCTURE.md` §14。
+
+
+## 119.1. CRC 位置批量采集（2026-11-09）
+
+新增 `v7re/scripts/crc_harvest.py`：从「单最小项」设计族里自动采集 `c(p)` ——
+组内每个文件与基线差分，若只涉及 1 个数据位置，则 `c(p) = CRC(file) ^ CRC(base)`。
+
+**采集结果**（7 组、446 份位流）：
+
+| 组 | 文件 | 新增位置 |
+|---|---|---|
+| `_sb` | 65 | 64 |
+| `_lk` | 64 | 0（与 `_sb` 同位置） |
+| `_clbll` | 65 | 64 |
+| `_t24` | 65 | 32 |
+| `_sr4` | 65 | 64 |
+| `_m2` | 65 | 0 |
+| `_initbits` | 112 | 7 |
+| 合计 | | **231** |
+
+全部 231 个贡献值均非 0（先前一次采集全 0 是 bug：取到了末尾那个**常量** CRC 包；
+正确做法是取**第一个** `0x30000001`）。
+
+**LFSR 递推检验（负结果）**：对 208 对相邻位尝试 4 种 GF(2) 移位关系
+（`x·` / `x⁻¹·`，两种多项式表示）→ **0 命中**。即 CRC 不是对 payload 做的教科书式 LFSR，
+或它的覆盖区间包含非 payload 数据。
+
+**覆盖上限的结构性约束**：N 份位流最多给 N−1 条独立方程，所以位置覆盖随
+**独立设计数**增长，而不是随配对数增长。要覆盖全部 3,634 个 INT 格，需要约 3.6k 个设计。
+
+文档：`v7re/steps/crc_positions.json`（231 位置），本条记入 STATUS。
+
+## S31 INT tile 结构同质性 + 覆盖度普查（提示词执行）
+
+报告：`step03_pip/S31_INT_TILE_UNIFORMITY.md`；提示词：`step03_pip/PROMPT_INT_TILE_UNIFORMITY.md`。
+
+- **族集合上下文无关**（14 tile × 6 类位置：普通 CLB / BRAM 邻接 / IO 夹缝 / 跨 band /
+  PCIE 邻接 / IO 邻接）：`get_pips` 全部 **3,737 pip / 216 族**，族名集合逐字节相同。
+- **"216 vs 172" 是表定义差异**：多出的 44 族全是**单源常通抽头**
+  （BYP_BOUNCE0-7 / BYP_L0-7 / FAN_BOUNCE0-7 / FAN_L0-7 / GCLK_L_B6..B11_EAST/WEST），
+  源数均 = 1、无选择位；172 = 可配置族。
+- **配置位覆盖 1,598/1,664 = 96.03%**；66 个缺口全在 **offset 0..3**，stride-4
+  （off0/2 取 4k，off1/3 取 4k+3），与 offset 4..15 控制区同构 → 判为控制/时钟类，
+  推断是 V7 多出的 GFAN/GCLK 档位（【推断，待验】）。
+- **绝对态判读**（`_s8v0.bit`，142 个 INT tile）：unique **193**、ambiguous **0**、
+  unexplained(有位=1 但无源匹配) **25**、all-zero 默认态 24,206。
+- 基址覆盖仍 **142/53,100 = 0.27%**（S30 结论：不可推导）。
+- 下一步：① 25 个 unexplained 定性 ② 66 缺口的最小实验（GFAN/GCLK 入口）③ 基址表按
+  "命中数最多 + 平局看链"批量扩张 ④ artix7 侧验证"44 常通"是否通用。
+
+### S31 修订（T4b）：命中数不是基址判别器
+
+- 25 条 unexplained 全部是**半码**（一个应为 1 的胞为 1、配对的组/成员胞为 0），落在 offset 0/4/5/6/7，
+  与 66 个缺口（offset 0..3，stride-4）**零重叠**；每胞在表中唯属一家族（非跨族共享）。
+- **决定性反例**：把同一块 31680 当 `INT_R_X9Y11`/`INT_L_X8Y11`/`INT_L_X6Y11`/`INT_R_X7Y11`
+  解，四者都得 **12 unique**。因所有 INT tile 家族位布局相同（T3 结论），匹配成功只证布局一致、
+  不证基址正确。
+- ⇒ 撤回 S30「命中数最多 + 平局看链」作为 INT tile 基址仲裁口径；T4 的 193 unique 降级为
+  「布局一致性证据」；基址改由**列组成 + 块序号**推导，实测表转为校验集，验收用 `route_I*.txt`
+  逐 token 复现（S24 的 6/6）。
+
+
+## 120. 全部 tile 类型的 PIP 编码形状 + 可写范围 + 回归（2026-11-09）
+
+新增 `v7re/scripts/tile_pip_lawscan.py`，产物 `v7re/steps/tile_pip_lawscan.json`（636 family，10 个 segbits）。
+
+| tile | family | 源/族 | 格/族 | 每源格数 | 帧跨度 |
+|---|---|---|---|---|---|
+| INT_L | 172 | 21.1 | 9.3 | {2:2820, 4:816} | 10 |
+| DSP_L | 79 | 5.5 | 5.6 | {1:428, 2:4, 3:4} | 2 |
+| BRAM_L | 63 | 5.6 | 6.4 | {1:220, 2:130} | 1 |
+| CLBLL_L | 2 | 338 | 324 | {1:632, 2:44} | 8 |
+| CLBLM_L | 2 | 348 | 333 | {1:650, 2:45, 3:1} | 8 |
+
+**分三档**：INT 必然多格（2/4 位）；BRAM 半 one-hot；DSP/CLB 基本 1 位 one-hot。
+即「一条 PIP 几位」不是全局常量，而是**随 tile 类型变化**：只有 switch box 用二维行列寻址。
+
+**回归**（16 目录随机 32 份位流，解码→回写→逐字节比对）：**OK 32 / 不符 0 / 异常 0**。
+
+**下一步优先级**：DSP（验证 one-hot 成本最低）→ BRAM → CLB 站内 PIP。
+
+文档：`v7re/steps/T62_TILE_PIP_SHAPES.md`。
+
+
+## 121. T63 —— DSP48 PIP 编码实测（2026-11-09）
+
+9 个构建（`/opt/lzh/v7re/work/dsppip3`，全部 `DSP48_X0Y138`）对照 CEAD/CEALUMODE/CECTRL/CED/CEM/CEP/CEC/CEINMODE。
+
+**结果**：每次切换只动 1–2 格；两种形态 —— ①单格 one-hot（CEAD/CEALUMODE/CED/CEINMODE：0 态与 1 态各一格，位置不同）；
+②零值默认（CECTRL/CEM/CEP/CEC：0 态有 1–2 格，1 态无格 = 缺省）。DSP 站点 = 帧 21488–21495（8 帧）。
+
+**结论**：DSP 的 PIP 基本「一条一个位」，与 lawscan 预测 `{1:428, 2:4, 3:4}` 一致；不存在 INT 那种复用。
+
+文档：`v7re/steps/T63_DSP_PIP.md`。
+
+## S32 寻址层定案：块 = (列, band)，Y 只改 word（2026-11-09）
+
+**实测（Y 差分，yA=Y20 / yB=Y24，其余全同，引脚钉死）**
+- 两版 INIT 落在**同一组帧** `32428..32431`（块基址 32396 的 offset 32..35）；
+- `yA` 只在 word **40**（=2×(20%50)）有 `0xf0f0`，`yB` 只在 word **48**（=2×(24%50)）有 `0xf0f0`，word 41/49（parity=1）全空；
+- ⇒ `word = 2*(Y%50)` 直接实测；**Y 不改变块基址**。全片差异 31 帧（INIT 4 帧 + 布线 + IO 入口）。
+
+**结构（每 band 帧预算闭合）**
+- 每 band 恰 **5,180 帧**；块尺寸签名：
+  - band 0/3/4/5/6：111×36 + 35×28 + 2×30 + 2×72 = 5,180（150 块）
+  - band 1/2（含 PCIE）：105×36 + 35×28 + 1×30 + 2×72 + 1×246 = 5,180（144 块）
+- 36=CLB 列块，28=BRAM/DSP/接口，72=IO 列，246=PCIE 区，30=边缘接口。
+- 块基址 = band 起点 + 前缀和 ⇒ 每 band 只需 1 个锚点，其余全部可推导。
+
+**144 条实测 tile→base 的复核**
+- **138/144 恰好是块基址**；6 条例外：5 条落在 IO 72 帧块内部（`27354 = 27322+32`，INT_R_X33 的子窗口）、1 条 `31760 = 31788−28`。
+- 规则预测（INT_L→东侧 gap 块否则西侧 CLB；INT_R→西侧 gap 块否则西侧 CLB）命中 **110/144**；剩余 34 条集中在"两 CLB 块相邻、INT 池落在其中一个"的列，需按列实测。
+
+**下一步**：用"候选基址 + 活跃位落点"对 34 列做自动消歧（现有 7,901 份 .bit 与已解码活跃 PIP 足够）。
+
+
+## 122. T64 —— BRAM PIP 编码实测（2026-11-09）
+
+9 个构建（`/opt/lzh/v7re/work/bram4`，同一 RAMB36E1 站点）对照 ENARDEN/ENBWREN/REGCEAREGCE/REGCEB/RST×4。
+
+**结果**：没有 1 格的族 —— EN/RST 类各 **2 格**（同帧 1019 的 word 13 与 16，两半区各一位）；
+REGCE 类各 **4 格**（2 半区 × 2 帧：1012/1013 与 1016/1017），且 REGCE=1 时格**消失**（缺省态表示 1）。
+
+**解读**：BRAM 的多位来自物理结构（一个 RAMB36 = 两个 RAMB18 半区），不是多源共享；
+与 INT 的复用机制无关，**BRAM 也没有 PIP 复用问题**。
+
+踩坑：空连接 `()` 触发 Synth 8-2543；`ADDRARDADDR` 最高位必须绑 1（DRC PDCN-135/136）；`CASCADE_ORDER_A` 在 RAMB36E1 不存在。
+
+文档：`v7re/steps/T64_BRAM_PIP.md`。
+
+## S33 块归属按列自动消歧（2026-11-09）
+
+**做法**：不用命中数仲裁（S31 T4d 已证会退化），改用「族模式被解释的条数」——对每个候选基址，统计该 tile 上已知活跃家族里"恰好有一个源的全部位都匹配"的条数，按列（同列所有 Y 求和）取最大。
+
+**结果**：35 个有活跃 PIP 的列中 **34 列唯一确定、1 列打平**（`INT_R` band1 x68：27122 vs 27150）。
+样例（`v7re/blockmap.py` 的候选顺序 → 实测胜者）：
+
+| 列 | 胜出基址 | 块类型 |
+|---|---|---|
+| INT_L 0/x17 | 31680 | clb 36 |
+| INT_L 0/x21 | 31752 | clb 36 |
+| INT_L 0/x37 | 31960 | gap28 |
+| INT_L 0/x51 | 32168 | gap28 |
+| INT_R 1/x85 | 27322 | io72 |
+
+**结构含义**：INT 的 PIP 家族偏移集中在 0..15（IMUX 家族在 16..25），而 CLB 自身用 16..35 ⇒ **INT tile 与相邻 CLB 共用同一个 36 帧块**，不存在"每个 INT 一个块"。这解掉了"111 CLB + 35 gap 块 vs 222 个 INT tile"的数量矛盾。
+
+**遗留**：①1 列打平；②需验证相邻 INT_L/INT_R 同块时其 cell 是否真的不相交（若相交则共享会引入歧义，须由 word/offset 分段解释）。
+
+### S33 续：INT_L / INT_R 是否同一张表（实测）
+- 两者各 **12,168 条 cell**，覆盖的 `(frame_off,parity,bit)` 坐标集合**完全相同**（1,598 个，重叠率 100%）。
+- 但家族集合只共享 60/172（**112 个家族名只在单侧出现**），且共享的 116 个家族里 **0 个**两侧 cell 集合相同。
+  ⇒ 不是同一张表的复制；是**同一套物理坐标、两侧各自命名/分配家族**。
+- 抽样对比：`INT_L_X20Y40` 活跃 cell 9 个、`INT_R_X21Y32` 9 个，**交集 0** ⇒ 两侧同时占用同一块时当前样本不冲突。
+- 结论（暂定）：**一个 36 帧块可同时承载相邻 INT_L/INT_R 两侧**（两侧家族私有、坐标池共享），这也解释了"111 CLB + 35 gap 块"对比"每带约 152 个 INT 列"的数量差。
+- 待验证：构造同时激活 INT_L_X20 与 INT_R_X21 两处 PIP 的设计，差分后若只有 1 个块变化 ⇒ 共享成立；若 2 个不同块变化 ⇒ 各侧独占块。
+
+### S33 续 2：列的配对规律（实测 34 列）
+band0 已解列里 INT_R 基址大多 = 同侧 INT_L 基址 **+36**（X17/18 31680/31716、X21/22 31752/31788、X26/27 31824/31860、X31/32 31888/31924、X41/42 32024/32060、X46/47 32096/32132、X56/57 32232/32268、X61/62 32296/32332）。
+**四处例外（两侧同址）**：31960、32168、32368、32568 —— 全是 **gap28 / io72** 块（31960 gap28、32168 gap28、32368 gap28、32568 io72）。这四块上 INT_L 与 INT_R 的消歧分数都独立取胜（8:0 与 7:1 等），不是噪声打平。
+
+⇒ 规则：**普通列**两侧各占一个 36 帧块（相邻）；**gap 列**两侧共用同一个 28/72 帧块。
+
+**未解冲突**：两侧表各 1,598 cell 且偏移都覆盖 0..25，共用 28 帧块在容量上放不下 ⇒ 二者必有一侧在该块内使用不同的 **word 子区间**（如一侧 word 0..49、另一侧 50..99）。这一条**未验证**，下一步实验：构造只激活 INT_L_X20 与只激活 INT_R_X21 的两份设计，各自与基线差分，看帧号是相差 36（普通列）还是同块不同 word（gap 列）。
+
+
+## 123. T65 —— HCLK_CMT 48 源编码测量（2026-11-10）
+
+13 个构建（MMCM CLKOUT0..6、PLL CLKOUT0..5，均 `-part xc7vx485tffg1157-3`）全部成功。
+踩坑四条：`tail -5` 需 `-n 5`；BUFH 无独立站点（实为 `BUFHCE_X0Y72`）；
+FF 必须与 CMT 同区域（`SLICE_X0Y349`）；缺 `create_clock` 会报 PDRC-29/38。
+
+**PLL 系列干净可解**（以 p0 为基准，每份恰好 2 格）：
+第一级 `bit = 25 + n//2`、`帧 = 22144 + n%2`（6 源 3 位 × 2 帧，零冲突）；
+第二级在帧 22146 word 76..79、bit 6（偶 n）/22（奇 n），word 顺序 77,77,78,78,79,76，**映射未闭合**。
+
+**MMCM 系列**（以 m0 为基准，2–3 格）：第一级同在 (22144/22145,51,25..31)，
+第二级在帧 22147 word 27..30、bit 9/25。两级结构与 PLL 同构。
+
+**边界**：48 源只测到 13 个；剩余 35 个（CK_BUFHCLK/CK_IN/CCIO/PLL6-7）在单区域设计里不被选中（T50）。
+第二级未闭合 → 暂不能做「源 → 位坐标」正向预测。
+
+**时钟 tile 的复用强度**（回答用户问题）：`CLK_L0/L1`、`CTRL_L0/L1`、`GFAN0/1` 各 16 源仅用 8 格，
+单格最多被 12 个源共用 —— 高于 INT mux（8–18 中位 5.56），是全芯片复用最密的一类。
+
+文档：`v7re/steps/T65_HCLK_48SRC.md`。
+
+
+## 124. 主线总报告 —— 全 tile 类型 PIP 位编码规律（2026-11-10）
+
+产出 `v7re/steps/ALL_TILE_PIP_ENCODING_REPORT.md`（v1.0，11 章）：摘要三结论 / 术语与判据 /
+INT 二维寻址（含列码=线长、行=角色、可计算公式、12,565 实例同规则性）/ BEG 段数编码 96 族 /
+时钟族最密复用 / DSP one-hot / BRAM 半区配对 / 跨类型统计 636 family / 读写闭环 /
+六条边界 / 四条方法学教训 / 复现清单 / 「复用到底怎么复用」一句话回答。
+
+报告内三条命令已实跑核对（verify_all_pip 172/172 未覆盖 0、pip_reuse_law 1536/1536、
+all_int_tiles_check 12565 tile 残差 0）。
+
+
+## 125. T66 —— INT_L 与 INT_R 是同一套布局（2026-11-10）
+
+`law_cells` 逐族对账（family 名去 `_L/_R` 后）：172/172 配上、**格集合 172/172 完全相同**、
+格宇宙两侧都是 1,598 格且相等、每源格数分布一致 `{2:2818, 4:816}`、
+同名 `(family,source)` 格集合 **3,586/3,586 零差异**。
+
+唯一差异：`CLK0`/`CLK1`/`GFAN0`/`GFAN1` 四个时钟族的源带 `WEST`/`EAST` 后缀（物理走向不同），
+去方向后缀后仍相同。
+
+位流侧（更强）：`verify_all_pip.py --tile-type INT_R --normalize` → mux 336/0 不符、beg 408/0 不符。
+
+结论：两侧同一套布局，解码前只需做线名归一化（去 `_L`/`_R`）。
+
+文档：`v7re/steps/T66_INT_L_R_SAME_LAYOUT.md`。
+
+### S33 续 3：L/R 同名对是同一个物理 mux（决定性）
+把 181 条已解 PIP 按「(块基址, 该家族全部 cell 坐标)」去重：
+- **181 → 140 个唯一物理配置**，41 组重复，**全部**是 `INT_L_Xn ↔ INT_R_Xn+1` 且**家族名、源名、cell 坐标完全一致**（例：`INT_L_X20Y15 NE6BEG0` 与 `INT_R_X21Y15 NE6BEG0` 都是 9 个坐标 `(2,0,5)(3,0,4)(3,0,5)(4,0,5)(4,0,6)(5,0,4)…`）。
+- 41 组跨两侧，家族名无一例外相同 ⇒ **一对名字 = 一个物理 mux**。
+
+据此定论块模型：
+| 列类型 | INT_L 块 | INT_R 块 | 说明 |
+|---|---|---|---|
+| 普通列 | CLB 块（如 31680） | +36（如 31716） | 两侧各一个 36 帧块，物理上是相邻两个 SB |
+| gap 列 | 同一块（如 32168、32368、32568） | 同左 | 一个 26 帧池被两侧名字共用，位只写一次 |
+
+**口径修正**：覆盖率/验证计数必须按 (块基址, cell 坐标) 去重，否则同一个物理位被名字对算两次（181 vs 140，虚高 29%）。口径影响待重算：`s13_solve2` 的 98/181 是按名字计的，物理口径需把覆盖集合也去重后再算（分子去重后必然 <98），本条列为待办。
+
+
+## 126. 主线报告 v1.1 —— 增补 §2.7 左右对称性（2026-11-10）
+
+`v7re/steps/ALL_TILE_PIP_ENCODING_REPORT.md` 升到 v1.1：
+新增 §2.7「INT_L 与 INT_R 是同一套布局」（172/172 格集合相同、3,586/3,586 同名源格集合零差异、
+位流侧 mux 336 / beg 408 零不符），并把 §9 边界第 6 条改写为「只剩命名差异」。
+
+### S34 INT tile 覆盖度体检（能否说"一块 tile 的所有 PIP 都覆盖"）—— 结论：不能
+
+同一块 `INT_L` tile 两套数据对照（本地 `E:\v7work\pip17.tsv`，来自远端 `link_design` 后 `get_pips`）：
+
+| 口径 | 家族数 | PIP 数 |
+|---|---|---|
+| 本项目表（artix7 segbits 迁移） | 172 | 3,636 |
+| Vivado `get_pips` | 209 | 3,737 |
+
+**配对交集 = 0**（(family,src) 对完全不相交）。原因不是精度，是**方向约定互补**：
+- Vivado 侧：111 个 `*END*` 目的线家族（2,344 条 PIP，全部多源，如 `EE2END0` 32 源），`*BEG*` 目的线家族只有 2 个（50 条）；
+- 本项目表：90 个 `*BEG*` 目的线家族（1,800 条）+ 82 个旁路/全局家族（1,836 条）。
+
+⇒ **本项目只建了"段起点（BEG）"这一半的位表**；"段终点（END）"那一半（111 家族 / 2,344 条）没有位表，走线器把它们当作 tileconn 的**确定性落地**处理。
+
+这解释了为什么单网场景能 6/6 精确（每块 tile 只有一条网，落地被到达线唯一决定），但这**不等于**覆盖了 tile 上所有 PIP；多网/扇出场景会出现真正的歧义。
+
+**下一步判定实验**：取 `EE2END0`（Vivado 报 32 源），在真实 bitstream 上找它是否有配置位；若有 ⇒ 是缺口；若无（被线名唯一决定）⇒ 现有"落地固定"假设成立。
+
+
+## 127. T67 —— PIP 覆盖盘点（2026-11-10）
+
+全器件可配置 PIP 实例 **207,253,149**；**INT_L+INT_R = 95.7%**（各 26,550 实例 × 3,737 PIP）。
+已覆盖：INT 172 family / 3,634 feature 100%、同规则性 12,565 实例零残差、左右对称 172/172、
+GCLK 位与 BUFGCTRL 32 site。
+未覆盖按规模：CLB 站内（5.7M 实例）、DSP（1.1M）、BRAM（1.0M）、CLK_HROW（2,840/型）、
+HCLK_CMT 剩余 35 源、IOI/IOB、PCIE、GTX、CMT_TOP、CFG_CENTER、MONITOR。
+结构性判断：INT 之外多为 one-hot（不复用），缺口代价小；仍有复用的只剩 HCLK_CMT 与 CLK_HROW/HCLK_*。
+
+文档：`v7re/steps/T67_PIP_COVERAGE_GAPS.md`。
+
+
+## 126.1. T68 —— CLB 站内 PIP 六构建对照（负结果，2026-11-10）
+
+6 个构建（`LOCK_PINS {I0:A1..A6}`，回读 6/6 正确）差分按区域分类：
+
+| 对比 | 总差 | INT 侧(0..25) | CLB 侧(26..71) | 块外 |
+|---|---|---|---|---|
+| a2 | 12 | 6 | 2 | 4 |
+| a3 | 12 | 6 | 2 | 4 |
+| a4 | 16 | 8 | 4 | 4 |
+| a5/a6 | 32 | 14 | 2 | 16 |
+
+**CLB 侧格在 a2–a6 中完全相同**（`(44,41,2) (49,41,3)`），不随引脚变化 →
+LUT 输入选择完全由 INT 侧 IMUX 承担；`CLBLM_L_A <- A1..A6` 这 24 条 CLB 模板 PIP
+**不是独立可配置开关**（属结构连线）。
+
+未完成：BYP/DMUX/SR/CLK 四类 CLB 站内 PIP 未判（本轮未导 `.pips`）。
+
+文档：`v7re/steps/T68_CLB_INTERNAL_PIP.md`。
+
+### S34 续：EE2END0 判定实验（第一次失败，原因已定位）
+- 设计：`e8`（u1@SLICE_X8Y20）与 `e10`（u1@SLICE_X10Y20），其余全同。
+- LOC 确认生效（日志 `PRE u1 SLICE_X8Y20` / `SLICE_X10Y20`），两份 .bit 的 **md5 不同**，但 **FDRI 数据 0 位差异**，不同只有 ASCII 头 3 字节（构建时间戳）。
+- 根因：`opt_design` 把两个 LUT6 优化掉了 —— 日志里 `place_design` 之后 `get_cells -filter {REF_NAME =~ LUT*}` 返回 **空**（PRE 有、POST 无），所以没有任何 LUT INIT 被写入，两份配置自然完全相同。
+- 修法：源文件加 `(* DONT_TOUCH = "true" *)` 到实例上（不是只加在 wire 上），并在 tcl 里 `set_property DONT_TOUCH true` 双保险；重跑后再差分。
+- 结论：本条实验**尚无结论**，不作推断。
+
+
+## 127.1. T68 结论更正 —— CLB 站内 PIP 全部是伪 PIP（2026-11-10）
+
+用 `prjxray_ref/artix7/ppips_*.db` 与 routing 模板逐名比对：
+
+| tile | 模板 PIP | ppips | kind | 真 PIP |
+|---|---|---|---|---|
+| CLBLM_L | 151 | 151 | hint 58 / always 93 | **0** |
+| CLBLL_L | 146 | 146 | hint 58 / always 88 | **0** |
+| INT_L | 3,737 | 108 | default 64 / always 44 | 3,629 |
+| BRAM_L | 974 | 794 | always 794 | 180 |
+
+**CLB 两个 tile 的模板 PIP 集合与 ppips 集合完全相同，没有一条可配置开关。**
+六构建实验（`LOCK_PINS I0:A1..A6`）里 CLB 侧无随引脚变化的位，原因就在这里。
+
+BRAM 有 180 条真 PIP 尚未覆盖（前期只测了 8 个引脚开关）。
+
+文档：`v7re/steps/T68_CLB_INTERNAL_PIP.md`（已重写）。
+
+
+## 128. T69 —— BRAM 的 180 条真 PIP（2026-11-10）
+
+BRAM_L 模板 974 条 PIP − ppips 794 = **180 条真 PIP**，全部是
+`BRAM_ADDRARDADDR{L,U}n / BRAM_ADDRBWRADDR{L,U}n <- {CASCINBOT, CASCINTOP, IMUX}` 三源 mux，
+共 60 个目的线。
+
+prjxray A7 segbits 给出编码形状：IMUX=`000`、CASCINBOT=`101`、CASCINTOP=`110`（每 mux 3 位）。
+
+**这些 PIP 在普通设计里就在用**：`_bramcasc/c0.pips` 里有
+`BRAM_CASCINBOT_ADDRARDADDRU6->BRAM_ADDRARDADDRL6`、`BRAM_CASCINTOP_ADDRBWRADDRU9->BRAM_ADDRBWRADDRL9`。
+
+V7 验证受阻：`RAMB36E1` 无 `CASCADE_ORDER_A/B` 参数；`RAM_EXTENSION=NONE` 时 `ADDRARDADDR[15]` 必须接 1
+（DRC PDCN-135/136）。正确配方是「NONE + 15 位地址」对「LOWER/UPPER 堆叠两片」。
+
+文档：`v7re/steps/T69_BRAM_REAL_PIPS.md`。
+
+
+## 129. T69b —— BRAM 级联 mux 的 V7 实测受阻（2026-11-10）
+
+- n1（单 RAMB36E1、NONE、36 位、`ADDRARDADDR({1'b1,addr[14:0]})`）构建成功，
+  `.pips` 共 2,153 行，其中 **38 行是 CASC 类**，覆盖 **8 个目的线**
+  （`CASCINTOP_ADDRARDADDRU9`、`CASCINTOP_ADDRBWRADDRU6/U9`、`CASCINTOP_ADDRBWRADDRU1` 等）。
+  ⇒ 证明 60 个地址 mux 中至少 8 个在普通设计里落到 CASCINTOP 档。
+- l1/u1（`RAM_EXTENSION_A=LOWER/UPPER`）两种写法都被 DRC 拒：
+  `AVAL-96/97/98/99`（要求 READ/WRITE_WIDTH 为 1，改成 1 后仍报同一 DRC）。
+  ⇒ `RAMB36E1` 无法用 `RAM_EXTENSION` 表达级联，级联必须用 **RAMB18E1 的
+  `CASCADEINLATA/REG` 端口**（这正是 RAMB36E1 没有而 RAMB18E1 有的那一组端口）。
+- 结论：BRAM 的 180 条真 PIP 结构已清、A7 编码形状已知（IMUX=000 / CASCINBOT=101 / CASCINTOP=110）、
+  且在 V7 普通设计里确实在用；**V7 位号仍需一组 RAMB18E1 堆叠设计来测**。
+
+## S35 —— 「以 Vivado get_pips 为标准」对账（2026-11-10）
+
+Vivado 2017.2 对任意 INT tile 给出同一张清单：**209 家族 / 3,737 条 pip**（END 目的 111、BEG 目的 2、BYP/FAN/GCLK 等 96）；已抓 `INT_L_X6Y11`、`INT_R_X7Y12`、`INT_L_X8Y11` 三份逐字节同构（`E:\v7work\pip17.tsv`、`pip2.tsv`）。
+
+本项目表 INT_L 侧 **172 家族 / 3,636 条**：BEG 目的 96 + 其它 76，**END 目的 0**。两份清单是同一 switch box 的两个开口方向（本项目=起段、Vivado=收段），共享名字的 26 个家族源集合也不同（如 BYP_ALT0：24 源 vs 2 源）。
+
+**位级判定实验**（`/opt/lzh/step10/e3/e0..e7`）：同一 `LUT6@SLICE_X10Y20/A6LUT`、六输入并接 `din`，只改 `PACKAGE_PIN`（AF24/AP27/AN27/AP26/AP25/AN28/AM25/AP29）以改变到达的 END 线。变化格 90/0/90/0/98/16/90；**去重 19 个 (frame_off,bit) 全部落在本项目家族内，表外格数 = 0**（CTRL_L1 / LVB_L0 / LVB_L12 / NE6BEG0 / EE4BEG0 / SR1BEG_S0 / FAN_ALT0 / IMUX_L1 / IMUX_L2 / BYP_ALT4）。
+
+⇒ Vivado 多出的 111 个 END 家族（2,344 pip）**不占配置位**（tileconn 固定落地）；本项目位表即该块可配置选择的完备集，「以 Vivado 为标准」在位级不新增任何位。副产物：帧内 `word 50` 随帧内容变化 ⇒ 帧级校验/ECC；e2/e4 与 e0 配置全同 ⇒ pad→track 非一一映射。
+
+报告：`step03_pip/S35_VIVADO_STANDARD_CHECK.md`。遗留：66 个 offset 0..3 未覆盖 cell 本轮无命中；Vivado 2 个 BEG 家族与本项目 96 家族未逐一对应（不影响位表）。
+
+
+## 130. T69c —— BRAM 级联档不可由 RTL 控制（2026-11-10）
+
+- `RAMB18E1` 的完整 pin 列表（`get_pins -of_objects [get_cells u_bram]`，120 个）**没有任何 CASCADE\* 端口**：
+  只有 DOADO/DOBDO/DOPADOP/DOPBDOP/ADDRARDADDR[13:0]/ADDRBWRADDR[13:0]/CLKARDCLK/CLKBWRCLK/
+  DIADI/DIBDI/DIPADIP/DIPBDIP/ENARDEN/ENBWREN/REGCEAREGCE/REGCEB/RSTRAMARSTRAM/RSTRAMB/
+  RSTREGARSTREG/RSTREGB/WEA[1:0]/WEBWE[3:0]。
+- `RAMB36E1` 同样没有；`RAM_EXTENSION_A=LOWER/UPPER` 被 DRC AVAL-96..99 拒绝。
+- 结论：**CASCINBOT / CASCINTOP / IMUX 三档是由工具按物理邻接自动选择的，用户侧无法用 RTL 属性或端口强制**。
+  因此这 180 条地址 mux 的 V7 位号，不能靠「属性对照」测，只能靠「两个真实设计的位差」反推。
+
+## 131. BRAM 180 条 mux 的可测路径（唯一可行）
+
+思路：档位随「该地址位是常量还是来自 fabric」而变。
+- n1（现有）：`ADDRARDADDR({1'b1, addr[14:0]})` —— 14 位全部来自引脚，工具给其中 8 个目的线选了 CASCINTOP；
+- 新设计 n3：把高 6 位接常量（`{1'b1, 6'h00, addr[8:0]}`），低 9 位仍来自引脚；
+- 差分后，凡 n1 有 PIP、n3 无（或反之）的 CASC 目的线，就是档位切换集；
+- 再对两个 bitstream 做 BRAM tile 帧差分，得到这些 mux 的位（预期每组 3 位，与 A7 的 000/101/110 形状比对）。
+
+副作用控制：n3 少了 6 个输入引脚，IOB 与部分 INT 布线会变；只看 BRAM tile 帧即可隔离。
+
+## S36 —— 全量 ppip 记录（2026-11-10）
+
+把「不占配置位的连接」统一入库：`v7_law.sqlite` 新表 **`ppips(tile_type,dest,src,kind,source,note)`，共 2,958 行**；导出 `step03_pip/ppips_all.json`（175 KB）与 `ppips_all.csv`（181,734 B）。
+
+| tile_type | kind | 行数 | 来源 |
+|---|---|---|---|
+| BRAM_L / BRAM_R | always | 794 / 794 | artix7 `ppips_bram_{l,r}.db`（CASCOUT→ADDRARDADDR/DO 级联直通等）|
+| DSP_L | always | 560 | **V7 实测**：`get_pips -of_objects [get_tiles DSP_L_X14Y0]` 的 638 家族里 560 个单源（ACOUT→ACIN 级联、IMUX 抽头）|
+| CLBLM_L/R | always / hint | 93+58 / 93+58 | artix7 ppips（always=直通，hint=布线提示）|
+| CLBLL_L/R | always / hint | 88+58 / 88+58 | 同上 |
+| INT_L / INT_R | always | 44 / 44 | artix7 ppips：`BYP_BOUNCE0-7←BYP_ALT0-7`、`BYP_L0-7←BYP_ALT0-7`、`FAN_BOUNCE0-7←FAN_ALT0-7`、`FAN_L0-7←FAN_ALT0-7`、`GCLK_L_B6..B11_EAST/WEST←GCLK_L_B6..B11`；**note 标记 verified_by_v7_get_pips**（S34 的 44 个单源额外家族逐条对上）|
+| INT_L / INT_R | default | 64 / 64 | `X.VCC_WIRE default`＝该家族“空源”默认态 |
+
+三类语义：`always`＝恒连通（无法关闭，配置位不存在）；`default`＝无源时的默认驱动（VCC_WIRE 空源，对应本项目“隐含态”）；`hint`＝布线器提示，不是电气连接（CLB 输入名别名）。
+
+配套导出：`E:\v7work\pip_inv_INT_L_X6Y11.json`（Vivado INT tile 清单 209 家族/3,737 条）、`E:\v7work\pips_dsp_q1.tsv`（DSP tile 794 条/638 家族）。
+
+
+## 132. T69d —— n1/n3/n4 三设计对照：BRAM 地址 mux 位仍不可隔离（2026-11-10）
+
+| 设计 | 地址接法 | CASC 目的线数 | 与 n1 的位差 |
+|---|---|---|---|
+| n1 | `{1'b1, addr[14:0]}`，14 位全来自引脚 | **8**（bit 6/9/14，CASCINTOP） | — |
+| n3 | `{1'b1, 6'h00, addr[8:0]}`，只 9 个输入脚 | **0** | 1,427 格 / 164 帧 |
+| n4 | 同 n3 但保留 16 个输入脚（高 7 位异或到 dummy 输出） | **8**（bit 3/7，CASCINTOP） | 2,553 格 / 223 帧 |
+
+结论：
+1. **档位确实随「该地址位是否可由邻接级联」而变**（n3 把 8 个 CASCINTOP 全变成 IMUX）；
+2. 但位差被 I/O 与整条 INT 布线变化淹没（n1↔n3 1,427 格、n1↔n4 2,553 格，分布在行 0/1/5），
+   **无法从中把 8 个 mux × 3 位 = 24 格分离出来**；
+3. n4 说明工具会自己挑不同的地址位去走级联（n1 选 bit6/9/14，n4 选 bit3/7），
+   用户侧既不能指定、也不能保持恒定。
+
+⇒ BRAM 的 180 条地址 mux 在 V7 上的位号，**用属性/接线对照法测不出来**。
+   可用的替代路线只剩：把 A7 的相对位形（每 mux 3 位、IMUX=000/BOT=101/TOP=110）作为假设，
+   在真实位流上做「解码一致性」检验（例如取两个已知 BRAM 地址不同的设计，用假设位形解码后应能区分）。
+
+## 133. T70：全 14 个 CMT 站点（MMCM/PLL）编码对照（2026-11-10）
+
+- 站点：`MMCME2_ADV_X{0,1}Y{0..6}` 14 个、`PLLE2_ADV_X{0,1}Y{0..6}` 14 个、`BUFHCE` 168 个、clock region 14 个。
+- 28 个设计（CMT→BUFHCE→FDRE）**全部构建成功**；每份 `.pips` 都出现 `HCLK_CMT_MUX_CLK_MMCM0/PLL0 ->> HCLK_CMT_MUX_CLK_13`。
+- 差分（簇内归一化）：MMCM X0 列 4 个 site **30/30 全同**、X1 列 4 个 **30/30 全同**、跨列 4/30；
+  PLL X0 列 6 个 site **292/292 全同**、跨列 0/292。
+- 结论：编码 **per 列 + per 类型** 的常量，与 clock region 的 Y 行无关；全器件只有 4 套布局。
+- 边界：PLL X1 列簇定位受孤立位干扰，暂不可信；未覆盖 `MUX_CLK_MMCM0..13` 各源的选择编码。
+- 文档 `v7re/steps/T70_CMT_ALL_SITES.md`。
+
+### 踩坑（可复现）
+
+| 现象 | 根因 | 修法 |
+|---|---|---|
+| `DRC PDRC-34` VCO 500 MHz 越界 | `CLKFBIN` 接常量→`CLKFBOUT_MULT_F` 默认 5 | 加反馈环 + `CLKFBOUT_MULT_F(10.0)` |
+| `DRC PDRC-43` 同上（PLL） | 默认 `CLKFBOUT_MULT=5` | `CLKFBOUT_MULT(10)` |
+| `Place 30-124` BUFHCE 跨 region | BUFH/FF 交给 placer | 运行时按 region 取 BUFHCE/SLICE 并 LOC |
+| `Place 30-575/172`（仅 X1Y0 两行） | 离时钟脚 AF25 太远 | `CLOCK_DEDICATED_ROUTE FALSE`（含 `clk_IBUF`） |
+
+## S37 —— 用 7,987 个既有 bitstream 反推帧块结构（2026-11-10）
+
+全量扫描 `/opt/lzh` 下 7,987 个完整 bitstream（160 GB，numpy 向量化 3 分钟）：**12,658 / 50,176 帧（25.2%）曾被写过**，16,800 帧带 word50。产物 `E:\v7work\step11_cnt.npy`、`step11_cnt50.npy`、`step11_summary.tsv`。
+
+用 `clb_blocks` + 块间 gap 反推出完整块清单（新表 **`frame_blocks`**）：**1,038 块 / 36,260 帧 = 7 × 5,180 精确闭合**；类型 `clb` 763、`gap28` 245、`io72` 14、`edge30` 12、`pcie` 2、`x36` 2。每 band 尺寸签名：band0/3/4/6 = 111×36+35×28+2×30+2×72；band1/2 = 105×36+35×28+1×30+2×72+1×246；band5 = 110×36+35×28+1×30+2×72+1×36。
+
+占用：clb **720/763**、gap28 236/245、io72/edge30/pcie/x36 全被用过；12,658 个非零帧中仅 **84 个（0.66%）** 落在清单外（band 间 66 帧 padding / fabric 之外）。
+
+地面真值（新表 **`tile_block_gt`**）：4,467 个 bitstream 带唯一 `SLICE_XnYm` ⇒ 100 tile，按“块 offsets 32..35 被写过”投票，**45 个唯一命中**；同列跨 band 各命中一块且随 band 平移（X10 → 31716/5486/10732/26470/21224），X8=31680 与 X10=31716 相差 36 帧 ⇒ 相邻 CLB 列各占独立 36 帧块。
+
+报告：`step03_pip/S37_BITSTREAM_BLOCKMAP.md`。未完成：45 锚点写回 `tile_blocks` 需先定 INT↔列 偏移；84 个清单外帧未定性。
+
+## S38 —— INT tile 基址全量派生（INT_L→gx−1 / INT_R→gx+1，2026-11-10）
+
+**规则（新，7/7 独立锚点验证）**：INT tile 与其相邻 CLB 列**共用同一个 36 帧配置块**。
+
+- `INT_L_Xn`（tilegrid `grid_x = gx`）→ 取 `frame_blocks` 中 `kind='clb'` 且 `grid_col = gx−1` 的块（无则取 |gc−gx+1| 最近的 clb 块）；
+- `INT_R_Xn`（`grid_x = gx`）→ 取 `grid_col = gx+1` 的块（同上最近邻回退）。
+
+验证锚点（与旧 `tile_blocks` 无关的独立真值，全部命中）：
+
+| INT tile | grid_x | 预测块 base | 真值 base | 来源 |
+|---|---|---|---|---|
+| `INT_L_X6Y11` | 17 | 31680 | 31680 | S24 走线 6/6 |
+| `INT_R_X7Y12` | 18 | 31716 | 31716 | S24 走线 6/6 |
+| `INT_L_X28Y51` | 72 | 27186 | 27186 | S13 解码 |
+| `INT_R_X31Y51` | 78 | 27286 | 27286 | S13 解码 |
+| `INT_L_X10Y11` | 26 | 31824 | 31824 | S13 解码 |
+| `INT_L_X12Y19` | 31 | 31888 | 31888 | S13 解码 |
+| `INT_R_X25Y40` | 62 | 32332 | 32332 | S13 解码 |
+
+结果：**53,100 个 INT tile 全部派生成功（0 miss）**，写入 `tile_blocks`，`source='derived_gc'`；旧 144 条 `measured` 与之重叠 142 条、仅 **73 条一致** ⇒ 坐实旧 measured 表约一半是歧义解码产物（S33 结论的量化确认）。
+
+结构自洽检查（同 Y 的 `INT_L_Xn` ↔ `INT_R_Xn+1` 块基址差）：36（12,100 对）/ 64（10,150）/ 0（3,250）/ 108（700）/ 66（250）/ 72（100）。含义：36=两侧各占相邻 clb 块；64=中间隔一个 gap28；0=两侧共用同一块（gap 列）；108/72/66=io72/pcie 区插入所致 —— 与 S34 的 L/R 结论一致。
+
+遗留：4 个 band 的「INT 列数 − 块数」不闭合（band0/3/4/6 各 154−150、band1 148−144、band2/5 反而 144−144 与 150−150），说明还有少量列共享块的情形未逐一定性；但派生规则按 `grid_col` 就近取值，不依赖列计数，故不受影响。
+
+产物：`v7_law.sqlite.tile_blocks`（53,102 行，其中 53,100 条 derived_gc）；`v7_verified` 117→118。
+
+## S39 —— 53,100 条派生基址的实测可用率（2026-11-10）
+
+在远端用 `/opt/lzh/venv/bin/python /opt/lzh/step11/vdec2.py`（all_cells.json 24,336 cell + tb_int.json 53,100 条基址）对 5 个真实 bitstream 逐 INT tile 判读：
+
+| bitstream | 有配置位的 tile | 唯一命中家族 | 歧义 | 未解释位 | 有未解释位的 tile |
+|---|---|---|---|---|---|
+| fifo_a（BRAM+FIFO） | 71 | 186 | 0 | 72 | 30 |
+| ia2_p1（DSP） | 458 | 919 | 0 | 674 | 255 |
+| yA（纯 LUT 布线） | 17 | 35 | 0 | **0** | **0** |
+| e0（单 LUT+8 引脚） | 23 | 59 | 1 | 10 | 1 |
+| br_attr（BRAM） | 67 | 198 | 0 | 80 | 26 |
+
+- **歧义率 ≈ 0**（5 个文件合计 919 级判读中只有 1 例），说明派生基址把“同一 tile 同一 family 多解”基本消灭了。
+- 未解释位 offset 直方图：e0 集中在 **17..25**（IMUX 池，1+1+1+3+2+1 位）；br_attr 集中在 **2..14**（控制/BYP 区，4/6/10/14/4/6/4/14/10/2/4 位）。⇒ 两类都是**已知表缺口**：IMUX 由 tilepipe 表单独解（不进 all_cells），offsets 0..3 有 66 个未覆盖 cell。**没有出现“整块随机”的迹象**。
+- 阴性对照（全部基址 +36 帧，读成邻列的块）：也在“合法”范围（yA 41 族/0 orphan、br_attr 434 族/4 歧义）⇒ **单靠码字合法性无法区分相邻块**；基址正确性依赖 7 个几何锚点 + 块清单闭合（S38），不依赖本项统计。
+- 结论：53,100 条基址**可直接投入使用**；剩余误差全部落在已标注的两处表缺口内。
+
+产物：远端 `/opt/lzh/step11/vdec2.py`、`vdec3.py`（带 orphan offset 直方图）、`tb_int.json`、`all_cells.json`；本地 `E:\v7work\vdec2.py`、`vdec3.py`、`tb_int.json`、`tb_int_s36.json`。
+
+## 134. T71：CK_BUFHCLK 12 源编码（2026-11-10）
+
+- 逼出条件：BUFH 时钟必须喂 MMCM 的 CLKIN1，才会出现 `CK_BUFHCLK<n> ->> MUX_MMCM_CLKIN1`（BUFH→FF 完全不经过 HCLK_CMT）。
+- `MMCME2_ADV_X0Y6` 所在 region 的 12 个 BUFHCE（`X0Y72..Y83`）逐个替换 LOC，`CK_BUFHCLK` 序号 **12/12 与站点序号一致**。
+- 位编码：半区 `(22146,48,21)`=0–5 / `(22147,48,21)`=6–11；槽位 `s0=(22146,26) s1=(22147,25) s2=(22146,25) s3=(22147,24) s4=(22146,24) s5=(22147,23)`；`序号 = 6×半区 + 槽位`。
+- 形态与 INT mux 同构（两帧交替 + one-hot 槽位），槽位数 6。
+- 未测：CCIO 4 源、`MUX_CLK_4..13` 链式 10 源、`MUX_MMCM_CLKIN1` 其余 18 源、跨区域槽位映射。
+- 文档 `v7re/steps/T71_CK_BUFHCLK.md`。
+- **环境坑**：`LANG` 非 C 时 Vivado 2017.2 直接 `Aborted (core dumped)`，报 `locale::facet::_S_create_c_locale name not valid`；所有远端脚本必须 `export LANG=C LC_ALL=C`。
+
+## S40 —— S39 的 orphan 是解析器 parity 折叠缺失（已修，orphan 归零，2026-11-10）
+
+**修正 S39**：`all_cells.json` 的 cell 用 `(frame_off, parity, bit 0..31)` 三元组，而比特流观测是 `(frame_off, bit 0..63)`（bit≥32 即 parity=1）。S39 的校验脚本直接拿 `bit` 去比 0..63 的观测键，**所有 parity=1 的 cell 全部匹配不上** → 那些“未解释位”不是表缺口，是脚本 bug。
+
+修正方式：`key = bit + 32*parity`。用同一批 bitstream 重跑：
+
+| bitstream | 有配置位 tile | 唯一命中家族 | 歧义 | **未解释位** |
+|---|---|---|---|---|
+| e0（单 LUT+8 引脚） | 23 | 33 | 0 | **0** |
+| br_attr（BRAM） | 67 | 139 | 0 | **0** |
+| yA（纯 LUT 布线） | 17 | 18 | 0 | **0** |
+| fifo_a（BRAM+FIFO） | 71 | 129 | 0 | **0** |
+| ia2_p1（DSP） | 458 | 877 | 0 | **0** |
+
+合计 **636 个有配置位的 INT tile / 1,196 次家族判读 / 0 歧义 / 0 未解释位**。
+
+另一个反直觉结论：**把 tilepipe 的 IMUX 表并进来是有害的**。`all_cells.json` 本身就含 **96 个 IMUX 家族 / 11,520 cell（offsets 16..25，48 mux/侧）**，与 tilepipe 表覆盖同一批位但源名不同；合并后歧义从 0 升到 4（e0）与 1（yA）→ **保持单表 `all_cells.json` 为唯一 IMUX 来源**，tilepipe 表仅作交叉验证用（S9 CSP 已验）。
+
+结论：INT 侧解码现在是「全解释 + 零歧义」，53,100 条派生基址 + 单张 cell 表即可解任意 bitstream 的 INT 配置区。
+
+产物：`E:\v7work\vdec4.py`（parity 折叠修正版）、远端 `/opt/lzh/step11/vdec4.py`、`all_cells_imux.json`（对照实验用，**不采用**）。
+
+## S41 —— CLB 侧接入派生基址解码（2026-11-10）
+
+新脚本 `E:\v7work\cdec.py`（远端 `/opt/lzh/step11/cdec2.py`）：用 `frame_blocks` 的 763 个 clb 块（键 `band:grid_col`）+ `clb_tiles`（75,900 条 slice→tile_type/grid_col/inst/y）+ `clb_cells`（3,884 特征 cell）逐 slice 判读，并按 `src_wire='INIT[NN]'` 重建 64 位 LUT INIT。
+
+实测：
+
+| bitstream | 命中特征 | 解出的 LUT |
+|---|---|---|
+| e0.bit（LOCK_PINS 身份映射，已知 INIT=64'h9E3779B97F4A7C15） | 158 | `SLICE_X10Y20/ALUT` = **0x9E3779B97F4A7C15（逐位完全一致）** |
+| yA.bit（无 LOCK_PINS，两个 LUT） | 122 | `SLICE_X40Y20/ALUT` = 0x0000FFFF0000FFFF（与源 0x6996966996696996 **不符**） |
+
+- **正面结论**：派生基址 + `clb_cells` 可以逐位复原 LUT INIT；e0 与设计真值 64/64 完全吻合。
+- **两个待查问题**（已记录，不作推断）：
+  1. 同一块里 `SLICE_Xn` 与 `SLICE_Xn+1`（inst0/inst1）**同时**解出相同 INIT ⇒ `clb_cells` 的 inst 区分或 slice→family 映射有重复，需用 `inst` 参与筛选；
+  2. yA 不符大概率是**没有 LOCK_PINS 时 placer 交换了 I0..I5 引脚**（物理 INIT ≠ 逻辑 INIT），需先用 IMUX 解出引脚映射再还原逻辑 INIT。
+- 结论边界：CLB 侧“能解”已证（e0），但“通解”还需修 inst 区分 + 引脚映射，二者都不涉及基址。
+
+产物：`E:\v7work\cdec.py`、`clb_cells.json`、`clb_meta.json`（gzip 3.0 MB→406 KB 后推送，`ssh ... | pipe` 在远端 cmd 下不可用，需 `gunzip -f`）。
+
+## 135. T72：CCIO 源（4 源）扫描（2026-11-10）
+
+- 全器件时钟能力引脚 **96 个**（`get_property IS_CLK_CAPABLE`）；每个引脚一个设计（IBUF→BUFHCE→MMCM_X0Y6.CLKIN1→FDRE），24 路并发，96/96 成功。
+- 只有 **8 个引脚**出现 `HCLK_CMT_CCIO<n>`：A 组 `C27/E27/C28/C30 → CCIO0/1/2/3`；B 组 `F11/E11/H10/G11 → CCIO0/1/2/3`（B 组走 `HCLK_CMT_L_X305Y338`）。其余 88 个走 `IO_INT_INTERFACE_*`，不进 CMT。
+- 位编码：word 48 是 CK_BUFHCLK 字段（8 份全同）；**CCIO 差异在 word 49 / 51**（`(22144,49,28/31)`、`(22145,49,29/30/31)`、`(22144,51,27)`、`(22145,51,27/28)`、`(22146,51,25)`、`(22147,51,26)`）。
+- 未解：CCIO 0..3 在 word 49/51 的精确位形（4 样本不足）；「哪些引脚能进 CCIO」由物理位置决定。
+- 文档 `v7re/steps/T72_CCIO.md`。
+- **坑（重要）**：`export LANG=C LC_ALL=C` 必须写在 shell 里，写进 `.tcl` 会导致 96 个设计静默全 FAIL（日志无 ERROR，只有 `locale::facet::_S_create_c_locale name not valid`）。
+
+## 136. T72 更正：CLKIN1 源编码是「类别 + 索引」两部分（2026-11-10）
+
+- 跨来源族对照（`_h48/m0` = `CLKIN1<-CCIO1` vs `_ccio_out/c02` = `<-CK_BUFHCLK0`）：word 48 在 CCIO 类别下置 `(2,48,22)`，在 BUFHCLK 类别下置槽位位 `(2,48,21)(2,48,26)`。
+- ⇒ word 48 = **源类别字段**（不是 BUFHCLK 专用），word 49/51 = **类内索引**；T72 §3 的表述已收紧。
+- 未定：n=2 类 + 4 索引不足以定形，需补 MMCM/PLL 类别样本。
+- 文档 `v7re/steps/T72_CCIO.md` §7。
+
+## S42 —— CLB 解码器修 inst 区分，yA 之谜澄清（2026-11-10）
+
+修法：`clb_cells` 的 family 名形如 `SLICEL_X0.ALUT`，解码时必须用 slice 的 `inst` 过滤（`'_X{inst}.' in family`），否则 X0/X1 两个实例会同时命中同一批位。
+
+重跑结果（远端 `/opt/lzh/step11/cdec3.py`）：
+
+| bitstream | 命中特征 | 解出 LUT |
+|---|---|---|
+| e0.bit | 79 | `SLICE_X10Y20/ALUT` = **0x9E3779B97F4A7C15**（= 设计真值，64/64） |
+| e7.bit（换引脚，同 INIT） | 81 | `SLICE_X10Y20/ALUT` = **0x9E3779B97F4A7C15** |
+| yA.bit | 61 | `SLICE_X40Y20/ALUT` = 0x0000FFFF0000FFFF |
+
+- inst 过滤后**每个 bitstream 只解出 1 个 LUT**（此前 X10Y20 与 X11Y20 重复），两个独立 bitstream 都精确复原真值 ⇒ CLB 侧解码链路成立。
+- **yA 的结果不是错误**：yA.v 里 `u_src` 六个输入全部接同一个 `din` 网，综合折叠成常量 1；`u_dst` 的 I0=常量、I1..I5=din ⇒ 整条链退化成**单变量函数**，物理 INIT 必然呈 0x0000FFFF0000FFFF 这类“只依赖一位”的形态。日志证据：`INFO: [Opt 31-389] Phase Constant propagation created 1 cells and removed 2 cells`。
+- 结论：S41 提出的“yA 基址或引脚映射有误”的怀疑**被推翻**，是设计本身退化。CLB 侧现在可对任意设计解 LUT INIT（含多 LUT）。
+
+产物：`E:\v7work\cdec.py`（inst 过滤版）、`findbase.py`（块基址扫描器，用于“已知 INIT 反查块”）；远端 `/opt/lzh/step11/cdec3.py`。
+
+## 137. T73：CLKIN1 源编码定形（CCIO 索引 8/8）（2026-11-10）
+
+- 6 个对照设计（`_ck2/`，远端 `/opt/lzh/v7re/work/clkin2`）：`pin → IBUF → [BUFHCE/BUFG] → MMCME2_X0Y6.CLKIN1 → FDRE(SLICE_X0Y349)`；5/6 成功（`t1_direct` 因 `get_nets clk2` 不存在报 `[Common 17-55]`）。
+- `t2(BHF0) vs t3(BHF5)`：簇内只差 **2 格** `(22146,48,26)` vs `(22147,48,23)` —— 独立复核 T71 的 6 槽位 one-hot。
+- **CCIO 索引 = `(base+1, word 51, bit27)` + `bit28<<1`，8/8 精确**（`C27/E27/C28/C30` 与 `F11/E11/H10/G11` 两组、两个 CMT 列，簇帧 22144 与 25090 同一套位）。
+- 类别字段（CCIO/BUFHCLK/BUFG）落在 word 48/49，3 类样本未能逐一解位。
+- 文档 `v7re/steps/T73_CLKIN1_ENCODING.md`。
+
+## S43 —— IMUX 引脚映射解码接入（2026-11-10）
+
+新脚本 `imuxdec.py`：在 slice 所属 36 帧块内，用 `all_cells.json` 的 96 个 IMUX 家族（offsets 16..25）解出 **A1..A6 六个引脚各自被哪根线驱动**；引脚↔IMUX 家族用 S9 的 CSP 结果（`A1→IMUX_L7 / A2→IMUX_L2 / A3→IMUX_L1 / A4→IMUX_L11 / A5→IMUX_L8 / A6→IMUX_L4`）。
+
+实测：
+
+| bitstream / slice | 解出结果 |
+|---|---|
+| e0.bit / `SLICE_X10Y20` | **6/6 引脚全部命中**：A1←GFAN1、A2←FAN_BOUNCE7、A3←FAN_BOUNCE6、A4←BYP_BOUNCE1、A5←FAN_BOUNCE7、A6←WR1END2 |
+| yA.bit / `SLICE_X40Y20` | 仅 A5←WL1END_N1_3（其余 5 脚为空）|
+| yA.bit / `SLICE_X8Y20` | 全部为空（该 LUT 已被综合折叠成常量，无输入走线）|
+
+- e0 的 6 个输入都接同一个端口 `din`，但**每个引脚走不同的物理线**（GFAN1 / FAN_BOUNCE7 …），因此 e0 能同时验证“6 个 IMUX 各自独立解出”。
+- yA 的 `u_dst` 只有 A5 有源、其余 5 脚常量化 —— 与 S42 的“退化成单变量函数”完全一致（这是**第三条独立证据**）。
+
+## 结论：位流解码器**不需要**做“物理 INIT → 逻辑 INIT”的还原
+
+- 逻辑 INIT 只在“要与原始 Verilog 的端口顺序对齐”时才有意义，而端口顺序**不在位流里**（不写 LOCK_PINS 时由 placer 自由选择）。
+- 只要引脚与 INIT 用**同一套物理顺序**（A6..A1）解释，函数的语义就是对的：把 LUT6 的 `.I0..I5` 依次绑到 A1..A6 驱动线、`.INIT` 用物理值，功能与原设计等价 —— 这正是 fasm2bels 一类工具的做法（它们也不还原原始端口序）。
+- 因此网表发射器的正确形态：**`INIT=物理值` + `I0..I5 = A1..A6 的驱动网`**，并把 `pinmap`（A1..A6 → 源线）作为元数据保留。若确实需要对齐源码端口序，只能借助 DCP/源码，位流侧无解（信息不存在，不是算法问题）。
+
+产物：`E:\v7work\imuxdec.py`；远端 `/opt/lzh/step11/imuxdec.py`。
+
+## 138. T74：CLKIN1 类别字段定位（word 48 bit21/22）（2026-11-10）
+
+- 想构造 MMCM 类源（`MMCM_X0Y6.CLKOUT0 → MMCM_X1Y6.CLKIN1`）：Vivado **拒绝**该拓扑，改为 `CCIO0 ->> MUX_MMCM_CLKIN1` + `MUX_CLK_MMCM0 ->> CK_IN0/MUX_CLK_0`（`_ck3/u1_mmcm2mmcm`，构建成功）。
+- 意外得到干净对照：`t2`（CLKIN1 源 = `CK_BUFHCLK0`）vs `u1`（CLKIN1 源 = `CCIO0`），引脚/CMT 相同：
+  - `t2`：`(base+2, word48) = bits[21,26]`（21=类别 BUFHCLK，26=槽位 0）
+  - `u1`：`(base+2, word48) = bits[22,24]`（22=类别 CCIO，24=配套位未定）
+- ⇒ **类别位 = word48 bit21（BUFHCLK）/ bit22（CCIO）**；MMCM/PLL 类在单 CMT 构造下不可达。
+- 更正 T72：`u1` 与 `t2` 的 `(base+1, word49)` 完全相同（bits 21,26,29,31），故该字段属 `CCIO0->>MUX_CLK_13` 路径标记，不是 CCIO 索引。
+- `u2_pll2mmcm` 失败：`PLLE2_ADV` 无 `CLKOUT*B/CLKFBOUTB` 端口；删后 `[Common 17-55]`（FF 落点为空）。
+- 文档 `v7re/steps/T74_CLKIN1_CLASS_FIELD.md`。
+
+## S44 —— 网表发射器 v0（结构层跑通，CLB 集成有 bug，2026-11-10）
+
+新脚本 `E:\v7work\emit.py`：一次遍历同时解 INT 层（`all_cells` 家族→源）与 CLB 层（`clb_cells` 特征 + LUT INIT），输出 JSON。
+
+实测（yA.bit）：
+
+- **INT 层正常**：解出 16 个 tile 的选择，例如 `INT_R_X27Y20` = {`IMUX8→WL1END_N1_3`, `NE6BEG0→LOGIC_OUTS12`}，`INT_L_X28Y20` = {`WL1BEG_N3→SS6END0`}，`NN6BEG0←NN6END0` 链在 X31/X32 纵列上一串 —— 与 S24 的走线拓扑一致。
+- **CLB 层返回空**：加“跳过全零模式源”的过滤（`if not ones: continue`，用于剔除 `PRECYINIT.C0` 这类默认态全零模式导致的满片假命中）之后，CLB 结果变成 `{}`。
+  - 说明这是 **emit.py 的集成 bug**，不是数据问题：同一套 `clb_cells` + `clb_meta` 在 `cdec3.py`（S42）上能对 e0/e7 精确解出 `0x9E3779B97F4A7C15`。
+  - 最可能的位置：emit 里 `meta['tiles']` 解包（`tt, gc, inst, y, band`）与 `decode()` 的 inst 过滤/`obs_of()` 参数在 CLB 分支上不一致，需逐行比对 cdec 的循环体。
+
+结论边界：发射器的**INT 侧可用**，CLB 侧仍需一轮调试；距“任意 .bit → 完整 Verilog”还差：① CLB 集成修正；② 网线归并（把 INT 选择链追到 `LOGIC_OUTS` 得到 CLB→CLB 连接）；③ Verilog 文本输出（`LUT6 #(.INIT(物理值)) .I0..I5 = A1..A6 驱动网`）。
+
+产物：`E:\v7work\emit.py`；远端 `/opt/lzh/step11/emit2.py`。
+
+## 139. T75：用 INT 的观测法补 HCLK_CMT（19 设计 / 8 组合）（2026-11-10）
+
+- 扫本地 143 份 `.bit`+`.pips`：**19 份**用到 HCLK_CMT，聚出 **8 种选择组合**（簇窗口 左列 22144..22157、右列 25090..25103，只看 word 48/49/51）。
+- `MUX_MMCM_CLKIN1` 类别位样本从 2 升到 **107**：`(base+2,48)` bit21 = BUFHCLK（102 样本）、bit22 = CCIO（7 样本）。
+- `CK_IN13` 6 个已知源（CCIO0..3、MMCM0、PLL0）给出 **6 套互不相同**的格 → 与 INT「行序 36 种」同类，属数据不是公式。
+- **更正 T74**：`u1` 的 `.pips` 同时含 `CCIO0->>CLKIN1` 与 `CK_BUFHCLK0->>CLKIN1`，但其簇内格是 BUFHCLK 类 ⇒ `.pips` 会列同 mux 多候选边，不能单凭它判选中源。
+- 文档 `v7re/steps/T75_HCLK_OBSERVE.md`。
+
+### S44 续 —— 发射器 v0 修通（同日）
+
+两个 bug 已修，`E:\v7work\emit.py` 现在两层都出结果：
+
+1. **CLB 层返回空的真正原因**：LUT INIT 的 64 个源 `INIT[00..63]` 同属**一个家族**（`SLICEM_X0.ALUT`），每个源只有 1 个 cell 且**互斥性不成立**（一次配置置 1 的位有多个），我原先的 `len(s)!=1 → continue` 把整个家族丢了。改为“INIT 家族聚合、非 INIT 家族仍要求唯一”。
+2. **默认态过滤**：加 `if not ones: continue` 剔除 `PRECYINIT.C0` 这类“全零模式”家族（它们在任何空块上都成立，会制造满片假命中）。
+
+实测（三份真实 bitstream，全芯片一次遍历）：
+
+| bitstream | INT tile 数 | 解出的 CLB |
+|---|---|---|
+| `yA.bit` | 16 | `SLICE_X40Y20/ALUT = 0x0000ffff0000ffff`（与 S42 的折叠结论一致） |
+| `s8_v0.bit` | **100** | `SLICE_X8Y11/ALUT = 0x937b7471e799fac5`、`SLICE_X47Y51/ALUT = 0xc0c0c0c0c0c0c0c0`、`SLICE_X8Y11 SLICEL_X0.AFFMUX = O6` |
+
+`s8_v0.bit` 的 INT 层与 S9 的 CSP 结果**逐个吻合**：`INT_L_X6Y11` = `IMUX_L7←SW2END3`(A1)、`IMUX_L2←WW2END0`(A2)、`IMUX_L1←WL1END0`(A3)、`IMUX_L11←SR1END1`(A4)、`IMUX_L8←GFAN0`(A5)、`IMUX_L4←WL1END1`(A6)，输出侧 `EE4BEG0←LOGIC_OUTS_L12`、`NE6BEG0←LOGIC_OUTS_L4` —— 与 S24 的 6/6 走线真值同源。
+
+**仍未解出**：`AFF.ZINI/ZRST`（FF 类型位）本轮没进 `clb`，需单独查该家族的 `tile_type/family` 命名与 inst 过滤；网线归并与 Verilog 文本输出未写。
+
+## 140. 总报告 v1.2：并入 HCLK_CMT（2026-11-10）
+
+- `v7re/steps/ALL_TILE_PIP_ENCODING_REPORT.md` 280 行：摘要增第 4 条（HCLK_CMT 16/48 已解），新增 **§4bis**（字段账、结构结论、方法学教训），§9 边界补 HCLK_CMT 32 源 / BRAM 180 条地址 mux / CRC 覆盖 三项。
+- HCLK_CMT 收口口径：16 源已解（BUFHCLK 12 槽位、CCIO 4 索引、类别位 107 样本），32 源**构造不可达**（链式 10 实测 0/264 设计；MMCM/PLL 类 22 被 Vivado 拒绝）。
+
+## S45 —— 任意 .bit → 结构化 Verilog（v0.1 跑通，2026-11-10）
+
+`E:\v7work\emit_v.py`（远端 `emit_v7.py`）在 v0.2 基础上补了三件事：
+
+1. **FF 类型位**：`AFF` 家族的 `ZINI`/`ZRST` 是**两条独立位**（不是互斥源），原先把「匹配到 2 个源」当歧义丢掉；改为这两个源聚合记录 → `SLICE_X8Y11 SLICEL_X0.AFF = ZINI+ZRST`（= FDRE，INIT=0）。
+2. **引脚→INT tile 定位**：用 `slice_tile.json`（75,900 条 site→tile，来自 `v7_model.sqlite.sites`）+ `tilegrid.json` 求邻接。实测邻接关系是 **CLB 的 gx+1 = INT_L，gx+2 = INT_R**（`CLBLL_L_X6Y11`(gx16) → `INT_L_X6Y11`(17) / `INT_R_X7Y11`(18)）；于是每个 slice 的 A1..A6 取相邻 INT tile 里 `IMUX_L7/L2/L1/L11/L8/L4` 的选择结果。
+3. **Verilog 文本输出**：`LUT6 #(.INIT(物理值))` + `.I0..I5` 依次绑 A1..A6 驱动线 + 注释保留 pinmap / D-src / FF 类型。
+
+实测 `s8_v0.bit`（真值已知的设计）输出 `step03_pip/recovered_s8_v0.v`：
+
+- `u_SLICE_X8Y11` INIT=`0x937b7471e799fac5`，`.I0..I5` = `SW2END3 / WW2END0 / WL1END0 / SR1END1 / GFAN0 / WL1END1` —— **与 S9 CSP、S24 走线真值逐个一致**；
+- `u_SLICE_X47Y51` INIT=`0xc0c0c0c0c0c0c0c0`，其相邻 `INT_R_X31Y51` 活跃 IMUX 解出 `IMUX0←NW2END0`、`IMUX3←ER1END1` —— 与 S15 的 `A3=IMUX_L0←NW2END0`、`A2=IMUX_L3←ER1END1` 对应。
+- 命名差异：**INT_L 侧 IMUX 家族名带下划线（`IMUX_L7`），INT_R 侧不带（`IMUX0`）**，inst1 的引脚映射表要与 inst0 分开维护（S7 已知 X1 形态不同）。
+
+仍未做：① inst1 的 A1..A6→IMUX 映射表（现在只报“哪些 IMUX 活跃”）；② 跨 CLB 的网线归并（把 `w_*` 追到 `LOGIC_OUTS` / IO 入口，得出 CLB→CLB 与 pad→CLB 连接）；③ FF 实例化（D 源已解出 = AFFMUX 的 O6，CE/SR/CLK 的 mux 位尚未解）。
+
+## 141. T76：CRC 全位置覆盖——现有语料做不到（2026-11-10）
+
+- 新增 `v7re/scripts/crc_solve_all.py`：967 份位流按目录分组，组内选「置位格最少」者为基准，方程 `XOR_{p∈A△B} c(p) = CRC(A)^CRC(B)`，按 32 位平面 GF(2) 消元。
+- 结果：方程 895、位置 44,867、秩 760、**无矛盾**、解出 31 个签名、留出 0/5 —— 系统严重欠定。
+- 根因：语料里**没有任何一对只差 1 个数据位**（最小差分 14 格；`_sb` 22、`_clbll` 16、`_t24` 20、`_initbits` 48）。T60 的 231 位置来自当时那批「差分=1」的文件，现已不在本地。
+- 成本估算：要覆盖 3,634 个位置需 ~3,634 对单比特位流 ≈ **2.7 小时机时**（84 s/构建、32 路并发），且必须 `LOCK_PINS` + 固定 LOC/BEL + 显式 `-part`。
+- 文档 `v7re/steps/T76_CRC_COVERAGE_LIMIT.md`。
+
+## 142. T77：清除位（sense=0）与 4 个「异常族」定案（2026-11-10）
+
+- 4 族「异常」撤销：`segbits_int_l.db` 原文就有 `INT_L.LH0.LH12`、`INT_L.LV_L0.LH12`、`INT_L.LV_L18.LH0/LH12`、`INT_L.LVB_L0.LVB_L12` —— prjxray 声明的跨时钟树源，routing 模板无此边属口径差。172 族里 168 族与模板全等。
+- `sense=0` 共 6,528 行（INT_L/INT_R 各 3,264），INT_L 去重 **280 格，全部 ⊂ sense=1 格集** ⇒ 无独立清除位；写入器「族内清空再置位」已覆盖。
+- 一次切换构建（`_sw1` 引脚驱动 vs `_sw2` LUT 驱动）差分 28 移除 / 110 新增，变量不唯一，**不作清除测试**；清除正确性由 T8b（c0→c3 改写 50,172/50,176 帧相同）覆盖。
+- 文档 `v7re/steps/T77_ZERO_BITS_AND_ANOMALY.md`。
+
+## 143. T78 混合设计复验（2026-11-11）
+
+用「60 LUT + 8 DSP48E1 + 4 RAMB36E1」的混合设计测 INT 格宇宙盲区（此前全部检验只由 LUT 设计驱动）。
+
+- `_mixed/mixed.bit`：覆盖 23 个 INT tile、1,824 个窗口位；
+- `all_int_tiles_check.py` 原始判定 **FAIL（8 个宇宙外格）**；
+- 8 格聚成 5 个签名，全部是**已知的非族级控制位**：`(0,16,p1)`=GCLK 直通使能、`(1,3,p0)/(1,7,p0)/(1,31,p0)`=BYP/FAN 旁路控制位；
+- 加入这 4 类白名单后：`_mixed` 残差 **0**、`_tilecov2` 残差 **0**。
+
+结论：INT 规律在混合设计上仍成立；「残差 0」必须写成「宇宙 = law_cells ∪ 4 类非族级控制位」，否则会报假阳性。
+BRAM 站点筛选未生效（`SITE_TYPE =~ "RAMB36*"` 未匹配），BRAM 由工具自由放置，未做定向验证。
+文档 `v7re/steps/T78_MIXED_DESIGN_CHECK.md`。
+
+## 144. 控制位白名单固化（2026-11-11）
+
+`all_int_tiles_check.py` 内置 `CONTROL_BITS` 并在载入宇宙时并入，共 6 个签名：
+`(0,16,1)`=GCLK 直通使能；`(1,3,0)/(1,7,0)/(1,31,0)`=BYP/FAN 旁路 parity 0；`(1,3,1)/(1,7,1)`=同族旁路 parity 1。
+
+固化过程抓到 2 个"已知但从未登记"的位（`_c3.bit`/`_c4.bit` 的 `INT_L_X8Y20 (1,7,1)` 与 `(1,3,1)`，T5 曾记录但未接入）。
+
+12 个来源不同的位流复验：**覆盖 12,958 tile（24.40%）、69,626 位、残差 0、PASS**。
+
+## 145. CRC：结构三否一存 + 可用的增量工具（2026-11-11）
+
+新造 65 个单最小项位流（`SLICE_X12Y20/A6LUT` + `LOCK_PINS`），**64/64 单格**，得 64 条签名写进 `v7re/steps/crc_table.json`。
+
+结构假设：H1「线性于位置」否定（矛盾 918）、H2「帧内相邻位固定映射」否定（矛盾 480）、H3「与帧无关」否定（同 0/异 16）、**H4「跨帧 3232 位固定映射」幸存（48 对，矛盾 0）**。
+
+新增 `v7re/scripts/crc_delta.py`：按帧/字/位差分、跳过 word 50、查表增量重算 CRC；未知位置默认拒绝写出。
+端到端：`_full8_i3` 回退 CRC 后再修 → 与 Vivado 原文件**字节级相同**。
+
+边界：覆盖 64/3,634（1.8%）；全覆盖约 3,634 构建 ≈ 2.7 小时；硬件是否校验该 CRC 未验证。
+
+## S46 —— law_ctrl（非族控制位表）+ 全 tile 类覆盖审计（2026-11-10）
+
+### 1. 新表 `law_ctrl`（132 行 = 66 格 × 2 侧）
+`v7_law.sqlite.law_ctrl(tile_type, frame_off, bit, parity, name, evidence, date)`：登记 INT 位空间里 `law_cells` **不覆盖**的 66 个坐标（每侧 26×2×32=1,664，`law_cells` 覆盖 1,598 = 96.03%）。
+
+已定性 6 条（其余 60 格 name 为空，待测）：
+
+| 坐标 | 名称 | 证据 |
+|---|---|---|
+| (0,16,parity=1) | `GCLK_PASS_EN` | 8-DSP 混合设计 + `s8_v0`（同样点亮） |
+| (1,3,parity=0) | `BYP_FAN_BYPASS_1` | 混合设计 |
+| (1,7,parity=0) | `BYP_FAN_BYPASS_2` | 混合设计 |
+| (1,31,parity=0) | `BYP_FAN_BYPASS_3` | 混合设计（3 次） |
+| (1,3,parity=1) | `BYP_FAN_BYPASS_1_P1` | `s8_v0` 实测 |
+| (1,7,parity=1) | `BYP_FAN_BYPASS_2_P1` | `s8_v0` 实测 |
+
+**结构规律**：off0/off2 = bit≡0 (mod 4) 各 16 格；off1/off3 = bit≡3 (mod 4) 各 16 格；另 off0 bit31、off1 bit30/31、off3 bit31。两条正交 stride-4 位线 × 两个 word(parity) ⇒ 8 组 × 16 位的使能阵列。
+
+**语义**：这些是 **1 位 = 1 个开关**的门控位（GCLK 直通使能、BYP/FAN 旁路），不是 N 选 1 的 mux 家族，故键 `(family, src_wire)` 容不下它们。为什么以前的纯 LUT 实验里不出现：Y 差分/e0–e7 无时钟、不碰旁路；`s8_v0`（有时钟）在 `INT_L_X6Y11` 就点亮了 (0,48)(1,35)(1,39)。
+
+### 2. 全 tile 类覆盖审计（`E:\v7work\audit_cells.py`，远端 `audit2.py`）
+对每个 bitstream 遍历 `frame_blocks` 的全部非零格，按块类型查已知表并统计未解释格：
+
+| bitstream | clb 块未知 | gap28 未知 | io72 未知 | edge30 未知 | 已知命中 |
+|---|---|---|---|---|---|
+| `s8_v0.bit` | **0** | 0 | 186 | 128 | 1,136 |
+| `br_attr.bit` | **0** | 103 | 412 | 98 | 1,035 |
+| `dsp/out_0.bit` | **0** | 110 | 888 | 128 | 4,796 |
+
+结论：
+1. **CLB / INT 层已完整**：clb 块未知 = 0（含 66 洞按 `law_ctrl` 认可），证明 INT+CLB 的位空间被 `law_cells + clb_cells + law_ctrl` 完全覆盖。
+2. **BRAM/DSP 侧残差 103/110 格**：主要是 `off 27/28` 的属性位（WRITE_MODE 之外）与接口字节，属下一批要补的属性表。
+3. **IO/时钟区是最大空白**：`io72` 186–888 格、`edge30` 128 格未解释，集中在固定签名上（`io72`：off 38 bit0/12/14/16/30、off 39 bit1/7/15/17/19/24/29/31、off 29-33 若干；`edge30`：off 27 bit1/3/9/15、off 28 bit2/4/5/7/8/12/23）。这与 S23 的结论一致——IO **数据通路**无配置位，但 IOB/ILOGIC/OLOGIC 的**属性位**与时钟 HCLK/BUFG 区仍未测绘。
+
+### S46 续 —— 「LUT 实验看不见」的位分三类（2026-11-10）
+
+用 `audit2.py` 对三个纯 LUT 设计（`yA` / `yB` / `e0`）与含时钟/BRAM/DSP 的设计做同一口径审计：
+
+| 设计 | 资源 | clb 未知 | gap28 未知 | io72 未知 | edge30 未知 |
+|---|---|---|---|---|---|
+| `yA/yB/e0` | LUT only | 0 | 0 | **72（三次完全相同）** | **0** |
+| `s8_v0` | LUT+FF+时钟 | 0 | 0 | 186 | 128 |
+| `br_attr` | LUT+BRAM | 0 | 103 | 412 | 98 |
+| `dsp/out_0` | LUT+DSP | 0 | 110 | 888 | 128 |
+
+三类的性质完全不同：
+
+1. **恒常基线（72 格，io72 块）**：任何 bitstream 都有、三次实验完全一致 ⇒ bitgen 无条件写出的默认配置，LUT 实验只能“看见它在”，永远看不到它“变化”。
+2. **资源激活位（io72 增量 114→816；edge30 128）**：只在用到时钟（BUFG/CMT）、BRAM、DSP 时置位，纯 LUT 设计为 0 ⇒ 与 66 洞同性质（用了才出现）。
+3. **66 洞（已进 `law_ctrl`）**：GCLK 直通使能 + BYP/FAN 旁路，同样“用了才出现”，但位置在 INT 块内、影响 mux 反解边界。
+
+结论：LUT-only 实验的盲区**不只有 66 洞**，还有 ① io72 的 72 格常驻基线、② edge30 的 128 格、③ 由资源使用触发的一大批 IO/时钟属性位。后两者需要“IO 属性 / 时钟资源”的定向设计才能测绘。
+
+
+## S47 IOB 属性位实测（2026-11-10）
+
+**结论**：PULLTYPE / DRIVE / SLEW 的配置位全部落在 **io72 块 frame_off 38/39**，word = 该 pad 的行字（wof(Y) 与 parity 字）。不是 edge30。
+
+| 属性=值 | 格数 | 位置要点 |
+|---|---|---|
+| PULLTYPE=PULLUP / PULLDOWN / KEEPER / NONE | 1 / 1 / 1 / 1 | 全在 (off39, w1)：b21 / b19=0 / b27 / b19=1 |
+| DRIVE=2 / 4 / 8 / 16 | 3 / 4 / 4 / 6 | off38 与 off39，w16/w17 |
+| SLEW=FAST / SLOW | 9 / 0 | off38+off39，w16/w17；SLOW 即默认 |
+
+**重要纠正**：首轮把 `word 50` 的 7 个变化格当作共享组位，实为帧级校验字随内容变化；剔除 w50 后真实属性位只有 1~9 格。
+
+**入库**：`v7_law.sqlite.law_iob` 30 行（attr,value,frame_off,word,bit,val,evidence,date）。`audit2.py` 加入 iobset（17 个唯一 (off,bit)）后：br_attr io72 未知 412 -> 240；dsp/out_0 888 -> 542。剩余为 IOSTANDARD/IN_TERM/ODT/IBUF 等未探测属性 + gap28/edge30 的 off26..28 区。
+
+**构建坑**：`DRIVE 24` 对 LVCMOS18 非法（Legal: 2,4,6,8,12,16）；必须 `export LANG=C LC_ALL=C HOME=/root`，否则 Vivado 报 `locale::facet::_S_create_c_locale name not valid`。
+
+报告：`step03_pip/S47_IOB_ATTR.md`。
+
+
+## S47 续 IOB 第二批（IOSTANDARD / IOB 寄存器）2026-11-10
+
+| 变体 | 结果 |
+|---|---|
+| IOSTANDARD LVCMOS15 | 7 格，全在 io72 off38/39（w16/w17），与 DRIVE/SLEW 同一字段 |
+| IBUF_LOW_PWR FALSE | 非法：`ERROR: [Vivado 12-3181] IBUF_LOW_PWR is not a valid property for port din because it uses IOSTANDARD 'LVCMOS18'` |
+| IOSTANDARD LVCMOS12 | 被 DRC 拦：`[DRC BIVB-1] ... LVCMOS12 does not support a drive strength of 12`（需配 DRIVE<=8） |
+| IOB TRUE（FDRE 打包进 IO） | **476 格**：edge30 110 / clb 160 / io72 206 ⇒ I/O 寄存器通路配置横跨 edge30+io72 |
+
+入库：`law_iob` 30→**37 行**（新增 IOSTANDARD:LVCMOS15 7 行），唯一 (off,bit) 17→18。
+审计复跑（iobset=18）：br_attr io72 未知 **412→226**；dsp/out_0 **888→516**；新测 reg_out.bit 未知 io72 98 / edge30 109。
+
+**诊断**：io72 剩余未知（226/516）不在 PULLTYPE/DRIVE/SLEW/IOSTANDARD 字段内 —— 由 reg_out 实验（同一字段变动时 io72 206 格 + edge30 110 格）可见，它属于 **IO 寄存器（ILOGIC/OLOGIC）与 IDELAY 配置区（offsets 28..44）**，是需要单独一族实验的子系统。
+
+## 146. CRC 跨帧映射：可外推（2026-11-11）
+
+补测 `BEL B6LUT` 65 个构建（同样 64/64 单格），合并后 32 个位置 × 4 帧。
+用「张成组合」而非显式矩阵求解（签名空间维数 31）。
+
+- 留一位置：**96/96 命中，0 错**
+- 只用 31784→31785 训练，预测 31785→31786：**13/13 命中**
+- 连用两步预测 31785→31787：**3/3 命中**
+
+结论：跨帧是固定线性映射且可外推 ⇒ 只需测一帧 3,200 个数据位的签名（≈2.4 h），全器件任意帧可算。
+未验证：跨 tile 是否同一映射；维数 31 留下的不可表达方向；硬件是否校验 CRC。
+
+
+## S48 IO 逻辑寄存器位区（2026-11-10）
+
+- `ddr_in`（IDDR）相对 `pass3` 差 **236 格**，集中在 io72 **w0/w1**（din 行字）34 格，散布 off0..31。
+- `ddr_out`（ODDR）差 **200 格**，集中在 io72 **w16/w17**（o 行字）25 格 + **clb w14 36 格**。
+- 结论：IO pad 配置字段 = io72 块 **offsets 0..33 @ 该 pad 行字**；属性（PULLTYPE/DRIVE/SLEW/IOSTANDARD）只在 off38/39。
+- 与 S47 审计空白对应：io72 剩余未知（226/516）落在 off28..44，正是 ILOGIC/OLOGIC 区。
+- IDELAY 探针全部失败（IDELAYE2 无 LOAD 端口；IDELAYCTRL REFCLK 需 BUFG 且与固定引脚冲突 → Place 30-574 / Placer could not place all instances），记为**未测**。
+报告：`step03_pip/S48_IO_LOGIC_REGS.md`。
+
+
+## S49 OLOGIC 拆解（2026-11-10）
+
+基线 `pass3`。四个变体：`tbuf`(仅三态) 66 格 / `off1`(FF 打入 OLOGIC) 560 / `off1_fab`(FF 在 fabric) 646 / `oddr_pipe`(DDR 流水) 230 / `tbuf_ff`(三态寄存器) 550。
+
+- **三态使能字段**：`tbuf` 仅 **11 格 io72**（w12 八格 + (16,17,26)(25,17,26)(30,16,3)）。
+- **OLOGIC 专属**：`off1` 与 `off1_fab` 的 io72 对称差 **37 格**（FF 是否进 OLOGIC 的差别）。
+- **决定性**：`off1`/`off1_fab`/`tbuf_ff` 共有 **29 个相同 edge30 格**（`(3,45,21)(5,45,20)(17,94,4)(23..25,94,4)` + `(27,24|73,{1,3,15})(27,93,{0,2,3,12,14,15})`），而 `oddr_pipe`/`tbuf` 为 **0** ⇒ **edge30 是 IO 时钟进 fabric 的时钟网络配置**，不是 IO 逻辑位；这解释了上一轮 edge30 的 128 个未知格。
+- DDR 单列：`oddr_pipe` 无 edge30，但多 36 格 clb(off14) = DDR 模式字段。
+
+报告：`step03_pip/S49_OLOGIC_SPLIT.md`。
+
+## 147. E1/E2 实测：§146 的"跨帧映射"是恒等映射（2026-11-11）
+
+> ⚠️ 本节"发现 2（word50 不是 GF(2) 线性）"**已作废**，由 §148 的判决实验证伪：那个比较拿三个不同数据位的签名当线性组合，方法本身错。第 1 条（§146 是恒等映射）不受影响。
+
+语料 `_crc\`（65 文件，c_base + c00..c63，各 20,273,538 B）。解帧一律走 `bitstream/parser.frames_from_bit`（numpy 裸 reshape 会多出 5 帧，是错接线）。脚本 `v7re/scripts/_e1e2_parser.py`（权威）与 `_e1e2_final.py`（定标到 payload start=338）。输出 `v7re/steps/e1e2_result.json`。
+
+**E1（有效非零约束）**
+
+- base 的 frame 31784..31787 **全部全零**（data=0、word50=0）。
+- 64 份变体 **64/64 只差 1 个数据位**，且 4 帧之外 **0 字变化**。
+- 64 个位置 = **word 40 的 bit 0..15，在 4 帧里各一份**（16 位 × 4 帧）。即一个 LUT6 的 64 位 INIT 表被切成 4 个 16 位切片。
+- ⇒ 任一"帧对 (f, f+1)"的跨帧配对样本数 = **0**：没有任何一份变体同时改动两帧。
+
+**E2（word50 命中）**
+
+- 位置集合里 **0 个 word 50** ⇒ §146 的 32 位置没被 ECC 污染（模型输入干净）。
+- 但每份变体的 word50 都被同步重写：**64/64**，值域 max 0x186E < 2^13。
+- **关键：同一个 bit 在 4 个不同帧上 word50 完全相同**（bit15 在 frame 31786 与 31787 都是 0x86F）。⇒ 帧内 ECC 不含 frame offset。
+
+**结论（推翻 §146 的"可外推"）**
+
+§146 的签名空间（维数 31）是一组 32 个"按 bit 索引"的签名，而该签名**与帧号无关**。因此任何跨帧线性映射都必然拟合出 **M = I**：留一 96/96、13/13、3/3 全部是"预测了不变的值"，不含任何跨帧信息量。§146 记的"跨帧是固定线性映射且可外推"**不成立**，需改判。
+
+**量测表（单比特 → word50）**
+
+| bit | word50 | bit | word50 |
+|---|---|---|---|
+| 0 | 0x860 | 8 | 0x1868 |
+| 1 | 0x1861 | 9 | 0x0869 |
+| 2 | 0x1862 | 10 | 0x086A |
+| 3 | 0x0863 | 11 | 0x186B |
+| 4 | 0x1864 | 12 | 0x086C |
+| 5 | 0x0865 | 13 | 0x186D |
+| 6 | 0x0866 | 14 | 0x186E |
+| 7 | 0x1867 | 15 | 0x086F |
+
+形态：`c(k) = 0x860 | k | (popcount(k)%2 ? 0x1000 : 0)`。
+
+**这条形态否掉了我此前"用 13 个线性列向量解 word50"的方案**：`c(3)=0x863`，而 `c(1)⊕c(2)=0x1861⊕0x1862=0x0003` —— **不是 GF(2) 线性**。word50 必须按"算术/位置编码"重新建模，或怀疑它根本不是校验字。
+
+**未测（下一步 E3）**：造 2 位同时置位的 INIT 变体，用 `ECC({i,j})` 与 `c(i)⊕c(j)` / `c(i)+c(j)` 对比，判定 XOR 型 / 算术型。这是 word50 是否可写、以及"自造可加载 bitstream"能否成立的唯一判决实验。
+
+
+## S50 OLOGIC 不是家族（2026-11-10）
+
+变体矩阵 6 个（off1/off_ce/off_sr/off_init1/tbuf_ff/tbuf），统计 pad 行字窗口。判据 `N=a×b, K=a+b, 每源 2 位` **三条全不满足**：
+
+- FF 变体共有核心 **20 格**（off0/1/7/15/28/31/32/33）；`CE` 增 17 格、`SR` 增 10 格（部分重叠、互不相同）；
+- `INIT` 只差 **1 格 (off33,bit1)** —— 干净单位开关；
+- 纯三态仅 3 格（窗口内），与“OLOGIC 被使用”完全分离。
+
+⇒ IO 逻辑 = **单位开关 + 特征位组**，不是 one-hot 家族。全片编码形态最终四类：**家族（INT/IMUX/AFFMUX/DSP/BRAM）/ 单位开关 / 码字（属性、INIT）/ 时钟网络**。解码器需三张表分别走 CSP / 位读取 / 码表比对。
+报告：`step03_pip/S50_OLOGIC_NOT_FAMILY.md`；`ROUTING_SELECTION.md` §6 已同步四类形态。
+
+## 147.1. CRC 跨帧映射的跨 tile 验证（2026-11-11）
+
+在两列不同 slice（`SLICE_X20Y20` col33、`SLICE_X8Y20` col16）各造 8 个样本，用 tile-A（`SLICE_X12Y20`）拟合出的映射预测：
+
+- Δ=1 三对（含两个新列）：**3/3 命中**
+- Δ=2 一对（连用两次映射）：**命中**
+
+结论：映射全器件统一，与列/slice 无关 ⇒ 一帧 3,200 个构建的投入是一次性的。
+
+## 148. E3 判决：word50 是 GF(2) 线性函数（2026-11-11）
+
+判决实验，造"同一帧内多位同时置位"的 LUT6 INIT 变体，看 word50 是 XOR 型还是算术型。报告 `v7re/steps/E3_ECC_LINEARITY.md`，数据 `v7re/steps/e3_result.json`，脚本 `_e3_gen.py` / `_e3_run.sh` / `_e3_analyze.py`，远端 `/opt/lzh/v7re/work/e3`。
+
+**构建（6 个，A6LUT @ SLICE_X12Y20，读回全对）**
+
+| tag | INIT | 落到 frame:word40 |
+|---|---|---|
+| e3_base | 0x0000000000000000 | —（负对照） |
+| e3_a | 0x0000000000000005 | 31786: w15,w14 |
+| e3_b | 0x0000000000000055 | 31786: w15..w12 |
+| e3_c | 0x0000000000000003 | 31786:w15 + 31787:w15（跨帧控制） |
+| e3_d | 0x0000000000000014 | 31786: w14,w13 |
+| e3_e | 0x0055005500550055 | 31786: w15..w0（整帧 16 位） |
+
+**负对照**：`e3_base.bit` vs 上批 `crcgen/c_base.bit` —— 5,067,800 字**差 0**，同设计同参数确定性成立。
+
+**结果（判别性图案 4 个）**
+
+| 变体 | 置位 | 观测 | XOR | ADD | 判定 |
+|---|---|---|---|---|---|
+| e3_a | 14,15 | **0x1001** | 0x1001 | 0x00DD | XOR |
+| e3_b | 12,13,14,15 | **0x0000** | 0x0000 | 0x01B6 | XOR |
+| e3_c | 31786:15 / 31787:15 | 0x086F / 0x086F | 同 | 0x086F | 控制通过 |
+| e3_d | 13,14 | **0x0003** | 0x0003 | 0x10DB | XOR |
+| e3_e | 0..15 | **0x0000** | 0x0000 | 0x0678 | XOR |
+
+**XOR 4/4 命中，ADD 0/4**。内容位 5/5 只动 word40、帧集合全对。
+
+**结论**
+- 【数据事实】`word50 = ⊕_{帧内置位位置 p} col(p)`，`col` 为 13 位列向量，`ECC(全零帧)=0` ⇒ **仿射、常数为 0、GF(2) 线性**。
+- 【数据事实】`e3_c` 两帧各自独立：一帧置位不影响另一帧 word50 ⇒ ECC 按帧独立，不含帧地址。
+- 【推断】word40 bit `w` 的列 = `0x860 ⊕ w ⊕ (popcount(w)%2 ? 0x1000 : 0)`；`0x860` 是与字相关的常数，置位数 ≥2 时自动抵消。
+
+**更正**：§147"word50 不是 GF(2) 线性"作废（错把三个不同数据位的签名当线性组合）。
+
+**解锁**
+1. word50 **可写**：`ECC = ⊕ col(p)`，不需要外部算法。
+2. 表可压到 **3,200 个 13 位列向量（≈5.2 KB）** —— 用户"表从 8,486 万条压到 3,200 条"的直觉方向正确，但压缩对象是列向量表，不是帧到帧矩阵 M。
+3. `fasm2bit` 的 ECC 增量简化为一次异或：`ECC ^= col(p)`。
+
+**未测（E4）**：只测了 word40 的 16 列；"字相关常数"（word40→0x860）规律未测。最小实验：同 site 用 `B6LUT`（其 INIT 落到另一 word，历史 `crc_positions.json` 有 `31784:8:*`）跑 1 个单比特变体得 `C(word8)`，两字两点判 `C(word)` 是否对 word 索引线性；若线性，3,200 列可由 100 个字常数 + 32 个 bit 列合成，无需 3,200 次构建。另未测：其他 tile 类型是否同一套。
+
+**踩坑（新增）**：`diff_e3.py` 里 Type2 包的字计数是 **27 位**（`h & 0x7FFFFFF`），用 11 位掩码只会取到 1024 字、解出 10 帧的假结果。判据：`base_frames` 必须等于 50,176。
+
+**负对照（追加，2026-11-11 23:5x）**：`e3_a2` = 与 `e3_a` 完全同参数的第二次构建，差分 **0 字 / 0 帧**；再加 `e3_base` vs 上批 `c_base` 0 字 → 确定性双重确认。`e3_manifest.json` 经 `step03_pip/check_manifest.py` 校验 **RESULT PASS (15 ok / 0 warn / 0 fail)**，结论等级 `verified`。
+
+## 148.1. CRC 复核 E1/E2/E3 与口径订正（2026-11-11）
+
+- E1：128 个签名全非零且互不相同；剔零后 rank 仍 992 / 自由 32 / 矛盾 0 → 不是零样本假象。
+- E2：样本 word 分布 `{40:128}`，**无 word 50** → 拟合的不是 ECC 的线性性。
+- E3：未参与拟合的多比特设计查表预测 CRC —— `0xA5A5F0F01234ABCD`（31 格）`fb596696` 命中、
+  `0xDEADBEEFCAFEBABE`（46 格）`e35694f8` 命中。
+- **订正**：结论应表述为「可得其它帧的 **CRC 增量**」，不是「可得全器件内容」；M 作为矩阵不唯一，
+  唯一确定的是它在 31 维签名子空间上的作用。
+
+## 149. E4/E5：字常数 F(word) 的实测与「对 word 线性」否证（2026-11-11）
+
+### 149.1 结论一句话
+
+【数据事实】ECC 列可分解为 `col(word, bit) = F(word) ^ bit ^ (popcount(bit)%2 ? 0x1000 : 0)`（bit<16 已验），
+但 **F(word) 不是 word 索引的 GF(2) 线性函数**，三个独立判据全否。因此 101 个字常数必须查表（或用 E6 全表反推规律），
+不能由 6 个基向量合成。
+
+### 149.2 实测数据（全部 frame 31786，bit 15，par(15)=0）
+
+| word | 来源 | col(word,15) | F(word)=col^0xF |
+|---|---|---|---|
+| 2 | E5 Y=1 | 0x136F | 0x1360 |
+| 4 | E5 Y=2 | 0x13AF | 0x13A0 |
+| 8 | E4 Y=4 / E5 Y=4 | 0x144F | 0x1440 |
+| 10 | E4 Y=5 | 0x148F | 0x1480 |
+| 12 | E4 Y=6 | 0x04CF | 0x04C0 |
+| 14 | E4 Y=7 | 0x150F | 0x1500 |
+| 16 | E5 Y=8 | 0x054F | 0x0540 |
+| 32 | E5 Y=16 | 0x174F | 0x1740 |
+| 40 | E5 Y=20 | 0x086F | 0x0860 |
+| 65 | E5 Y=32 | 0x1B8F | 0x1B80 |
+| 97 | E5 Y=48 | 0x0F8F | 0x0F80 |
+
+**独立复现**：E5 的 word40 单比特结果 `0x086F` 与 `_crc` 语料（完全不同的一批 65 个文件、不同构建时间）
+word40 bit15 的值完全一致 → 跨语料确定性确认。
+
+### 149.3 三条否证（对 word 索引的 GF(2) 线性）
+
+1. `F(32) ^ F(8) = 0x1740 ^ 0x1440 = 0x0300`，而 `F(40) = 0x0860`。因 40 = 32^8，线性要求二者相等 → **否**。
+2. `F(65) ^ F(32) = 0x1B80 ^ 0x1740 = 0x0C40`，而 `F(97) = 0x0F80`。因 97 = 65^32 → **否**。
+3. `F(8) ^ F(10) ^ F(12) ^ F(14) = 0x1100 != 0`。因 8^10^12^14 = 0 → **否**。
+
+三条相互独立（不同字集合、不同方向），结论稳。
+
+### 149.4 附带确认的两条结构事实
+
+- **F 全部是 0x20 的倍数**：`F = k(word) << 5`，k 为 8 位（0x9B/0x9D/0xA2/0x2A/0xBA/0x43/0xDC/0x7C…），
+  即低 5 位恒 0，与「低 4 位放 bit 索引」自洽（bit<16 只占用低 4 位）。
+- **地址律在 CLB 字槽上复现**：E4/E5 全部 11 个样本都落在 **frame 31786**（同列同 band → 同 block_start），
+  仅 word 不同；且 Y<25 时 word = 2Y，Y=32/48 时 word = 65/97 = 2Y+1，
+  与 `step03_pip/pip_law.py` 的 `w = 2*(y%50)+parity; if w>=50: w+=1` 完全一致。
+
+### 149.5 踩坑（E4 第一次差分作废）
+
+`_e4_out.txt` 首版把**所有 Type1 写包的数据字**（FAR/CMD 等，实测 24 字）也拼进帧数组，导致帧索引前移 24 字：
+表现为「word50 零变化 + 出现 word 23/65 等幻影位置」，物理上不可能（每位置列均非零）。
+修正 = 只取 Type2（`h & 0x7FFFFFF`）数据字；判据 `base_words = 5,067,776` 且 `rem = 0`。
+重建后 9 个构建全部 `OK`、每变体恰 1 个内容位 + 1 个 word50。
+
+### 149.6 产物
+
+- `_e4_gen.py` / `_e4_run.sh` / `_e4_fix.sh` / `_e4_analyze.py`
+- `_e5_gen.py` / `_e5_run.sh`
+- `_e6_gen.py` / `_e6_run.sh`（51 构建：Y=0..49 全偶数字槽）
+- 远端 `/opt/lzh/v7re/work/e4`、`/e5`、`/e6`
+
+### 149.7 下一步（E6）
+
+F(word) 全表（word 0,2,…,98）+ 离线拟合（递推 / 幂次 / CRC / 查表）→ 若得规律则 13 位校验可完全自主计算。
+
+## 149.1. CRC 最后一个前提验证：未测 word 也成立（2026-11-11）
+
+- `BEL C6LUT` 11 个构建（k∈{0,1,2,3,16,17,32,33,48,49}）→ 10 个单格样本，落帧 31786/31787、**word 41**、bit 3/7/11/14/15，全部未参与训练。
+- 子空间归属：**10/10 在 128 个 word40 签名张成的空间内**。
+- 帧步进 31786→31787 预测：**5/5 命中，0 错**。
+- ⇒ 「所有 CRC 增量同一子空间 + 映射与 word/位置无关」成立，3,200 位方案的技术前提闭合。
+
+## 150. E6/E7/E8：ECC 列向量公式闭合（2026-11-11）
+
+### 150.1 结论一句话
+
+`word50 = XOR over 帧内所有置位位置的 col(p)`，且 `col(word,bit) = F(word) ^ bit ^ (popcount(bit)&1 ? 0x1000 : 0)`。
+**F 只依赖 word，与 frame 号、tile 列号、clock region 全无关** —— 一张 50~100 项的 F 表即可写任意 CLB 帧的校验字，不需要任何外部算法。
+
+### 150.2 E4 实测（frame 31786，bit 15，par(15)=0）
+
+| Y | word | col 实测 | F(word)=col^15 |
+|---|---|---|---|
+| 4 | 8 | 0x144F | 0x1440 |
+| 5 | 10 | 0x148F | 0x1480 |
+| 6 | 12 | 0x04CF | 0x04C0 |
+| 7 | 14 | 0x150F | 0x1500 |
+
+### 150.3 E5 基底字法（8 变体，frame 31786）
+
+col(2)=0x136F、col(4)=0x13AF、col(8)=0x144F、col(16)=0x054F、col(32)=0x174F、col(40)=0x086F、col(65)=0x1B8F、col(97)=0x0F8F。
+其中 **col(40)=0x086F 与 `_crc` 语料（65 文件、不同构建时间）逐位一致** → 跨语料确定性成立。
+
+### 150.4 三条否证：F 对 word 索引不是 GF(2) 线性
+
+| 关系 | 左 | 右 | 判定 |
+|---|---|---|---|
+| 40 = 32^8 | F(32)^F(8)=0x0300 | F(40)=0x0860 | ✗ |
+| 97 = 65^32 | F(65)^F(32)=0x0C40 | F(97)=0x0F80 | ✗ |
+| 8^10^12^14=0 | F(8)^F(10)^F(12)^F(14)=0x1100 | 0 | ✗ |
+
+同一位置（word 40）的**位索引**方向是线性的（E3 已验证），但**字索引**方向不是。
+
+### 150.5 E6：51 构建全测（SLICE_X12Y0..Y49，A6LUT，frame 31786）
+
+51/51 单比特样本全部 OK，F 全部是 0x20 的倍数（`F = A(word) << 5`，A 为 8 位）。
+`A(word)` 的低 7 位随 Y 呈**近乎等差数列**：0x19,0x1B,0x1D,0x1F,0x22,0x24,…,0x3E,0x41,0x43,…,0x4B ——
+每步 +2，在 0x1F→0x22、0x3E→0x41 处 +3。即**带进位的算术计数**（不是线性码），这就是 F 非线性的机制解释。
+H2（F(word+2)=T·F(word) 固定 13×13 矩阵）在 7 个输出位矛盾 → 否；H4（F(2w)=Q·F(w)）→ 否。
+
+### 150.6 E7：F 与 frame / tile 列 / clock region 无关
+
+命名冲突踩坑：base 名 `e7_b` 与站点标签 `b` 相撞，base 的 `.v/.tcl` 被后续站点覆盖成「X12Y54 INIT=1」。
+但该"错误"反而给出样本：X12Y54（region 1，frame 26540）col(8,15)=0x144F。
+干净复核（`_e7_fix.sh`，新 base `e7_true` 三 LUT 全 INIT=0，读回 SITE0=X12Y4 / SITE1=X12Y54 / SITE2=X20Y4 全 0x0）：
+
+| 构建 | site | frame | content | ECC |
+|---|---|---|---|---|
+| e7_a | SLICE_X12Y4 | 31786 | (31786, 8, 15) | 5199 = 0x144F |
+| e7_c | SLICE_X20Y4 | 31958 | (31958, 8, 15) | 5199 = 0x144F |
+
+⇒ frame 26540 / 31786 / 31958 三点、跨 region、跨列，col(8,15) 全为 0x144F。
+
+### 150.7 自检（`_e6_save.py`）
+
+| 自检 | 内容 | 结果 |
+|---|---|---|
+| 1 | E3 四个多比特样本（INIT 0x5/0x55/0x14/0x0055005500550055）重算 | **4/4 命中** |
+| 2 | E4/E5 十一个单比特样本重算 | **11/11 命中，0 失配** |
+| 3 | E7 三个 frame 点 col(8,15) 预测 | **3/3 = 0x144F** |
+
+落盘 `v7re\steps\e6_ecc_table.json`（2,280 B）：`F` 表 50 项（word 0,2,…,48 与 51,53,…,99）、`words_missing` 显式列出 51 个缺项。
+
+### 150.8 覆盖缺口（精确）
+
+已测 50 个 word **全部是 parity=0 槽**（Y<25 → 偶 word，Y≥25 → 奇 word 51..99）。
+缺的 51 个：奇 word 1..49（25 个）、偶 word 52..100（25 个）、word 50（本身是 ECC 存储，不需要 F）。
+补齐办法：`BEL C6LUT` 落另一个槽（`## 149` 已实测 X12Y20 C6LUT → word 41、bit 3/7/11/14/15）。
+E8 = 一构建多 LUT：base（50 LUT 全 INIT=0）+ e8_even（偶 Y 的 25 个 INIT=1）+ e8_odd（奇 Y 的 25 个），
+两构建各 25 个独立的 (tile, word) 方程，一次补齐 50 个 word。
+
+### 150.9 产物
+
+`_e4_gen.py`/`_e4_run.sh`/`_e4_fix.sh`/`_e4_analyze.py`、`_e5_gen.py`/`_e5_run.sh`、`_e6_gen.py`/`_e6_run.sh`/`_e6_analyze.py`/`_e6_save.py`、`_e7_gen.py`/`_e7_run.sh`/`_e7_fix.sh`、`_e8_run.sh`；
+远端 `/opt/lzh/v7re/work/e4`…`e8`。
+
+### 150.10 对写端（fasm2bit）的意义
+
+```python
+def ecc_col(word, bit):          # bit < 16 已验证
+    return F[word] ^ bit ^ (0x1000 if bin(bit).count("1")&1 else 0)
+
+def frame_ecc(dwords):           # dwords: [0..49]+[51..100] 共 100 个 32 位数据字
+    acc = 0
+    for i, v in enumerate(dwords):
+        w = i if i < 50 else i      # 索引即 word 号（word50 不参与）
+        b = 0
+        while v:
+            if v & 1: acc ^= ecc_col(w, b)
+            v >>= 1; b += 1
+    return acc
+```
+
+改一位 → `ECC ^= col(p)`，O(1)。这是自造可加载 bitstream 的**最后一块必需件**（此前 `STATUS.md` 记为"唯一硬拦路石"）。
+
+### 150.11 E8/E9/E10：奇偶槽补齐与跨帧复核（追加）
+
+**E8 暴露的结构事实（重要）**：同一列（X12）的 Y=0..49 全部落在**同一个 frame（31786）**里，行号完全由 **word** 编码。
+⇒ 一帧 = 一列 × 一带 × 一个 minor，100 个数据字 = 50 行 × 2 半（parity）。
+⇒ 同帧内放多个 LUT 只产生 1 个 XOR 方程（25 个未知数 1 个方程），**不能并行测同帧的多个 word**；必须让每个 LUT 落在不同列（不同帧）。
+
+**E9_lo（25 列 × C6LUT，Y=0..24）** 成功：25 个奇槽 word(1,3,…,49) 各落一个独立 frame，得到 25 个独立方程。
+frames 31534..32266；col C1..C34。踩坑：`e9_hi`（Y=25..49）与 base 的 LOC 不同 → 布线整体改变 → 差分 3 万+ 字，全部无效。
+
+**E10 跨帧复核（决定性格挡）**：同一 word 换列/换帧：
+
+| 构建 | site | frame | word | F |
+|---|---|---|---|---|
+| e10_w1 | SLICE_X20Y0 C6LUT | 31958 | 1 | 0x0340（E9 在 frame 31534 同值）✔ |
+| e10_w41 | SLICE_X20Y20 C6LUT | 31958 | 41 | 0x1880（E9 在 frame 32086 同值）✔ |
+
+⇒ **F 与 frame / 列无关这一条对奇槽 word 同样成立**，E9 的 25 个值可信。
+
+**结构定律（0 反例，word 0..49）**：令 `i(0)=25`，每增一个 word `i += 1`，**若 `i % 32 == 0` 则再 +1**；
+则 `F(word) = ((i & 0x3F) << 5) | (P(word) ? 0x1000 : 0)`。
+`i=32` 与 `i=64` 被跳过，正对应 `F` 的 bit 10 / bit 11 被禁用；`P(word)` 是 0x1000 标志位（50 个实测值即真值表，目前无闭式）。
+这解释了 §150.5 的"近乎等差数列"：那里只测了偶 word，i 每次 +2；补上奇 word 后步长就是整齐的 +1。
+
+**当前覆盖**：`v7re\steps\e6_ecc_table.json` 共 **75 项**（word 0..49 全部 + 51,53,…,99），
+缺 **25 项**：偶数槽 52,54,…,100（= Y≥25 的 parity-1 槽）。补齐需 base 与 variant 同 LOC 的 C6LUT 构建（E9_hi 的做法不可用）。
+
+**自检（全绿）**：E3 4/4、E4/E5 11/11、E7 3/3、E9_lo/E10 跨帧 2/2、i 递推 0 不符。
+
+### 150.12 E11 补完 100/100 + 端到端验证（2026-11-11）
+
+**E11**（25 列 × C6LUT，Y=25..49，base 与 variant **同 LOC**）：25 个偶数槽 word 52,54,…,100 全部拿到，
+frames 31534..32266，每帧恰 1 个内容位、1 个 word50。踩坑教训已固化：**base 必须与 variant 使用完全相同的 LOC**，
+否则 place/route 整体重排，差分里全是布线噪声（E9_hi 就是这样作废的）。
+
+**覆盖**：`v7re\steps\e6_ecc_table.json` 现 **100/100 个数据 word**（0..49 + 51..100，word 50 是校验字本身）。
+
+**两条结构定律（0 反例）**
+- 段一 word 0..49：`i(0)=25`，每增一 word `+1`，**跳过 32 的倍数**；`F = ((i & 0x3F) << 5) | (P?0x1000:0)`
+- 段二 word 51..100：`i(w) = w + 27`，**无跳号**；`F = (i << 5) | (P?0x1000:0)`
+- `P(word)`（0x1000 标志位）仍是 100 项真值表，未找到闭式。
+
+**端到端复算（决定性）**：`_e13_e2e.py` 用公式把真实 .bit 的**每一帧** word50 从数据字重算，与文件中保存值逐帧比对：
+
+| 文件 | 帧数 | 非零帧 | 命中 | 含 bit≥16 的帧 |
+|---|---|---|---|---|
+| `_crc\c_base.bit` | 50,176 | 88 | **88/88** | 38 全中 |
+| `_crc\c00.bit` | 50,176 | 89 | **89/89** | 38 全中 |
+| `_crc\c31.bit` | 50,176 | 89 | **89/89** | 38 全中 |
+| `_crc\c63.bit` | 50,176 | 89 | **89/89** | 38 全中 |
+
+⇒ ①公式对 **bit 0..31 全部成立**（此前只验过 bit<16 的 16 个位，`g(bit)=bit` 的高半段现在有实证）；
+②非零帧里含布线数据（INT tile 帧），所以 **F 表不局限于 CLB tile**，对布线的 INT 帧同样成立；
+③"自行计算 word50"这条链路 **已闭合**，写端不再需要 Vivado 或任何外部算法。
+
+**仍需注意的边界**：所有样本都来自 `xc7vx485t` 同一器件、同一 Vivado 2017.2；
+330T（7vx330t）等其他器件未验证是否同一张 F 表；空帧（数据全 0）word50 恒 0 已含在模型内。
+
+## §151 · 比特流尾部包序列与器件级 CRC（新发现，2026-11-11）
+
+【数据事实】`_crc\c_base.bit`（sync 在字节 150 = word 0；50,176 帧；5,067,776 字）在 FDRI 之后的有效包**只有 9 条**，其余 512 个 `0x20000000` 是 Type1 op=0 的 NOP 填充：
+
+| # | Type1 地址 | 寄存器 | 数据 | 含义【推断】 |
+|---|---|---|---|---|
+| 1 | 0x00 | CRC | **0x591AE6B5** | 帧数据 CRC（配置结束由器件比对） |
+| 2 | 0x04 | CMD | 0x0A | GRESTORE |
+| 3 | 0x04 | CMD | 0x03 | LFRM |
+| 4 | 0x04 | CMD | 0x05 | START |
+| 5 | 0x01 | FAR | 0x03BE0000 | 回读起始帧地址 |
+| 6 | 0x06 | MASK | 0x0501 | 回读掩码 |
+| 7 | 0x05 | CTL0 | 0x0501 | 控制 |
+| 8 | 0x00 | CRC | **0xE3AD7EA5** | 回读循环数据的 CRC |
+| 9 | 0x04 | CMD | 0x0D | GO |
+
+【数据事实】四类假设**全部否证**（目标值 0x591AE6B5）：
+- 反射 CRC32（zlib 四组合：init 0 / 0xFFFFFFFF × xorout 0 / 0xFFFFFFFF）× 4 个区间（`w[0:CRC包)`、`w[1:…]`、`w[4:…]`、仅 FDRI 数据 `w[46:46+5067776]`）→ **无命中**
+- 非反射 CRC32（poly 0x04C11DB7，init 0 / 0xFFFFFFFF）× 2 个区间（`w[0:CRC包)`、仅 FDRI）→ **无命中**
+
+【推断】覆盖范围/推进方式不是"从 sync 后第一字到 CRC 包、按字节推进"这种直白取法。四个可能方向：
+(a) 只统计**写入配置寄存器的数据字**，且含/不含包头的特定子集；
+(b) 含 `0x000000BB 0x11220044` 前导与 `0x0F0F0F0F×4` 及 BUS_WIDTH 等前置包；
+(c) **按位推进**而非按字节（Xilinx 配置 CRC 惯例是 bit 级移位）；
+(d) word 内字节序 / 位序存在交换。
+
+### 为什么这是下一步的 P0
+- 帧数据 `word50` 已可自算（§150），器件级 CRC 是"自造比特流能被器件接受"**唯一剩下的拦路石**：配置结束时器件比对该值，不符则 INIT_B/DONE 拉低。
+- **单未知量、可离线拟合**：`_crc` 语料 65 份，每份都有已知 CRC 值和不同内容，足以在无硬件条件下判定命中。
+- 不需要板子即可出结论（判据是"值命中"，不是"能跑"）。
+
+### 实验设计（下一步执行）
+1. 抽取 65 份语料的 `(payload 区间, CRC 值)` 建 CSV，先只用 1 份做搜索，其余 64 份做验证（判据 65/65）。
+2. 参数化搜索空间：起点 ∈ {sync+1, sync+2, `0x000000BB` 之后, `0x0F0F0F0F×4` 之后}；终点 ∈ {CRC 包之前}；推进粒度 ∈ {bit, byte}；位序 ∈ {MSB-first, LSB-first}；init ∈ {0, 0xFFFFFFFF}；xorout ∈ {0, 0xFFFFFFFF}；poly ∈ {0x04C11DB7 反射/非反射}。
+3. 若穷举仍不中，改 GF(2) 拟合：定长区间下 CRC 是数据的**仿射**函数，用 65 份样本对 32 个输出位逐位解线性系统（与 §150 解 ECC 列同一套工具 `gf2_solve`）。
+4. 命中后落地 `v7re/scripts/crc_dev.py`，并在 §150 的写端链路上补一步。
+
+### 同步记录：其他候选任务（本轮未做）
+- **B 全芯片自造流 + 与 Vivado 逐字节比对**：无需硬件即可验证工具链完整性（S15 已对单 tile 做过 0 字差异，未做全芯片）。
+- **C 语义覆盖扩展**：BRAM/DSP 目前仅 2 特征（§6.12），SLICEM 的 RAM/SRL、IO/CMT/GTX 全未碰。
+- **D 330T 一致性**：现全部样本来自 `xc7vx485t`；`xc7vx330t`（`C:\v7check` 的 34,412 帧样本）是否共用同一张 F 表，只需 1 次构建。
+- **E 真实板子回读**：唯一能证伪全部结论的手段，受硬件限制。
+
+## S52 INT 门控位点亮实验（2026-11-11）
+
+66 个 off0..3 洞位（`int_holes.json`）不全是 GCLK/旁路：用 6 个定向设计（`/opt/lzh/step13/gc/`，SLICE_X8Y11，base 31680）实测得到 5 条命名 ——
+`(0,1,16)=FF_USED_IN_SLICE`、`(1,1,7)=CE_SOURCE_FABRIC`、`(1,1,3)=SR_SOURCE_FABRIC`、`(1,1,15)/(1,1,23)=CE_SR_CONST_MARK_A/B`【推断】；`law_ctrl` 已更新 10 行（5 坐标×2 侧）。
+语料侧：6,015 个既有 bitstream 只点亮过 3 个洞位（(0,1,16)/(1,1,19)/(1,0,31)），其余 63 位未出现；本批 6 设计再点亮 7 个，仍余 56 个未命名。
+副结论：`clock_fabric`（LUT 当时钟、无 BUFG）与 `clock_global`（BUFG）洞位完全相同 ⇒ 这 6 位与全局时钟无关；BUFG 差异只在已覆盖 cell。
+报告：`step03_pip/S52_INT_GATE_BITS.md`。
+
+## S51. 复用规律总论（2026-11-11）
+
+执行 `step03_pip/PROMPT_PIP_REUSE_V3.md`，产出 `step03_pip/PIP_REUSE_LAW.md`（八段）。四条新表述：
+
+1. **复用四层化**：L1 位级共享（同族 N 源 share K cell）/ L2 跨实例（块基址+行字位移）/ L3 语义（四类编码并存）/ L4 非位（EDA 的 PIP reuse，显式排除）。
+2. **每源位数定论**：2 位 5,640 源、4 位 1,632 源（全部落在 (10,24)/(8,16) 形状），无第三档；池内无恒 0 cell。
+3. **“合法 ≠ 实际”三反例化**：四 tile 同块皆 12 unique；基址 +36 阴性对照仍合法；S13 多解需真值剪枝。
+4. **生成侧口径**：写位 = `ones`→1、`zeros` 与“池内未涉及位”→0（不清零残留会解错源）；自检三步（帧内回读 / FDRI burst / 864 写回环）。
+
+未测清单同步（66 洞、时钟树、DSP 280 属性、FIFO 29 属性、GTX/PCIE、跨器件通用性）。
+
+## S52 续（2026-11-11）—— 第三批 11 设计：7/66 门控位已命名，59 位与 CLB 特性无关
+
+第三批设计（`/opt/lzh/step13/gc2/`）：v_ce_rst / v_ce_inv / v_rst_inv / v_ck_inv / v_two_ff /
+v_four_ff / v_lut_ff / v_ff_init1 / v_ff_se / v_latch / v_muxf7，全部与第二批 6 个设计同块（base 31680,
+word 22/23，frames 31680..31683）。17 个设计合并矩阵后，**洞位点亮集合仍是 7 个**：
+
+| 洞位 | 名字 | 判据（17 设计） |
+|---|---|---|
+| (0,1,16) | FF_USED_IN_SLICE | 12 个含 FF 设计全 1；v_latch / gc_nof 为 0 |
+| (1,0,7) | FF_D_BYPASS_A【推】 | FDRE 类普遍 1；v_ff_se(FDSE) / v_muxf7 / v_latch 为 0 |
+| (1,0,19) | FF_MULTI_OR_FABRIC_D【推】 | 多 FF 或 D 来自 fabric 时 1 |
+| (1,1,7) | CE_SOURCE_FABRIC | CE 接端口（含 LUT 取反）1；接常量 1 时 0 |
+| (1,1,3) | SR_SOURCE_FABRIC | R/S 接端口 1；接常量 0 |
+| (1,1,15) | CE_R_FABRIC_MARK_A | CE/R 任一来自 fabric 即 1，恒与 (1,1,23) 同置 |
+| (1,1,23) | CE_R_FABRIC_MARK_B | 同上 |
+
+结论：**剩余 59 个洞位与 slice 内 FF/CE/SR/LUT/MUXF 的任何组合都无关**（17 个设计零命中）。
+它们更可能是全局网/长线（GCLK_L_B**, LV/LH）在 tile 内的落点使能，或同块另一侧 INT 半区的控制位。
+已写入 law_ctrl（14 行 L/R 各 7）。
+
+## §149 T80 全帧 CRC 签名（2026-11-11）
+
+- 语料：`SLICE_X12Y<Y>`（Y=0..49）、4 BEL × 16 个 `k=16a+2b`（覆盖 bit 15..0 各一次），
+  基线 **per-(Y,BEL)** 共 200 份；合计 3,250 个构建，全部 OK。
+- V1 位置域：3,200/3,200 每份差分 `add=1,rem=0`；(word,bit) 唯一 3,200；
+  word 0..100（缺 word 50 = ECC）、bit 0..31；**全部落在单帧 31786**；签名全互异、零签名 0。
+- V2 子空间：rank(旧 64) = 31，rank(新 3,200) = 31，新签名落在 span(旧) 外 **0** 个。
+- V3 跨帧：另造 16 个奇数 k 设计（frame 31787），用 32 对训练（张成 30 维）预测 →
+  **10/10 命中、0 错**，6 个不可表达（训练缺 2 维）。命中含跨 word（41,15/14/31）与跨行（y=30→word 61/62）。
+- 踩坑：首版语料基线按 Y 一份（BEL 只 A6LUT），不同 BEL 的 LOCK_PINS 引脚不同 →
+  每份差约 100 格噪声；改 per-(Y,BEL) 基线后严格单格。
+- 文档：`v7re/steps/T80_CRC_FULLFRAME.md`。
+- **补满秩（§149 后续）**：追加 word 41（C6LUT/D6LUT）32 个位置 × 2 帧共 64 个构建，全部单格；
+  训练对达 **64**，张成维数 **31（饱和）**，**留一法 64/64 精确命中、0 错、0 不可表达**。
+  ⇒ 跨帧映射与 word/行/BEL 无关，只与帧序号有关。
+
+## §150 CRC 语义的文档级证据（T81）
+
+- 来源：UG470 v1.15（2022-07-27）日文版，本地 `_ug470.pdf`（185 页）。
+- p.86：CRC **默认包含在配置位流中**、**硬件校验**，失配则 **INIT_B 拉低、配置中断**；可经 BitGen（UG628）关闭；
+  7 系列为 **32 位 CRC**；加密位流（`BITSTREAM.ENCRYPTION.ENCRYPT=Yes`）时 CRC 失效、改由 HMAC。
+- p.101–103（表 5-19）：CRC 覆盖起点为 **RCRC 命令之后**；位流中**有两个 CRC 包**：
+  首个在 FDRI 数据之后（例值 `C81874CB`），第二个在 START/FAR 之后、恒为 **`E3AD7EA5`**
+  （与我们在 10 个设计上测到的常量完全一致，因为它只覆盖固定尾部序列）。
+- 结论：改位流数据后**必须**修首个 CRC；第二个 CRC 无需重算。我们的增量表因此是必需项。
+- 未验证：JTAG 配置路径的板级实测；UG628 BitGen 关闭 CRC 的选项名。
+- 文档：`v7re/steps/T81_CRC_UG470.md`。
+
+## S53 时钟树测绘（第一部分，2026-11-11）
+
+- **时钟脊 = 12 个 `edge30` 块**（每 band 两个）：base 2562 / 7370 / 7808 / 12616 / 13054 / 17862 / 18300 / 23108 / 23546 / 28792 / 33600 / 34038。此前"word 50 非零的 157 帧"主要就在这些块里。
+- **BUFGCTRL**：BUFG vs BUFGCE 的唯一配置位 = `(edge30 base7808 + off26, word 93, bit 5)`。
+- **BUFHCE**：每站点 4 位簇 `{(off,w,31),(off+1,w,19),(off+1,w,23),(off+1,w,25)}`；`BUFHCE_X0Y0` 在 `(base34038+off26/27, word 48)`，`X0Y5` 平移为 `(off28/29, word 49)`；`X0Y10` 出现在多处（LOC 未完全生效）。CE 常量位 = `(off27, w48, b19)`：CE=1 时为 1。
+- **MMCM**：`CLKFBOUT_MULT_F` 4→6（输出保持 100MHz）差 16 个非校验位，全在 **帧 27392/27393**，words 12/25/26/29 ⇒ CMT 块 word 映射与 wof(Y) 不同（未定）。
+- 构建约束：MMCM VCO 必须 600–1600MHz（否则 `DRC PDRC-34` + route 失败）；BUFR 不能驱动被 LOC 锁在 fabric 的 FF（`Place 30-176`）；BUFG 的 LOC 需匹配 `REF_NAME == BUFG`（用 BUFGCTRL 过滤匹配不到，g0≡g4 即证据）。
+- 报告：`step03_pip/S53_CLOCK_TREE_P1.md`；`v7_verified` 126→**132**（6 行）。
+- 未做：edge30/CMT 的 word 基准锚；BUFR/BUFIO/BUFMRCE/PLL；3,020 个 HCLK_* tile。
+
+## S54 CMT（MMCM/PLL）配置区定位（2026-11-11）
+
+- **帧锚点**：`MMCME2_ADV_X0Y0`→帧 32638/32639（band0 io72 base 32568 **+70/+71**）；`X0Y1`→27392/27393（27322+70）；`X0Y2`→1130/1131（1092+70）。
+  ⇒ **规则：CMT 配置帧 = 该 band 的 io72 块基址 + 70 / +71**（站点 Y = 9 + 52·band）。
+- **word 是属性平面，不是行字**（全项目首例非 `wof(Y)` 规则）：
+  - LOWER 槽（MMCM）：MULT 差异只落在 word **12 / 25 / 26 / 29**；
+  - UPPER 槽（PLL，`CMT_TOP_R_UPPER_T_X88Y44`）：同一对帧，但 word 是 **77 / 80 / 81 / 94**。
+- 时钟脊三件套的分工定型：`edge30` = BUFGCTRL/BUFHCE；`io72 +70/+71` = CMT（MMCM/PLL）；HCLK_*（3,020 tile）未定位。
+- 报告 `step03_pip/S54_CMT_WORD_ANCHOR.md`；`v7_verified` 132→**137**。
+- 未做：MMCM/PLL 约 20 个属性的逐位命名（只证了"在哪两帧、哪些 word"）；BUFIO/BUFR/BUFMRCE；HCLK 位区。
+
+## S55 MMCM 属性位实测（2026-11-11）
+
+站点 `MMCME2_ADV_X0Y0`（帧 32638/32639），12 个单属性变体：
+
+| 属性 | 位 | 结论 |
+|---|---|---|
+| STARTUP_WAIT | (w2,b30) | 0=FALSE / 1=TRUE |
+| CLKFBOUT_PHASE | (w26,b23) | 0→90 置 1 |
+| CLKOUT0_PHASE | (w29,b23) | 0→45 置 1 |
+| CLKOUT0_USE_FINE_PS | (w21,b31) + (w29,b19) | FALSE→TRUE |
+| BANDWIDTH | (w12,b0)=1,(w12,b9)=0,(w12,b11)=0 | OPT→LOW |
+| CLKOUT1 启用 | (w29,b4/b9/b12/b15) | 加一路输出 |
+| DIVCLK 1→2 | (w26,b9) | 一次配对（B 级） |
+| REF_JITTER 0.010→0.020 | **无任何位变化** | 不编码 |
+
+- **MULT 与 CLKOUT0_DIVIDE 是分段码，不是二进制**：MULT 最少 8 个 cell 跨 w12/w25/w26（3 与 5 共享 (26,20)，4 与 6 共享 (12,0)）；DIVIDE 8→6/7/10 的 cell 集互不嵌套。定形需 0..64 全扫描。
+- word 平面：**w2 = STARTUP_WAIT；w12/w25/w26 = MULT/DIVCLK/BANDWIDTH/FB_PHASE；w29 = CLKOUT；w21 = FINE_PS**。
+- 报告 `step03_pip/S55_MMCM_ATTR_BITS.md`；`v7_verified` 137→**144**。
+
+## S56 PLL 属性位实测（2026-11-11）
+
+站点 `PLLE2_ADV_X0Y0`（帧 32638/32639，与 MMCM 同一对帧）：
+
+| 属性 | 位 | 结论 |
+|---|---|---|
+| STARTUP_WAIT | (w98,b1) | FALSE=0 / TRUE=1 |
+| CLKOUT0_PHASE | (w77,b8) | 0→45 置 1 |
+| CLKOUT0_DIVIDE 8→10 | (w77,b0)(w77,b3) | 置 1 |
+| CLKOUT0_DUTY 0.25 | (w77,b0)(w77,b3) 置 1，(w77,b4) 清 0 | — |
+| MULT 4→5 | (w80,b11) 置 1，(w94,b30) 清 0 | — |
+| DIVCLK 1→2 | (w80,b0/b3/b22)(w94,b20/b29) 清 0；(w80,b1/b4)(w81,b15)(w94,b23) 置 1 | B 级 |
+| BANDWIDTH LOW | (w94,b20/b22/b29) 清 0 | — |
+| CLKOUT1 使能 | (w77,b22) 置 1，(w77,b27) 清 0 | — |
+
+- **PLL 的 word 平面 = w77 / w80 / w81 / w94 / w98**，与 MMCM 的 w2/w12/w25/w26/w29/w21 **完全错开**。
+- 编码形态与 MMCM 同构：MULT/DIVIDE 分段码，单比特属性是开关位。
+- 至此 **CMT 两个原语（MMCM + PLL）都能从位流解码主要属性**。
+- 报告 `step03_pip/S56_PLL_ATTR_BITS.md`；`v7_verified` 144→**152**。
+
+## S57 · MMCM MULT / CLKOUT_DIVIDE 分段码（2026-11-11）
+
+37 个设计（MULT 3–32 + DIVIDE 1–64 抽样）实测，站点 `MMCME2_ADV_X0Y0`、帧对 32638/32639：
+
+- **CLKIN1_PERIOD 不编码**：4 组对照（7/12/14/16 各跑 200/100/50 MHz 两档）位级完全相同。
+- **MULT 是两级码**：coarse 在 `f0.w26` 的 bit20/27/28/30/31 一带（同一 coarse 值可对应 16 与 24），
+  fine 在 `f0.w25`/`f1.w25`；`f0.w25` 低字节在 3–10 段是 `7b/7d/79/7f`，11–32 段恒 `7f` 且高字节呈滑动窗口。
+- **DIVIDE 也是分段码**：`f0.w29` 只有 8 个取值，`0x90000000` 同时对应 4/6/12，`0x48000000` 对应 16/24/48；
+  `f1.w29` 低 16 位恒 `0x9010`（DIVIDE=1 为 `0x1010`，多一个旁路位）。
+- 结论：**只能查表**，无闭式；表已入库 `cmt_code`（33 行）+ `v7_verified` 154。
+- 报告：`step03_pip/S57_MMCM_MULT_DIVIDE_CODE.md`。
+- 未测：MULT 1–2 / 33–64（需 CLKIN ≤25 MHz 进 VCO 窗口）、DIVIDE 11/13–15/18/22/25–31/40/56/80/128。
+
+## S58 · BUFIO / BUFR / BUFMRCE（2026-11-11）
+
+8 设计实测（远端 `/opt/lzh/step15/clk2/`），结论：
+
+- **BUFIO 无任何配置位**（与基线位流逐位相同）。
+- **BUFR**：CE `(27322,w44,b17)+(27323,w44,b13)`、CLR `(27322,w46,b17)+(27323,w46,b13)`（**CE/CLR 均为反向存储**）、
+  DIVIDE 码字在 `f27354/f27355` 的 **word 50**。
+- **BUFMRCE**：CE / INIT_OUT **不编码**（三个变体位流只差 1 个 word50 值）；实例化才出现的 5 个位：
+  `(27255,w48,{8,11}) (27364,w48,27) (27365,w48,25) (27393,w49,3)`。
+- **重要修正**：`word 50` 的性质按块类型而定——fabric 块（CLB/INT/BRAM/DSP）是校验/ECC，
+  **io72/edge30/CMT 块里是真实配置字**（div2 vs div3 只在 w50 有差异）。
+- 构建门：BUFR 输出必须悬空（否则 `Place 30-134` / `Place 30-176`）；`get_drc_checks PLACE-176` 返回空会让脚本中止。
+- 站点归属：时钟分发三件套的位都在 **io72 块**（27322 系列），与 CMT（io72+70/+71）同区，`edge30` 只覆盖了 BUFGCTRL/BUFHCE。
+- 报告：`step03_pip/S58_BUFIO_BUFR_BUFMRCE.md`；`v7_verified` 154 → **161**。
+
+## S59 · HCLK_* 位区定位（2026-11-11）
+
+3 设计三态差分（`h_off` 无缓冲器 / `h_bufg` 全局 / `h_on` BUFHCE 区域），FF 固定 `SLICE_X8Y11`：
+
+- 逐 cell 按 (off,bufg,on) 三元组分类：**bufg_only 169 / hclk_only 31 / other 55**（排除 word 50）。
+- **核心结论：HCLK_* 没有自己的帧块**。`frame_blocks` 六类里没有 hclk；HCLK 配置分两层：
+  1. 缓冲器入口：`edge30` 的 `off26..29`（BUFHCE_X0Y0 = `(34038+26,w48,b31)+(34038+27,w48,b19/23/25)`，与 S53 逐位一致）；
+  2. 轨道选择：各列 **CLB/INT 块的 INT 控制池**（off 0..25）按该行 row word 排布，**单 bit 语义**。
+- `hclk_only` 31 个 cell 完全列出（io72 27322 系列、clb gc16/gc115/gc179/gc188、edge30 33600/34038、pcie 28354/28355）。
+- 口径修正：**“按 tile 算覆盖率”对 HCLK 不适用**（它不是独立可配置块）。
+- 报告：`step03_pip/S59_HCLK_LOCATION.md`；`v7_verified` 161 → **167**。
+
+## §151 CRC 签名依赖绝对帧位置（远距实测，T82）
+
+- 实验：`SLICE_X12Y200`（col20、band4、base 10768）造 2 份（INIT=0 / INIT=1），与 anchor（`SLICE_X12Y20`，base 31752）对比同一 (word 0, bit 15)。
+- 差分格：far 落在帧 **10802**（=10768+34）、word 0、bit 15 —— 与 anchor 的帧 31786（=31752+34）**同一帧偏移、同一 word、同一 bit**。
+- 实测签名：anchor `0xcc97191d`，far `0x6d7922f5`，**异或 K=`0xa1ee3be8`（非零）**。
+- 结论：CRC 签名不是 (word,bit) 的函数，而是**绝对帧位置**的函数（CRC 是 LFSR，贡献随「距 CRC 寄存器的位数」变化）。
+  ⇒ T80 的 3,200 条表只在帧 31786 有效；跨帧外推必须依赖「帧步映射」，而该映射已实测 **rank 31（奇异，32 维丢 1 维）**，正向可迭代、反向不可逆。
+- 另一发现：全帧扫描用的 k 只有偶数（`k=16a+2b`），所以 3,200 条全部落在帧 31786 一个帧上，此前"每行 4 BEL 覆盖"的表述应更正为"每行 4 BEL、单帧"。
+- 文档：本节；`v7re/scripts/crc_delta.py` 仍未接入 3,200 条表。
+
+## S60 · GTX 配置帧区首次定位（2026-11-11）
+
+- 语料：远端 194 个用户级 .v 中 **0 个 GTX/PCIE 实例**，7,987 个 bitstream 无 GTX 设计 ⇒ 自建。
+- 最小探针：`GTXE2_CHANNEL` 只连 8 端口即可综合；需 `BUFG` 转发 `TXOUTCLK`（REQP-1739）、`GTGREFCLK` 供参考时钟（REQP-51/52），DRC 豁免必须在 `place_design` **之前** 用 `set_property SEVERITY Warning [get_drc_checks <ID>]`（**不加花括号**，否则 Vivado 12-2485）。
+- 配置区：**帧 31476..31507**（block base 31476 = 31508−32，紧邻 band0 第一个 CLB 块 31508），**word 平面 0..100 全宽**（非 `wof(Y)`）。
+- 实测字段：`CPLL_FBDIV` 2→4 = `(31507,w1,b16)`；`TXOUT_DIV` 4→8 = `(31506,w12,b0/b2)`；`TX_DATA_WIDTH` 20→40 = `(31504,w4,b14)↓ (31505,w4,b14)↑ (31506,w4,b25)↑ (31507,w4,b24)↓`。
+- 通道 word 偏移：Y0=16（基准）/ Y1=38(+22) / Y2=73(+57) / Y3=95(+79)【未定形】。
+- word 50 在 GTX 块内是帧级校验字（每帧 5–9 位随配置变化），非配置。
+- 入库：`v7_verified` 167→**173**；报告 `step03_pip/S60_GTX_FRAME_ANCHOR.md`。
+
+## §152 CRC 多项式直接反解（路线 B）失败记录
+
+- 目标：检验 `c(p) = A · x^{d(p)} mod P`（标准 LFSR 模型），从而免掉逐帧锚点。
+- 数据：3,200 条单比特 CRC 签名（帧 31786）。
+- 扫了 8 个候选多项式（`04C11DB7`/`EDB88320`/`1EDC6F41`/`82F63B78`/`741B8CD7`/`A833982B`/`814141AB`/`0xAF`）× 两种移位方向（MSB/LSB）× 四种流内下标约定（word*32+bit、位反序、从末尾倒数两种）。
+- 结果：**全部失败**，矛盾 5–51 万条（方程总量 102,400）。即使只解 32 个未知 A，也无一组约定能满足。
+- 结论：这些候选多项式与「按帧内 word/bit 线性排列」的流顺序假设不成立。可能原因（未验证）：
+  1. CRC 覆盖自 RCRC 起，含头部包与 FDRI 长度字节，`d` 必须按**真实包序**算，而不是 `frame*101+word`；
+  2. 每个 32 位字的位序（MSB 先）与 ECC 耦合；
+  3. Xilinx 用的可能不是这 8 个常见多项式。
+- 决策：路线 B 暂停；CRC 保持「按锚点局部可用」状态（`crc_table.json` 64 条 + `crc_delta.py` 未接入 3,200 条）。
+- 影响面：CRC 只影响「生成的位流能否被 FPGA 加载」，不影响本项目主线（PIP 编码规律、解码器、FASM 层）。
+
+### S60 续 · 通道平面定形（2026-11-11）
+
+- **通道 word 平面基址 = 0 / 22 / 57 / 79**（Y0/Y1/Y2/Y3），由两个互相独立的属性交叉确认：
+  - `CPLL_FBDIV` 2→4：`(31507,w1,b16)` / `(31507,w23,b16)` / `(31507,w58,b16)` / `(31507,w80,b16)`；
+  - `TXOUT_DIV` 4→8：`(31506,w12,b0/b2)` / `(31506,w34,...)` / `(31506,w69,...)` / `(31506,w91,...)`。
+- 四条平面不等距（22/35/22/22），中段多 13 字【未定形】。
+- quad 偏移：`LOC X1Y0` 的差异落在 **帧 27286/27287** ⇒ quad X1 的 GTX 块 = `[27286−32, 27286)`，与 band0 的 `[31476, 31508)` 同构（「下一 CLB 块基址 −32」）。
+- 入库：`v7_verified` 173→**178**（CH_PLANE_BASE ×4 + QUAD_BLOCK ×1）。
+
+## §153 CLB 站内四类（BYP/DMUX/SR/CLK）定性（T82）
+
+- BYP：`segbits_clblm_l.db` 703 行中 **0 行**含 BYP → 纯连线，无配置位。
+- CLK：posedge vs negedge 全芯片只差 **1 位** `(31753, 41, 19)`（块基址 31752 + 偏移 1，word 41，bit 19），对应 `CLKINV/NOCLKINV`。
+- SR：用 vs 不用 → CLB 块内 7 格（`(31753,41,2/3/9)` + word40 bit6 在帧偏移 2/4/9/15 重复），**未分离**。
+- DMUX：本轮 3 个构造设计全部构建失败（tcl 引用不存在的 cell、`A6LUT_O6` 双重驱动冲突），无数据。
+- CLB 可配置特征共 58（SLICEL）/61（SLICEM）条：LUT 模式 4、FF D 选择 4×4 位、LUT 输出选择 4×4 位、FF 属性若干、使用标志 5、CLKINV 1、PRECYINIT 3、SMEM 3。
+- 文档 `v7re/steps/T82_CLB_SITE_CLASSES.md`。
+### S60 续2 · GTX RX 字段 + COMMON 平面（2026-11-11）
+
+- `RX_DATA_WIDTH` 20→40 = `(31504,w4,b14)↓ (31505,w4,b14)↑`，与 `TX_DATA_WIDTH` 的前两位**完全相同** ⇒ `w4.b14` 对是 **TX/RX 共用的数据位宽位**；`TX_DATA_WIDTH` 独有的 `w4 b25/b24` 对才是 TX 专属。
+- `RX_CM_TRIM` 4→5 = `(31505,w4,b8)`；`RXSLIDE_MODE` OFF→AUTO = `(31504,w16,b7)↑ (31505,w16,b10)↓`（需 `SHOW_REALIGN_COMMA=FALSE`，否则 `DRC AVAL-23`）。
+- `GTXE2_COMMON.QPLL_FBDIV` 4→5 = `(31506,w45,b16)`，其平面基址 **w45** 落在 Y1 区间 22..56 内 ⇒ **"通道不等距 22/35/22"里多出的 13 字就是 COMMON 平面**。
+- GTX 帧平面模型（最佳）：w0..21=Y0 / w22..44=Y1 / w45..56=COMMON / w57..78=Y2 / w79..100=Y3。
+- 构建坑：`GTXE2_COMMON` **没有** `QPLL_FBDIV_45` 参数（`Synth 8-3438`）；`RXSLIDE_MODE=AUTO` 与 `SHOW_REALIGN_COMMA=TRUE` 互斥（`DRC AVAL-23`）。
+- 入库：`v7_verified` 178→**183**。
+
+## §154 AFFMUX：O5/O6 选择是 1 位（T83）
+
+- 设计：`LUT6_2` 同 INIT、同 `LOC/BEL`、同 `LOCK_PINS`，仅 FF 的 D 接 `.O6()` 或 `.O5()`（`f_o6` / `f_o5`）。
+- 差分：O6 319 格、O5 320 格，**移除 0 / 新增 1** = `(31782, 40, 0)`（= 块基址 31752 + 30，word 40，bit 0）。bit=1 → O5，bit=0 → O6。
+- 与 prjxray A7 的 `SLICEL_X1.AFFMUX` 一致：该字段 4 位编码 6 个源，其中 O5=(1,1,0,0) / O6=(1,0,0,0) **只差 `31_00`**。
+- 结论：AFFMUX **不是** 4 位 one-hot；`(块基址+30, 40, 0)` 对应 A7 的 `31_00`。
+- 失败对照：`f_ax`（FF.D = 输入脚，走 AX bypass）构建成功但差分 40+ 格跨 700+ 帧（换源同时换网），AX/CY/XOR/F7 的位仍未定位。
+- 文档 `v7re/steps/T83_AFFMUX.md`。
+### S60 续3 · COMMON 的 quad 归属（2026-11-11）
+
+- 7 个 quad 通过 LOC 扫描全部定位：**quad i 的 GTX 块 = `band_base(i) − 272`，长 32 帧**。
+  X0Y0 31476 / X0Y1 26230 / X0Y2 0 / X0Y3 5246 / X0Y4 10492 / X0Y5 15738 / X0Y6 20984（7/7 命中）。
+- 通道↔quad：`GTXE2_CHANNEL_X0Y0..27`，**quad = Y÷4**（实测 X0Y4 落在 26230 簇 = quad1）。
+- 全片：56 channel + 14 COMMON = 2 个 die 半区（X0/X1）× 7 quad，每 quad 一个 32 帧块。
+- 实验纪律：LOC 扫描的差分里有一批固定的 fabric/时钟噪声帧（31516/31521/31551/31556、31684–31686、31827–31829、31963–31965、32100/32171/32235/32299、27286–27361、28818），必须按「簇首 = band_base−272」判读。
+- 入库：`v7_verified` 183→**190**（QUAD_BAND_MAP ×7）。
+
+## §155 AOUTMUX：4 位字段，O5/O6 四格全不同（T84）
+
+- 构造：`LUT6_2` 双输出形态固定，`s_a`（FF.D=O6、输出脚=O5）vs `s_b`（FF.D=O5、输出脚=O6）。
+- CLB 块内差分：`s_a` 置 `(3,40,8)(4,40,10)(6,41,4)(7,41,5)`；`s_b` 置 `(3,40,4)(4,41,10)(6,41,8)(7,40,5)` —— **各 4 位、互不相同**，对上 prjxray `SLICEM_X0.AOUTMUX` 的 4 位字段。
+- 交叉印证：单输出对 `g_o6`/`g_o5` 的 CLB 块差分与上表一致；另出现 `(30,40,6)(30,40,11)`，疑为 LUT 模式位（未单独验证）。
+- 未解决：V7 帧偏移（3/4/6/7）与 A7（30/31）不对应，需建 V7↔A7 偏移映射。
+- 文档 `v7re/steps/T84_AOUTMUX.md`。
+
+## §156 CLB 剩余特征实测 + ppip 归类（T85）
+
+- 设计固定 `u_lut`=SLICE_X12Y20/A6LUT、`u_ff`=SLICE_X12Y20/AFF，5 份对照（FDRE / FDCE / LDCE / CE=1 / CE=pin）。
+- **FFSYNC = 1 位** `(31752, 41, 16)`：FDRE(同步)=1，FDCE(异步)=0，全芯片只差这 1 格。
+- SR 使用 = 3 位 `(31753,41,2)(31753,41,3)(31753,41,9)`。
+- CE 使用 = 7 位（候选 `(31753,41,7)`，另 6 格待定）。
+- LDCE 锁存器 = 6 位：移除 FFSYNC 3+1 位，新增 `(31753,41,19)`(CLKINV) 与候选 LATCH `(31782,41,0)`。
+- **CLB 151 条「PIP」全是 ppip**：93 always（硬连线，无配置位）+ 58 hint（仅提示）；其中 LUT 输入 `A1..A6←IMUX*`、`AX..DX←BYP*`、`CE←FAN6/CLK←CLK0/SR←CTRL0` 都是 always ⇒ 这三类的源选择确实在 INT 侧，没有站内配置位。
+- 文档 `v7re/steps/T85_CLB_REMAINING_BITS.md`。
+
+## §157 PRECYINIT（CI 常量）1 位 + CLB 位汇总（T86）
+
+- 构造：`CARRY4` 只差 `.CI(1'b0)` vs `.CI(1'b1)`，`LOC SLICE_X12Y20` 固定。
+- 结果：全芯片只差 **1 格** `(31752, 40, 12)`，CI=1 时为 1，无布线差异。
+- prjxray `PRECYINIT` 是 3 位字段，本次只拿其中一位（CYINIT / INIT 两档未测）。
+- A5FF/A5FFMUX 仍未隔离：`f_o5`/`f_o6` 的 `(30,40,0)` 属 AFFMUX；要用 IN_A 必须换整条输入网，噪声不可控。
+- CLB 站内已定位位汇总表（FFSYNC/CLKINV/AFFMUX/AOUTMUX 4 位/SR 3 位/CE 7 位/LATCH/PRECYINIT）写入 `v7re/steps/T86_PRECYINIT.md` §5。
+
+## §158 CLB 边角位收口（T87，7 构建）
+
+- `f_fdre_bff` vs `f_ldce_bff`（BFF 上 FDRE vs LDCE）：全芯片 1 移除 / 2 新增 → `(0,41,16)`=FFSYNC、`(1,41,19)`=CLKINV、`(30,41,0)`=**LATCH（确认）**；三者与 AFF 上同位 ⇒ slice 级。
+- CE：`d_cepin`(CE=引脚) vs `c_ce_lut`(CE=B6LUT 输出) → 稳定 4 位 `(1,41,7)(23,41,0)(24,41,0)(25,41,0)`，随源变 3 位 `(8,39,16)(13,39,17)(19,41,1)`；`CEUSEDMUX` 强候选 = `(1,41,7)`。
+- PRECYINIT：`.CI(1'b1)` 与 `.CYINIT(1'b1)` 都置 `(0,40,12)` ⇒ 该位 = 「取常量 1」档；`CYINIT=引脚` 档差分 170/116 格噪声，另两档未定形。`p_cynet`（同 slice LUT 驱动 CYINIT）报 `12-2285 A6LUT_O6` 冲突，改用 `p_cypin`。
+- SMEM：`RAM32M` `WE=1` vs `WE=pin` → 8/59 格噪声，`WEMUX/WA7USED/WA8USED` 未拿到。
+- 文档 `v7re/steps/T87_CLB_CORNERS.md`（含 CLB 站内最终位表）。
+
+## §159 CLB 位级规格文档定稿（2026-11-11 收口）
+
+交付给解码器的权威文档：`v7re/docs/CLB_BIT_SPEC.md`（206 行）+ 解码器 `v7re/scripts/clb_decode.py`。
+
+### 一、核心公式（已 256/256 验证）
+
+```
+frame_off = 34 + (k & 1) - 2 * ((k >> 3) & 1)
+word      = 40 (A/B) | 41 (C/D)
+bit       = B_L - 4*(k>>4) - ((k>>1)&3)      B_A=B_C=15, B_B=B_D=31
+```
+
+对 `clb_init_locked_x12y20_4lut.json` 的 4×64=256 个格逐项相等，0 处不符。
+
+### 二、解码器验证（6/6）
+
+`python v7re/scripts/clb_decode.py _ff\d_fdre.bit` → `FFSYNC=1`；`d_fdce`→0；`d_lat`→`LATCH=1,CLKINV=1`；`d_cepin`→`CEUSEDMUX=1,CE_TARGET=[1,1,1]`；`d_ce1`→全 0；`p_ci1`→`PRECYINIT_1=1`。6 个设计与意图全部一致。
+
+### 三、最大陷阱（必须写进解码器注释）
+
+INIT 位号与「I0..I5 接 A1..A6 的哪个」绑定。未加 `LOCK_PINS` 的设计，Vivado 随机分配输入引脚 → **格集合不变、索引标签被置换**。实测 `_full8_i3.bit`（设计 INIT=3）直接套公式解出 `0x0000000100000001`（bit0+bit32）而非 `0x3`。解码必须先由 INT 侧 IMUX 解出引脚序。
+
+### 四、置信度分层
+
+- **确认**（多构造/多 BEL）：INIT 公式、FFSYNC、CLKINV、LATCH、AFFMUX O5/O6、AOUTMUX 4 位、SR 三位、PRECYINIT 常量 1 档。
+- **强候选**：`CEUSEDMUX=(1,41,7)`（跨 CE 源稳定，但对照含一个混杂变量）。
+- **候选**：CE 目标编码 `(23/24/25,41,0)`。
+- **未拿到**：A5FF/A5FFMUX、SMEM 的 `WEMUX/WA7USED/WA8USED`、`PRECYINIT` 另两档。
+
+### 五、零配置位的三类（别再找了）
+
+LUT 输入 mux（24 条 always ppip）、BYP 旁路（4 条 always）、CE/CLK/SR 的**源选择**（3 条 always）。CLB 的 151/146 条「PIP」全是 ppip：**93 always（硬连线）+ 58 hint**。
+
+### 六、适用范围限制
+
+1. 只在 `SLICE_X12Y20`（CLBLM、grid_col 20、Y=20 上半区）实测；跨列/跨行未验证。
+2. V7 帧偏移（INIT 34/35、AOUTMUX 3/4/6/7、AFFMUX 30）与 prjxray A7（30/31）**不同体系**，不能套用。
+3. 表只适用 **CLBLM**；T54 已证 CLBLL 布局不同（`SLICE_X8Y20` 用本表解 INIT 会 13 缺 13 多）。
+
+### 七、下一步选项
+
+- **A（推荐）**：标定 CLBLL（`SLICE_X8Y20`），用同一套公式拟合新的 `B_L`/帧偏移 → 得到两套表。
+- B：跨列验证（选 grid_col 10 / 30 的 slice），确认块基址与帧偏移的列无关性。
+- C：继续 HCLK_CMT 剩余 32 源。
+- D：SMEM 三位 + A5FF（需要更严的闸门构造）。
+### S60 续4 · X1 半区复核（2026-11-11）
+
+- **方法修正**：LOC 扫描差分噪声过多，改为「同一 LOC、只改一个参数」的成对实验，差异只剩目标位。
+- 实测：`X0Y0` QPLL 4→5 → `(31506,w45,b16)`；`X1Y0` → `(36718,w45,b16)`；`X1Y2` → `(5242,w45,b16)`。
+- ⇒ **X1 半区 = X0 + 5212 帧**；统一公式 `block_base = band_base(i) − 272 + (X1 ? 5212 : 0)`，两个独立实测点均命中。
+- 入库：`v7_verified` 190→**193**（HALF_OFFSET + X1Y0/X1Y2 块基址）。
+### S61 · HCLK 干净复核（2026-11-11）
+
+用「同一 LOC、只改一个参数」成对实验 + 第二个 LOC 复跑取交集，重测 S59 的 HCLK 判读：
+
+- 4 设计：`bgA/bhA`（`SLICE_X8Y11`）、`bgB/bhB`（`SLICE_X10Y20`），每对只差 `BUFG` ↔ `BUFHCE`。
+- 结果：`runA = 90 cell`、`runB = 90 cell`、**交集 86**、各 run 独有 **4** 个 → **86 个与位置无关的时钟网络位**，4 个是消费方 slice 的局部位。
+- runA 局部：`(31680,w22,b23)(31681,w22,b25/b26/b29)`；runB 局部：`(31716,w40,b23)(31717,w40,b25/b26/b29)`。
+- **纠正 S59**：`31680` 那格不是 HCLK 网络位，是 slice 局部选择位；S59 的 31 个 `hclk_only` 里 28 个属真配置，其余是噪声。
+- 86 格按帧聚簇：`2588–2589/7834–7835/13081/28818–28819`（edge30 时钟脊）、`27328–27391`（BUFH 入口）、`27469–27945`（HCLK 纵向轨道）、`28356–28563`（扇出）、`33868–34065`（另一端脊 + BUFHCE 站点簇）。
+- 新表 `clk_cells(net,frame,word,bit,note,date)` **94 行**；`v7_verified` 193→**196**；报告 `step03_pip/S61_HCLK_CLEAN_RECHECK.md`。
+- **方法学（回灌全局）**：配置位归属一律「同 LOC 只改一参 + 二次 LOC 取交集」；单次差分只给上界。
+
+## 161. 第一优先度：寻找 PIP 复用规律（2026-11-11 决策）
+
+**一句话**：本项目第一优先度只有一个 —— 找出 PIP 复用发生在哪几层、规律是什么、规律能否反用；其余工作全部排在它之后。本节是优先级判官，与 §97 配套。编号 151 已被两节 §151（CRC 相关）占用，故本节取 161。
+
+### 优先级阶梯（1 最高，逐级以 0 差异/分子分母为判据）
+
+| # | 目标 | 当前分子/分母 | 判据（达到才能往下一级） | 复算入口 |
+|---|---|---|---|---|
+| 1 | 复用规律的**完备性**：172 族的位集合能否由「族名 + 源名」生成 | **3,552/3,634 = 97.7%**（定律 3,456 + 复合组模型 96，2026-11-11 接入） | 剩 82 条（6 个长线族）达到 ≥80/82 由名字推出且 0 差异 | `python step03_pip/gen_slots.py` |
+| 2 | 规律的**表达形式**：7 谱型 + 两轴归属 + 16 配置压成常数表 | 172/172 谱型命中；64/64 mux 族 0 差异 | 172 族逐族 0 差异 | `python step03_pip/gen_mux.py` |
+| 3 | 规律的**外部校验**：四条独立支路 | 器件模型 115/115、Vivado `get_pips` 1,155/1,263、不变量 231,656 位 0 违例、E8 50,176 帧全等 | 四支路同时成立 | `python v7re/scripts/verify_all_pip.py --normalize`；`python v7re/scripts/tamper_localize.py --check tamper/ref/ref.bit` |
+| 4 | 规律的**可迁移性**（判据驱动，仍服务主线） | **结构形式已跨 3 类 tile 验证**（INT_L/R、HCLK_CMT §162、HCLK_BRAM §163）；坐标逐类型不同；类型 3/115、器件 0/1 | 再测 1 个非时钟类型（`CLK_HROW_TOP_R`）仍同形；任一类型 0 差异率 <50% 即证否普适 | `python step03_pip/_q_transfer_hclk.py` |
+| 5 | 规律的**反用**（下游应用，不单列章节） | 生成 95.1%；可解性 1,066/1,066；单 bit 检出 99.44% | 作为 Q3「规律能反用」的佐证 | `python step03_pip/p1_solvability.py` |
+
+### 明确不做（除非 1–3 全部闭合）
+
+| 项 | 为什么不是第一优先度 |
+|---|---|
+| ECC 与帧地址耦合（`ECC = L(data) ⊕ A(frame_addr)`，`A` 未定） | 它挡的是「可加载」，与「找规律」正交 |
+| `site_frames` 补全（缺 16,979,200 行） | 数据层工作量，不改变规律陈述 |
+| 跨家族 / 跨器件位库迁移 | 当前证据 0/1，先有规律再谈迁移 |
+| 篡改定位器上板、CLB 站点 INIT 映射、IOB/OLOGIC 等类型普查 | 下游或旁支，会稀释主线 |
+
+### 理由
+
+主线收窄后，唯一在关键路径上的缺口是 **6 个长线族的 82 条 feature**（占 3,634 的 2.3%）——它就是论文里「规律覆盖率」这一句的分母。其余工作（ECC、数据层、迁移、上板）都不会改变「复用规律是什么」这句话，只会让成文变成资料汇编。
+
+6 族实测（`law_cells`，INT_L，sense=1）：`LVB_L0` 18 源/36 行、`LVB_L12` 18/36、`LH0` 12/24、`LH12` 12/24、`LV_L18` 12/24、`LV_L0` 10/20；列重分布分别为 `6,6,6,3×6` / 同 / `4,4,3,3,3,3,2,1,1` / 同 / `4,4,4,3,3,3,3` / `4,4,3,3,2,2,2`。
+
+### 失效条件（何时改主线）
+
+若 82 条最终判定「不可由名字推出」（命中 <60/82），则主线表述改为「172 族中 170 族可公式化、2 族为表数据」，并在论文中作为边界如实写；此时第一优先度降级为**数据完整性**，不再继续找规律。
+
+### 2026-11-11 晚：复合族组模型接入生成器
+
+- `step03_pip/gen_slots.py` 新增 `composite_models()`（读 `v7re/steps/composite_groups.json`，每族 4 组 × core 3 格 + drops 2 源各去 1 格 + extras 2 源各加 1 格）与覆盖率汇总。
+- 实测：**96/96 源 0 差异**（6 个复合族 `CLK_L0/L1`、`CTRL_L0/L1`、`GFAN0/1`），覆盖率由 3,456/3,634 = 95.1% 升到 **3,552/3,634 = 97.7%**；`[其它]` 从 12 族降到 **6 族 = 82 条 feature**（`LH0`、`LH12`、`LVB_L0`、`LVB_L12`、`LV_L0`、`LV_L18`）。
+- 口径：复合族是**表级**模型（每族 4 组常数 ≈ 28 个数字），不是纯定律；统计里与「定律 3,456」分列。备份 `step03_pip/_gen_slots_backup_20261111.py`。
+
+### 2026-11-11 深夜：第 2 步 —— 6 个长线族 82 条的定性（结论：表数据，不可由名字推出）
+
+判据：若 82 条能由「族名 + 源名」推出，覆盖率从 97.7% 升到 100%；否则按 §161 失效条件改口径。
+
+**结构事实（`law_cells` sense=1 实测，脚本见下方复算命令）**
+
+| 族 | 源 | 格 | 每源格数 | 二分 | 完全二分 | 跨族共享格 |
+|---|---|---|---|---|---|---|
+| `LH0` | 12 | 9 | 恒 2 | 是（2 连通块） | 否（12/20 边） | `(0,2,0)`、`(1,6,0)` 与 `LV_L0` 共用 |
+| `LH12` | 12 | 7 | 恒 2 | 是 | 是（K(4,3)，12/12） | 无（与其它族不共格） |
+| `LVB_L0` | 18 | 9 | 恒 2 | 是 | 是（K(6,3)，18/18） | 与 `LVB_L12` 同形不同位 |
+| `LVB_L12` | 18 | 9 | 恒 2 | 是 | 是（K(6,3)，18/18） | 同上 |
+| `LV_L0` | 10 | 7 | 恒 2 | 是 | 否（10/12 边） | `(0,2,0)`、`(1,6,0)` |
+| `LV_L18` | 12 | 9 | 恒 2 | 是（2 连通块） | 否（12/20 边） | `(0,0,2)`、`(0,0,9)` 与 `LH0`/`LV_L0` |
+
+**两条候选规则的证伪结果**
+
+| 假设 | 检验 | 结果 | 判定 |
+|---|---|---|---|
+| H1：源的方向类（N/S/E/W/NE/… /long）决定它的格对 | 每个族内按方向类分组，统计组内格对是否唯一 | **22/36** 组唯一，14 组内出现 ≥2 种格对 | 否 |
+| H2：方向类决定二分 A 侧（= 组选择位） | 每族统计「方向类 → A 侧格」是否唯一 | **25/36** 组唯一，11 组内 A 侧不唯一 | 否 |
+
+**结论（口径更新）**
+
+- 82 条 = **6 张逐族表**（每表 ≤9 个格 + ≤18 条边），是**数据**，不是定律；与 mux/BEG 的「名字即坐标」不是一个等级。
+- 因此第 1 步的完备性是 **3,552/3,634 = 97.7%**（定律 3,456 + 复合组模型 96），剩余 **82 条（2.3%）如实标注为表数据**，不再声称可公式化。
+- 【推断】这 6 族是长线（`LV/LVB/LH`）在 tile 边界的进出位，位池与相邻逻辑列共享（`LH0`/`LV_L0`/`LV_L18` 的 3 个共享格即证据）；【未测】其分配是否由长线的物理邻接决定——仓库里没有长线的内部几何，只有 `tileconn` 的端口对，故无法判定。
+- 跨族共享格实测（`_q_longline_struct.py` 输出）：`(1,6,0) ∈ {LH0, LV_L0, LV_L18}`、`(0,2,0) ∈ {LH0, LV_L0}`、`(0,9,0) ∈ {LV_L0, LV_L18}` —— 即这三个长线族的位池确实交叠。
+- 复算：`python step03_pip\_q_longline_struct.py`；生成器影响：`gen_slots.py` 的 `[其它]` 计数由 12 族降为 6 族、82 条。
+
+### 编号清理记录（2026-11-11，仅改编号、不动正文）
+
+- 全文件有三套历史编号：数字节（`## N.`）、`§N` 节（§149–§159）、`SN` 节（S26–S60）。本次**只清理数字节**：把重复出现的第 2、3 次改为 `N.1` / `N.2`（共 38 处，原编号保留在前缀里，因此正文里“见 §87”仍指向第一次出现的那节）。
+- 本节原写 `## 151.`，与另两节 `## §151`（CRC 两篇）在阅读上撞号，故改号为 **161**（备份：`step03_pip/_status_before_renumber_20261111.md`）。
+- 清理后：数字节 145 个、无重号、最大 161；`N.x` 子号 41 个、无重号；`\ufffd` = 0；行数不变（5,739）。
+- 仍存在（未动，属另一会话正在写的系列）：`## §151` 两节同号（`§151 · 比特流尾部包序列与器件级 CRC` 与 `§151 CRC 签名依赖绝对帧位置`）。引用时请写全标题，勿只写 §151。
+
+### 边界
+
+- 本节只定优先级，不改任何既有结论；数字以 §96/§117/§119 与 `PIP_REUSE_STRUCTURE.md` 为准。
+- 本节写入日期 2026-11-11，与 §97（主线定义）、§92（现状评估）构成三层：定义 → 评估 → 优先级。
+### S62 · S52 门控位双位置复核（2026-11-11）
+
+用 S61 的方法（同 LOC 只改一参 + 第二个 LOC 取交集）复核 S52 的 7 个命名位：
+
+- **CE 组**（`CE=1'b1` vs `CE=port`）交集 5 格：`(0,0,14)(0,0,17)(1,1,7)(21,1,0)(25,1,0)` —— `(1,1,7)` CE_SOURCE_FABRIC ✅。
+- **FF 组**（纯 LUT vs +FDRE）交集 23 格：含 `(0,1,16)` FF_USED ✅、`(1,0,7)` FF_D_BYPASS ✅，其余为 AFF 配置（`(1,0,25/26/29)` 等）与 FF 输入 IMUX；另有 4 格落在 base+147/149（相邻 INT 块，不算本 slice）。
+- **SR 组**（`R=1'b0` vs `R=port`）交集 **仅 1 格** `(1,1,3)` SR_SOURCE_FABRIC ✅（其余 39 格全是位置相关漂移）。
+- **推翻 S52 两条**：`(1,1,15)` CE_SR_CONST_MARK_A、`(1,1,23)` CE_SR_CONST_MARK_B（任何双位置交集都不出现）；`(1,0,19)` FF_MULTI_OR_FABRIC_D 降级【未定】。
+- 新增 2 个 CE 通路门控位 `(0,0,14)(0,0,17)`。
+- 结构事实：加 1 个 FF ⇒ 23 个位置无关位；解码器须按**块窗口 36 帧**过滤，否则会误收相邻 INT 块的布线位。
+- `v7_verified` 196→**205**；报告 `step03_pip/S62_GATE_BITS_RECHECK.md`。
+### S63 · 长线（LV/LH）能否点亮剩余门控位 —— 负结果（2026-11-11）
+
+**动机**：66 个门控位里仍有 60 个从未被任何设计点亮，猜测与「长线/全局线进入 switch box 的使能」有关。
+
+**实验**：4 个设计，`u_s(LUT6) → u_d(LUT6) → FDRE`，唯一变量是**布线距离**：
+
+| 设计 | `u_d`/FF 位置 | 结果 |
+|---|---|---|
+| `v_s` | `SLICE_X8Y11`（同 slice，短） | 基线 |
+| `v_v` | `SLICE_X8Y84`（同列，跨 73 行 → 强制 LV 长竖线） | 差 308 格 |
+| `v_h` | `SLICE_X80Y11`（同行，跨 72 列 → 强制 LH 长横线） | 差 286 格 |
+
+**判读**：把差异归一到 `(frame−31680, word−22, bit)` 后与 `int_holes.json` 的 66 格求交 ——
+**只命中 2 格**：`(0,1,16)` 与 `(1,0,7)`，即 S62 已确认的 `FF_USED_IN_SLICE` / `FF_D_BYPASS_A`。
+**没有任何新的门控位被点亮。**
+
+**结论**：剩余 60 格**不是**长线/全局线入口使能。结合 S52（17 个 slice 内组合设计零命中）与语料扫描（6,015 个设计仅 3 格），
+这 60 格最可能属于尚未实例化的资源：`IDELAY/ISERDES/OSERDES`（IO 侧）、`BUFMR/BUFIO` 的 fabric 侧、或 `CARRY4` 的专用进线。**盲试组合的边际收益已接近 0，需要按资源类型定向设计。**
+
+**副产品**：`v_v`/`v_h` 的 gate-offset 差异里出现 `(31681,22,7)(31681,22,13)`、`(31827,23,9)(31827,24,0/1)` 等，均属**消费方 slice 的局部选择位**（S61 同类），印证了“局部位 ≠ 网络位”的区分。
+### S64 · REUSE_RULES v2 收口（2026-11-11）
+
+`step03_pip/REUSE_RULES.md` 重写为 **v2**（11,726 B），把 2026-10-27 之后的全部结论固化：
+
+- **§1 家族与形状律**：L1 位池族内私有 1,598/1,598、L2 `N=a×b`/`K=a+b` 344 族零反例、L3 每源 **2 位或 5 位**（旧"2 或 4 位"已修正）；2 位源 2,004 / 5 位源 1,632，且 5 位族 = IMUX+BYP+FAN+CLK+CTRL+GFAN 共 70 族。
+- **§2 坐标律**：新增半带规则 `wof(y)=2*(y%50)+(y%50>=25)`；块基址改为「只能查 `frame_blocks`（1,038 块 = 7×5,180）」；`word 50` 按块类型区分（fabric=校验 / io72·edge30·CMT·GTX=真实配置）。
+- **§3 差分三语义 + 双位置交集纪律**（S61）：单次差分只给上界，交集才是配置位本体。
+- **§4 复用边界**：END 侧 2,228 条 0 位（S35）、always ppip 2,598 条无位（S16）、L/R 同名对同一物理 mux（140 去重，S33）。
+- **§5 覆盖度**：INT cell 96.03%，66 格性质已排除"长线族选择位"与"长线入口使能"两条假设。
+- **§6 四类编码**：家族 / 单位开关 / 码字 / 时钟网络，并给各 tile_type 归类与完成度。
+- **§7 统计口径**：172 族 / 12,168 cell / 1,598 唯一位置 / 3,636 feature / 140 去重 / 96.03%，并列出常见混用（181 vs 140 vs 3,636 vs 3,737）。
+- **§10 与 v1 的差异**：7 条变更（器件型号、半带、5 位、word 50、块基址、新增四节、2 条推翻 1 条纠正）。
+
+原 v1（2026-10-27）已就地覆盖；其内容在 `PIP_REUSE_LAW_FULL.md` / `PIP_REUSE_LAW.md` / `REUSE_LAW_TEST_PLAN.md` 中留存。
+### S65 · 5 位源机制（2026-11-11）
+
+`step03_pip/S65_FIVE_BIT_MECHANISM.md`。全量统计 172 族（INT_L 侧）后得到唯一结构：
+
+- **5 位 = 1 位隐式上层 + 4 位显式下层**。上层 `N/4` 组 one-hot，**只写选中那条的 1**（其余从不写 0）；下层固定 4 条线，**全部写入**（1 开 3 关）。
+- 三条形状：`(N=24, coords=10, 隐式 6, 显式 4)` × 64 族；`(16, 8, 4, 4)` × 6 族（GFAN/CLK/CTRL）；**2 位族 explicit=0**（两级都隐式，`(20,9,9,0)`×96、`(12,7,7,0)`×4、`(18,9,9,0)`×2）。
+- 隐含律：隐式列计数恒 = 4（每组固定 4 成员）；`N = (N/4)×4`；`coords = N/4 + 4`。
+- **未解**：下层为何要显式写 0（H1 电平敏感 / H2 译码共享），判别实验 = 同族「成员相同组不同」的源，比较下层 4 位是否恒等。
+- 口径修正：`1,632 个 5 位源 = 64×24 + 6×16`（先前"70 族 ×24"错误）；`K` 是 coords 数不是每源位数。
+- 落盘：`E:\v7work\five_bit_structure.json`；`v7_verified` 205→**210**。
+### S66 · REUSE_RULES v3 回灌（2026-11-11）
+
+`step03_pip/REUSE_RULES.md` 升 v3（9,588 B），把 S65 的两级结构写进正文：
+
+- **§1.4 重写**：删除「机制未解」表述，改为「两级 mux 树 + 第二级显式全写」；补 5 位源数拆分 `1,632 = 64×24 + 6×16`（修正"70 族×24"的错误）。
+- **§6.0 新增**：家族类两级结构图 + 六类 tile_type 的组数/第二级/coords/每源对照表；给出唯一判据——**第二级是否显式写 0 决定每源 5 或 2 位**，与 tile_type、族大小、家族名无关。
+- **§1.2 口径澄清**：`K=a+b` 的 K 是 coords 数（IMUX 10 / GFAN 8 / EE2 9），不等于每源位数。
+- **§11 变更记录**：v2→v3 五项（含解码错误模型按类区分：5 位族缺 0 = 冲突，2 位族缺位合法）。
+## 162. ②a 跨类型可迁移性判定：HCLK_CMT 与 INT 同形（2026-11-11）
+
+**问题**：§161 阶梯第 4 级「可迁移性」原来只有 2/115 类型、0/1 器件。本节用**已有远端差分数据**（`hclk4/5/6`，不新跑 Vivado）把 HCLK_CMT 套进 INT 的同一套判据，判定「复用律是 INT 专属还是结构可迁移」。
+
+**数据**：`step03_pip/out/hclk_mux13_cells.json`（`_q_hclk_mux13.py` 生成）→ 判定脚本 `step03_pip/_q_transfer_hclk.py`。
+
+**判据与结果（族 `MUX_CLK_13`，48 源中实测差分 11 源 + 2 个基线）**
+
+| 判据 | 内容 | 结果 | 证据 |
+|---|---|---|---|
+| C1 | 位池可定位 | **是** | 26 个置 1 格全部落在 `minor 26..29` 的 `off26/27 w51`、`off28 w76..79`、`off29 w27..w30` |
+| C2 | 每源恰 1 个组槽位格、互不重复 | **是（11/11）** | MMCM 组：`off29` 的 `w27..w30` × 半区（`bit 6`=高、`bit 22`=低）；PLL 组：`off28` 的 `w76..w79` × (`bit 25`/`bit 9`) |
+| C3 | 组内码字互不相同 | **是**（MMCM 6/6、PLL 5/5） | 码字都在 `off26/27` 的 `w51`，MMCM 落 `bit 0..6`，PLL 落 `bit 4..6` |
+| C4 | 组槽位由「组内序号」单调决定 | **否** | MMCM 序号 2,4,6,8,9,10 → 槽位 (29,29,lo) (29,28,hi) (29,28,lo) (29,27,hi) (29,30,lo) (29,27,lo)；PLL 同样非单调 |
+
+**结论（三档判定）**
+
+- **形式可迁移**：HCLK_CMT 的 mux 族与 INT 同构 —— **1 个一热组槽位 + 2..4 个码字格**，组内码字唯一，组选与码选分离（跨组出现相同码字是设计如此）。
+- **坐标不可迁移**：位池不在 INT 的 `frame_off 16..25`，而在**相邻逻辑列块的尾帧** `minor 26..29`（A1 已证：时钟列没有自己的 FAR col）；且源→槽位不是名字的函数（C4 否，且 13/48 实测）。
+- 因此阶梯 4 的表述改为：**「结构形式可迁移（2 类 tile 已验证），坐标需逐类型实测」**；不再只是「2/115 未测」。
+
+**【推断】** 组槽位一热 + 码字分区这套结构，可能是 7 系列 CRAM 里「多路选择」的通用编码方式（INC：HCLK_CMT 与 INT 在帧布局、位宽、半区规则上都不同，却共享同一编码范式）。**【未测】** 其它 113 种 tile 类型、以及 die 变体（`ffg1761` vs `ffg1157`）上的坐标是否只差常数偏移。
+
+**可证伪条件**：若在 `CLK_HROW_TOP_R`（D 类、224 族、12.7 源/族）上套同一判据出现「每源组槽位格数 ≠ 1」或「组内码字重复」，则「结构形式可迁移」不成立，只能写「INT 与 HCLK_CMT 两个特例」。
+### S67 · INT 66 个「洞」的归属（2026-11-11）
+
+`step03_pip/S67_HOLE_ATTRIBUTION.md`。对远端 13,749 个 >15 MB 的 .bit 做全语料扫描（`/opt/lzh/step18/holescan_all.py`，16 进程）：
+
+- **25/68 坐标在真实设计里被点亮**：`(1,1,30)` 1,284 次、`(0,1,16)` 334、`(1,0,31)` 192、`(1,0,7)` 144、`(1,0,19)` 98、`(1,1,15)`/`(1,1,23)` 各 93、`(0,1,31)` 40、`(1,1,3)`/`(1,1,7)` 各 21、`(1,1,19)` 16、`(1,0,23)` 9、`(0,0,12)` 5 …
+- **17 个可映射到 CLB 家族**：`A5FF/B5FF/C5FF/D5FF`（五输入 LUT 的 FF 选择）、`PRECYINIT`、`CARRY4`、`ALUT/BLUT/CLUT/DLUT`、`WEMUX` ⇒ **36 帧块的低 offset 是 INT 与 CLB 的真混合区**，此前“INT 低 / CLB 高（16..35）”的划分是错的。
+- **offset 2..3 的 32 格在 13,749 个设计中零出现** ⇒ 485T 不配置（VBRK/长线分段候选）。
+- **修正 S52**：`(1,1,15)=C5FF`、`(1,1,23)=D5FF`、`(1,0,7)=A5FF`（原 FF_D_BYPASS/CE_SR_MARK 命名作废）。
+- 独立交叉验证：S5 差分实测的 `PRECYINIT (0,40,12)` 与语料统计 `(0,0,12)` 同坐标。
+- `v7_verified` 210→**222**。
+## 163. ②b 跨类型可迁移性：时钟区 6 对受控差分（2026-11-11）
+
+**做法**（不新跑 Vivado，复用远端已有 `s0/s1` 成对实验）：先按 `.pips` 判「是否单变量」，再算位流差分，最后用 `frame_map` 把差分格解成 FAR 字段。
+
+**① 控制性判定（`.pips` 集合差）**
+
+| 对 | 目录 | pips 差行数 | 结论 |
+|---|---|---|---|
+| `y2_s0/y2_s1` | `work/clkmux3/out` | **0** | 只改了一个属性，布线完全一致 |
+| `y4_s0/y4_s1`、`y5`、`y6`、`y7` | 同上 | **0** | 同上 |
+| `s0sel/s1sel` | `work/bufgmux/out` | **0** | 同上（`.v` 差只有 `BUFGCTRL.S0/S1` 互换） |
+
+**② 位流差分指纹（每对都只有 2 个数据格）**
+
+| 对 | 置 1 格 | 清 0 格 | ECC 格 |
+|---|---|---|---|
+| `clkmux3 y2` | `frame7834 word94 bit11` 0→1 | `frame7835 word94 bit3` 1→0 | 16 |
+| `clkmux3 y4` | `7834/95/11` | `7835/95/3` | 16 |
+| `clkmux3 y5` | `7834/95/27` | `7835/95/19` | 18 |
+| `clkmux3 y6` | `7834/96/11` | `7835/96/3` | 18 |
+| `clkmux3 y7` | `7834/96/27` | `7835/96/19` | 20 |
+| `bufgmux` | `13080/0/11` | `13081/0/3` | 12 |
+
+**③ 三条结构（与 INT 同形的判据）**
+
+- **位对跨两帧**：置 1 在 `minor 26`，清 0 在 `minor 27`，同一 `word`、位号相差 **8**（11↔3、27↔19）。INT 的「位对 (B,B+1) + parity/phase 分离」在时钟区表现为「相邻两帧 + 位号差 8」。
+- **半区一热**：`y2/y4/y6` 用 `bit 11`（低半区），`y5/y7` 用 `bit 27`（= 11+16，高半区）。与 HCLK_CMT「每字两半区各一个标记位」同形。
+- **落点同一区域**：全部在 **FAR `col 75` 的 `minor 26/27`**（= 逻辑列块尾部的时钟区）；HCLK_CMT 落在 `col 33` 的 `minor 26..29`，规律一致。
+
+**④ 类型归属**：`col 75` 的时钟类 tile 是 `HCLK_BRAM_X75Y{26..338}`（7 个，每时钟区一个），故这些位属 **`HCLK_BRAM`** 类型（非 INT）。【口径】按列归属推断，**未做 site 级对照**；`bufgmux` 改的是 `BUFGCTRL.S0/S1`，其配置位存放在时钟列而非 BUFG 站点自身，这一点与「时钟列无自己的 FAR col、配置位寄生在相邻逻辑列块尾帧」一致。
+
+**⑤ 结论**：阶梯第 4 级从「仅 HCLK_CMT」扩到 **3 类 tile**（`INT_L/R`、`HCLK_CMT`、`HCLK_BRAM`），三处都呈「位对 + 半区 + 一热」，可写「**结构形式可迁移**」；坐标随类型/列不同，仍需逐类型实测。
+
+**可证伪条件**：若在 `CLK_HROW_TOP_R`（224 族）上出现「每源置 1 格数 ≠ 1」或「位对不跨帧」，则「结构形式可迁移」不成立。
+
+**复算**：`step03_pip/_remote_ctrl_bits.py`（远端差分，输出 `out/ctrl_all.json`）+ 本地 `frame_map` 解 FAR。
+### S68 · 8 个「点亮无表」格的归属尝试（2026-11-11）
+
+`step03_pip/S68_ATTRIB_CORRELATION.md`。对 13,749 个 .bit 判读 10 个目标坐标，再读同目录 .v 做关键词相关性统计。
+
+- **限制**：13,749 里只有 **1,234（9.0%）** 有同目录 .v，且以本项目探针为主（`DONT_TOUCH` 基准率 91.7%）⇒ 结论只在该子集内成立。
+- **可归属 7 个**：`(1,1,19)`→**CARRY4（28×，16 个设计）**、`(0,0,20)`/`(0,1,20)`→CARRY4、`(0,1,8)`/`(1,0,27)`→分布式 RAM/SRL（LUT6_2+RAM64/128/256+SRLC32 完全共现）、`(1,0,31)`/`(0,1,31)`→时钟（PLL/BUFG，2–3.5×）。
+- **不可归属 1 个**：`(1,1,30)` 1,284 个设计点亮，但与全部 RTL 特征**负相关**（BUFH 0.1% vs 基准 17%）⇒ 疑为探针设计共性痕迹，非功能位。
+- **方法学结论**：语料找 .v 的做法源覆盖率太低且偏斜；要可信归属必须自造定向设计（CARRY4/分布式 RAM/时钟各 2–3 个 × 双位置）。
+- `v7_verified` 222→**229**。
+
+## 164. ②c：`CLK_HROW_CK_MUX_OUT_L8` 源槽位公式（2026-11-12，19/62 源实测，GCLK 子空间 19/32）
+
+目标：判 `CLK_HROW` 类多源族能否像 INT 一样「由源序号生成」。本轮在远端 `clkmux3` 工程新建 **19 个受控位流**（`y<k>_s0`，只改 `BUFGCTRL_X0Y<k>` 的 LOC），用 `.pips` 做族归属，得到可直接执行的槽位公式。
+
+> **两次自我更正**（留档，避免重踩）：①初稿把 `y1..y7` 当「行变体」，错——变的是 `BUFGCTRL_X0Y<k>` 站点，即**源序号 k**；②第二稿只看 `frame 2589`，漏掉 k≥8 的槽位落在 `frame 2588`，误判「公式失效」。
+
+### 1. 受控性与族归属（【数据事实】）
+
+- 19 个位流的 `.v` **逐字节相同**（`diff y2_s0.v y4_s0.v` 为空），唯一差异是 `set_property LOC BUFGCTRL_X0Y<k>`。
+- `.pips` 同一行（`clkmux3/out/y<k>_s0.pips`）：
+  `CLK_HROW_BOT_R_X192Y78.CLK_HROW_R_CK_GCLK<k> ->> CLK_HROW_CK_MUX_OUT_L8`
+  ⇒ 同一族 `CLK_HROW_BOT_R.CLK_HROW_CK_MUX_OUT_L8` 的 19 个不同源。
+- 该族 62 个源（模板 `CLK_HROW_BOT_R.json`，`pip_defs` 为 `[src, dst, delay, inverted]` 顺序）：
+  **`CLK_HROW_R_CK_GCLK0..31`（32）+ `CLK_HROW_CK_IN_L0..13`（14）+ `CLK_HROW_CK_IN_R0..13`（14）+ `CLK_HROW_CK_INT_0_{0,1}`（2）= 62**。
+- 构建环境：必须 `export LANG=C.UTF-8; unset LANGUAGE`，否则 Vivado 2017.2 报 `locale::facet::_S_create_c_locale name not valid` 并 core dump。
+
+### 2. 槽位公式（19/19 命中，0 例外，【数据事实】）
+
+```
+组      p = k // 16            (k = GCLK 序号)
+槽位    s = k % 16
+frame   = 2589 - floor(s / 8)
+word    = 24 + floor((s % 8) / 2)
+半区    = (s % 2) ? 高位 : 低位
+标记值  = 0x800a >> p          (p=0 → 0x800a = bits{1,3,15}；p=1 → 0x4005 = bits{0,2,14})
+镜像    = 同 frame 下 word + 49（24..27 → 73..76）
+```
+
+实测样本（`frame/word` 的原值）：
+
+| k | frame | word | 值 | 说明 |
+|---|---|---|---|---|
+| 1 | 2589 | 24 | `800a0000` | s=1 高半区，组 A |
+| 8 | 2588 | 24 | `0000800a` | s=8 低半区，组 A |
+| 16 | 2589 | 24 | `00004005` | s=0 低半区，**组 B**，标记值右移 1 位 |
+| 17 | 2589 | 24 | `40050000` | s=1 高半区，组 B |
+| 24 | 2588 | 24 | `00004005` | s=8 低半区，组 B |
+| 31 | 2588 | 27 | `40050000` | s=15 高半区，组 B |
+
+另有 k=1..7（2589, w24..w27 高低交替）、k=9..15（2588, 同构）全部符合上式，共 19 个 k 值。
+
+### 3. 容量账（关键结论）
+
+- **GCLK 子空间刚好铺满**：32 个 GCLK（0..31）× 每帧 8 槽 = 需要 4 帧容量，实际用 **2 帧 × 8 槽 × 2 组 = 32 槽**，一一对应，无空洞。
+- 全族 62 源 = 32(GCLK) + 30(CK_IN_L/R + CK_INT)。按「标记值右移 1 位」的规律，后 30 个源预计用 `0x2002`（组 C）与 `0x1001`（组 D）标记，落在更多帧里 —— **未测**（要造 CK_IN 路径的受控对，成本高于 GCLK）。
+- 标记值随组右移这一事实，说明「组」编码在**位的低 4 位区间内平移**，而槽位编码在「帧 × word × 半区」三维里 —— 与 INT 的「组槽位（帧 16+r）+ 4 位码」是同一设计思想的不同分配。
+
+### 4. 判定与剩余
+
+- 【数据事实】实测 **19/62 源（30.6%）**，GCLK 子空间 **19/32（59.4%）**；19/19 由上式复现，0 例外；`.pips` 证明同族不同源。
+- 【推断】k=0、18..23、25..30 的剩余 GCLK 槽位可直接由公式给出（无需再测即可预测）；后 30 个 CK_IN 源需要另一类受控设计。
+- 按写死的阈值：仍**不能**宣布「整族可由名字+序号生成」——GCLK 子空间的结构已闭合（2 帧 × 8 槽 × 2 组 = 32），但 30 个 CK_IN 源的组 C/D 未验证。
+- 复算：`python3 step03_pip/_remote_words16.py`（k=1..16 原值表）、`_remote_check_group.py`（k=1/8/16/17/24/31 抽查）、`_remote_build_y8_11.sh` / `_remote_build_y12_16.sh` / `_remote_build_y17_24_31.sh`（构建）。
+
+## 165. CK_IN 源在 HROW 家族里没有置位字段（2026-11-12）
+
+**问题**：`CLK_HROW_CK_MUX_OUT_L*` 62 个源里，32 个 GCLK 已由 §164 的公式闭合（实测 19/32），剩余 30 个（`CK_IN_L0..13` 14 + `CK_IN_R0..13` 14 + `CK_INT_0_{0,1}` 2）的槽位在哪里？
+
+**实验（受控对，`/opt/lzh/v7re/work/ckpair`）**
+- `a_mmcm.bit`：`MMCME2_ADV_X0Y6` → `BUFH` → `FDRE @ SLICE_X0Y100`；`.pips` = `CLK_HROW_TOP_R_X192Y338.CLK_HROW_CK_IN_L13 ->> CLK_HROW_CK_MUX_OUT_L0`。
+- `b_bufg.bit`：`BUFGCTRL_X0Y1` → 同一 `FDRE @ SLICE_X0Y100`；`.pips` = `..._R.CLK_HROW_R_CK_GCLK1 ->> CLK_HROW_CK_MUX_OUT_L8`。
+- 两者不同车道（L0 vs L8），故**不是严格受控对**（共 159 个差异字），但足以做「标记字段在不在」的定性判据。
+
+**标记扫描（全比特流，74,400 个数据字）**
+| 标记值 | 含义 | a（CK_IN13 源） | b（GCLK1 源） |
+|---|---|---|---|
+| `0x800a` 低/高半 | 组 A | **0 处** | (2589,73)、(7835,24)、(7835,73) |
+| `0x4005` | 组 B | 0 处 | 0 处 |
+| `0x2002` / `0x1001` | 组 C / D（预测） | 0 处 | 0 处 |
+
+（`a` 里唯一命中 `0x1001` 的 (27360,99) 是数据字 `0x01001001` 的低半偶合，不是标记。）
+
+**判读**
+- 【数据事实】以 CK_IN 为源时，HROW 家族的选择字段**全零**；以 GCLK 为源时才出现 `0x800a` 一热标记。
+- 【推断】`CK_IN_L/R*` 与 `CK_INT_0_*` 是**默认通路**：HROW mux 的置位字段只编码「改成某个 GCLK」，不编码选哪个 CK_IN —— 后者由**上游 `HCLK_CMT_MUX_CLK_<k>` 决定**（`CK_IN_L0` ← `HCLK_CMT_MUX_CLK_0`，`tileconn.json` `grid_deltas [104,0]`）。
+- 与容量账自洽：32 个 GCLK 恰好填满 2 帧 × 8 槽 × 2 组 = 32 槽，没有给 30 个 CK_IN 留槽。
+
+**可反驳预测（未做，下一步）**
+- P1：把时钟源换成另一个 CK_IN index（如 `CK_IN_L0`），HROW 侧位流应**逐字不变**，只有 `HCLK_CMT` 侧变。
+- P2：若在 `b` 里再叠加一个 CK_IN 源（同车道 L8），`0x800a` 应被清掉。
+- 任一预测不成立 ⇒ 上述「默认通路」判读作废，CK_IN 仍需独立槽位。
+
+**边界**：单车道对比（L0 vs L8）、单设计对；`CK_INT_0_*` 完全未测。
+
+
+## §160 交接提示词定稿 + 发现 site_frames 残缺（2026-11-12）
+
+### 一、交付
+`AGENT_HANDOFF_PROMPT.md`（根目录，224 行）：可直接交给另一个 agent 的完整交接提示词。
+按 AGENTS.md 硬规则先用 `prompt-optimizer` 的 `optimize-user-prompt`（`user-prompt-professional` 模板）产结构，再人工补硬数据附录（优化器会把领域数字抽掉）。
+内容：现状摘要（已确认/候选/未测/失败路线）、目录与数据库清单（标注权威 vs 派生）、关键脚本清单、8 条方法论、5 条禁区、P0–P5 优先级、汇报格式、附录 A 环境、附录 B 硬数据基线。
+
+### 二、写作过程中发现的真问题：本地 `site_frames` 是残缺表
+
+```
+select count(*), min(frame), max(frame), count(distinct frame) from site_frames
+→ (19819900, 32, 36687, 6104)
+```
+
+全量应为 **36,799,100 行 / 9,156 个 distinct frame**（763 block × 12 个 frame_off），文件 7,581 MB（全量 Build 记录为 7,949 MB）。
+`min(frame)=32` 说明它是中途中断的构建，**不是**「重新设计后的缩减版」。
+
+影响：任何基于本地 `site_frames` 的覆盖率/统计数字都不可信；早前记录的「36,799,100 行」属于另一次完整构建，本地现表不是它。
+处置：列为交接文档的 P0（先 `count` 再 `build_site_frames.py --all --replace --validate` 重建，约 680 s、7.9 GB）。
+
+### 三、附带核对
+- `v7_law.sqlite`（14.5 MB）表齐全：`law_cells` 24,328 / `law_tiles` 62,625 / `clb_blocks` 763 / `clb_cells` 3,884 / `clb_tiles` 75,900 / `far_bands` 1,078 / `ppips` 2,958 / `v7_verified` 245 / `cmt_code` 33。
+- `STATUS.md`：5,998 行 / 240 个 `## ` 标题。
+
+### 2026-11-13 复盘：P1 的「换 CK_IN 序号」不可行 → 改用 25 个设计的普查
+
+**P1 原设计不可行（三条摆放约束，全部实测报错）**
+- `ERROR: [Place 30-152] Unroutable Placement! A MMCM / BUFHCE component pair is not placed in a routable site pair` —— MMCM 与 BUFHCE 必须同一时钟区域。
+- `ERROR: [Common 17-69] 'BUFHCE_X0Y130' is not a valid site name` —— 该区域合法 BUFHCE 只有 `X0Y72..83`（早前 hclk8 已踩过）。
+- `ERROR: [Place 30-176]` —— 跨区后时钟源离被锁定的负载太远，无法布线。
+⇒ 在本器件上「保持负载不动、只把时钟改成另一个 CK_IN 序号」造不出来。
+
+**替代证据：全库标记普查（`_remote_marker_census.py`，逐 bitstream 扫 74,400 个数据字，判「半字恰好等于标记值」）**
+| 设计（HROW 源） | 数量 | 标记命中 |
+|---|---|---|
+| CK_IN 通路（`hclk4 g0..g2`、`hclk5 j0/k0..k6`、`hclk6 p0..p5`、`hclk8 m_def/p_72..p_83`、`ckpair a`） | **25** | **0**（唯一命中 (27360,99) `0x01001001` 是数据字偶合） |
+| GCLK 通路（`clkmux3 y1_s0` k=1、`y2_s0` k=2） | 2 | 有：k=1 → (2589,24)/(2589,73) 高半 `0x800a0000`；k=2 → (2589,25)/(2589,74) 低半 `0x0000800a` |
+| 混合（`hclk6 c_a/c_b`，`.pips` 同时有 `CK_IN_L13 ->> MUX_OUT_L0` 与 `GCLK0 ->> MUX_OUT_L8`） | 2 | 有 6 处 `0x0000800a`（对应它确实选了 GCLK0 的那条车道） |
+
+**结论**
+- 【数据事实】k=2 的位点（2589,25 低半）= 公式预测值，**独立复现了 §164 的坐标公式**（此前只实测 k=1/8/16/17/24/31）。
+- 【数据事实】25 个 CK_IN 源设计、跨 3 个时钟列（col33/col75 等），**零标记**；只有真正选了 GCLK 的设计才出现标记，且 `c_a/c_b` 的「有/无」与它 `.pips` 里的源类别完全对得上。
+- 判定：§165 的「CK_IN = 默认通路、不占置位字段」由【推断】升为**高置信（25 设计、3 列、零反例）**，但因为没有同 tile 同车道的严格对，**正式仍标【推断】**。
+- P2（同车道叠加 CK_IN 使 `0x800a` 被清掉）在当前摆放约束下也造不出来：router 只会在该车道二选一，无法同时要求两条。
+
+
+## 166. P1 行序：16 键 / 8 张基础表 / 1 条镜像律（2026-11-13）
+
+**问题**（§161 阶梯第 1 级 + 交接文档 P1）：mux 区的「类内成员序」原判为数据（48 族 36 种），
+能否由结构变量导出？
+
+**结论（【数据事实】，全部由 `step03_pip/_q_row_law.py` 复算）**
+
+1. **只有 16 种行序，且 16 个键 → 16 个编码是双射**。键 = `((pair//2)%8, primary)`，
+   即「位对在 16 位半区内的位置 + primary 位」。族名、parity、L/R 侧都不进键。
+2. **INT_L 与 INT_R 逐键相同**（0 个键不同）；用 INT_L 建表预测 INT_R：**1,024/1,024，0 不符**（跨侧留出）。
+3. **primary=S 的行号 = primary=P 的行号 +2 mod 4**：16 张表只剩 **8 张基础表**。
+4. **族名 → (pair, parity, primary) 有闭式**：IMUX `pair=[0,2,2,4,4,6][i//8]+8*(i%4)`、
+   `parity=(i//4)%2`、`primary=S iff (i//8) 偶`；BYP/FAN 各一张 8 项常数表；**128 族 0 不符**。
+5. **全量再生 2,048/2,048 条方向线 feature**（64 族 × 16 条 × 2 侧）的 `(row, colcode)`，
+   `missing=0`、`extra=0`。
+6. LOGIC/GFAN 与 BOUNCE 的第 4/5 行归属由全局 mux 序号 `g=i//8` 奇偶决定，**64/64 族 0 反例**。
+7. 48 个 IMUX 族的等价类 = **12 组 × 4 族**：`{0,2,4,6} {1,3,5,7} {8,10,12,14} …`，
+   即行序只依赖 `(i 的奇偶, i//8)`。
+
+**与旧结论的差异（如实记录）**：旧文「48 族 36 种」「`i%8∈{0,3}` 与 `i+4` 共用」在本机当前
+`law_cells` 上复现不出来。三种口径的结果：①只比方向线前缀 → 12 组；②比 24 条源的精确线名 → 48 组；
+③比含 LOGIC/BOUNCE 的完整签名 → 48 组。旧数字来源不明（可能更早的库版本），本轮不沿用。
+本结论**不否定**「源→槽位不是线名的函数」：同一线名在不同族仍可落不同行，成为函数的是键。
+
+**边界**：8 张基础表本身是否还能再压缩（按 j 的循环/反射生成元）**未测**——已试「相邻 j 为行旋转」
+只在 j=0→1、1→2 成立，j≥3 出现反射。族名→键的物理含义（16 位半区）只有分布证据，无 CRAM 布局级证据。
+第 4/5 行内 8 条源的**成员选择**仍是数据。
+
+**报告**：`v7re/steps/T88_ROW_ORDER_STRUCTURE.md`（含 16 张表全表、分配闭式、验证矩阵）。
+**复现**：`python step03_pip/_q_row_law.py` → 末行六个 PASS。
+**影响**：§161 阶梯第 1 级的表述可从「公式 + 数据表」改为「公式 + 8 张表 + 1 条镜像律」；
+`pip_reuse_law.json` 里的 `slots` 可改为按上述闭式生成，不再逐族存 1,536 条。
+
+**旁支（同日）**：本地 `site_frames` 残缺表（19,819,900 行 / 6,104 frame）重建已在后台启动；
+`build_site_frames.py` 改为流式分块写入（原实现全量 3,680 万行需约 8 GB 内存，本机可用不足 1 GB），
+并在 `--replace` 时先删二级索引再重建。完成后单独记账。
+
+## 167. T88 独立复核 + 行序生成律（32 个置换 → 4 基 + 1 位 + 1 条步进律）
+
+日期 2026-11-13 · 复现 `python step03_pip/_row_s4.py`（末行 `generator rule: 32/32 = True`，exit 0）
+
+### 167.1 独立复核 T88 的四条主结论（不读 T88 的表，直接从 `law_cells` 原始单元重算）
+
+| 判据 | 结果 |
+|---|---|
+| 每侧 64 个 mux 族 → 不同编码数 | **16**，且每个编码恰好 **4 个族**（分布 `{4:16}`） |
+| INT_L vs INT_R 逐族同码 | **64/64** |
+| 16 种编码在「+2 mod 4」下两两成对 | **8 对**，闭包成立 |
+| IMUX 48 族按 `(i//8, i%2)` 分组 | **12 组**，每组内编码全同（0 反例） |
+
+口径：`row = frame_off - 16`（只取 `frame_off ∈ 16..19` 的 sense 单元），编码按
+`DIAG[NE,NW,SE,SW] ORTH[NN,EE,WW,SS] R[NR,ER,WR,SR] L[NL,EL,WL,SL]` 拼 4 位行号。
+
+### 167.2 生成律：8 张表还可以再压
+
+把每类的 `p_j` 看成 S4 元素（位置→行号），`p_{j+1} = g_j ∘ p_j`，则
+
+```
+class ∈ {DIAG,ORTH}:  g = [r³, ρ, r³, e,  r³, ρ, r³]
+class ∈ {R,L}:        g = [r,  ρ, r,  X2, r,  ρ, r ]
+r=(1,2,3,0)  ρ=(3,2,1,0)  e=(0,1,2,3)  r³=(3,0,1,2)  X2=(3,2,0,1)
+```
+
+- **32/32 个置换全部由「4 个基置换 p0 + 1 个比特（类别对）+ 固定步进律」重建**；
+- `p7 == p0` 对 DIAG/ORTH 成立，对 R/L 不成立（后者 `p7` 是 `p0` 的 ρ 复合），所以周期不是 8；
+- 基置换 `p0`：DIAG `(2,0,3,1)`、ORTH `(2,3,0,1)`、R `(2,0,1,3)`、L `(3,1,0,2)`；
+- `primary=S` 等于每位置 `+2 mod 4`（即把行号高位置 1，等价于复合 τ=(2,3,0,1)），与 T88 H3 一致。
+
+**量级**：原表 32×log2(24) ≈ 147 bit → 现为 4×log2(24) + 1 bit ≈ 20 bit，**压缩约 7 倍**。
+
+### 167.3 对 T88 的方法学备注
+
+- T88 的 H1/H2（16 键双射）与 R1（2,048 条全量再生）都用了同一份数据建表再回放，
+  **部分循环**；真正非循环的证据是 ①64 族→16 键的 4 倍压缩 ②INT_L 训练 / INT_R 预测的
+  **跨侧留出 1,024/1,024**。本文 167.1 的复核独立于 T88 的脚本，结论一致。
+- 旧文「48 族 36 种」在本数据的三种口径下都复现不出（IMUX 单独 12 组、含 BYP/FAN 16 组），
+  同意 T88 §7 的处理：标记为不可复现，不复用该数字。
+- 生成律里的 `j` 编号是**约定依赖**的：`g_j` 序列只在 `j = (pair//2)%8` 这个排序下成立，
+  换排序则序列变。因此它是「以规范键序为前提的律」，不是无条件的群作用。
+
+### 167.4 未解（留给下一步）
+
+- 4 个基置换 `p0` 本身（≈18 bit）仍是数据，未找到出处；
+- 类别对（DIAG/ORTH vs R/L）为何决定 `A` 与 `X`，没有位布局级证据；
+- 是否在 `BRAM` / `CLK_HROW` 等其它 tile_type 上同形，未验证。
+
+## 168. T89：行序生成律落地（4 基置换 + 步进律）并接入生成器（2026-11-13）
+
+**任务**：先收尾选项 3（把 §167 的步进律写成代码、全量对拍、判定 p7 与类别对），
+再把行序接进生成器（选项 1，去逐族 slots）。报告 `v7re/steps/T89_ROW_LAW_GENERATOR.md`。
+
+### 168.1 选项 3 收尾（【数据事实】）
+
+- 生成律：`p0`（DIAG `(2,0,3,1)` / ORTH `(2,3,0,1)` / R `(2,0,1,3)` / L `(3,1,0,2)`）
+  + 5 个步进置换（`r/r3/rho/e/X2`）+ 1 个类别对比特，按 `p_{j+1}=g_j∘p_j` 重建 32 个置换，
+  **32/32 逐项相等**；拼成 16 种编码后与 `law_cells` 全量对拍 **2,048/2,048，0 不符**（两侧各 1,024）。
+- `p7 == p0`：DIAG/ORTH **成立**，R/L **不成立**（`p7 = p0 ∘ ρ`）⇒ **周期不是 8**，
+  只有 DIAG/ORTH 子空间呈 8 周期。
+- 类别对 ↔ 线长类别：实测列码 DIAG/ORTH ⊂ {1,2}（DOUBLE）、R/L ⊂ {7,11}（SINGLE），
+  2,048 条方向线 **0 例外**。【推断】行序与列码由同一变量驱动；这是同一分组的证据，非因果证明。
+
+### 168.2 选项 1：接入生成器（【数据事实】）
+
+新增 `step03_pip/row_law.py`（只存 4 基置换 + 5 步进置换 + 1 bit；族名→pair/parity/primary/列码全闭式）
+与 `step03_pip/gen_mux_rowlaw.py`（用律替换 `pip_reuse_law.json` 的逐族 slots）。
+
+| 判据 | 结果 |
+|---|---|
+| 与旧 1,536 条 slots 逐条比对 | **差分 0**（方向线 1,024 由律生成，行 4/5 residue 512） |
+| 随机 200 个 `(family, source)` 与 `law_cells` 对拍 | **0 不符** |
+| 接回 `predict()` 的 mux 区全量 | **1,536/1,536** |
+| 两侧方向线全量（INT_L/INT_R） | **2,048/2,048** |
+| `verify_all_pip.py --tile-type INT_L` | **3,634/3,634**（100%） |
+| `verify_all_pip.py --tile-type INT_R --normalize` | **3,634/3,634**（100%） |
+
+**量级**：行序从 1,536 条逐族 slots 降为 4 基置换（≈18.3 bit）+ 5 步进置换（≈22.9 bit）+ 1 bit；
+仍未去表的是行 4/5 的 512 个槽位（LOGIC/GFAN、BOUNCE 的成员→列归属）。
+
+### 168.3 未解与边界
+
+- 4 个基置换本身仍是数据，未找到出处；`j` 的编号依赖规范键序，换排序则步进律不成立。
+- 行 4/5：行号由 `g=i//8` 奇偶决定（64/64），但成员→列仍是逐族数据（512 槽）。
+- 因果未证：需在存在混合线长类别的 tile_type 上重复（选项 2）。
+
+### 168.4 旁支记账：本地 `site_frames` 已重建
+
+`build_site_frames.py` 改为流式分块写入（原实现全量 3,680 万行需约 8 GB 内存，本机可用不足 1 GB），
+`--replace` 时先删二级索引再重建。全量重建 804 s，结果 **36,799,100 行 / 9,156 distinct frame /
+75,800 site / `SLICE_X10Y20` 498 行**，三条判据同时成立。旁支结束，不再占用主线。
+
+**复现**：`python step03_pip/_row_gen.py`、`python step03_pip/gen_mux_rowlaw.py`。
+
+### 168.5 选项 2（离线普查）：CLK_HROW 键同形、映射代数不同
+
+报告 `v7re/steps/T89_OPTION2_CROSS_TYPE.md`。族规模普查（A7 segbits）：BRAM 63 族/侧中源数 ≥8 的只有 3 族、DSP 79 族中只有 1 族（其余 2 源 one-hot）；INT 是 172/172。CLK_HROW 的 62 源族按「组内位置 mod 16 + 组位」分解，19 个实测 GCLK 源 19/19 成立，§165 普查的 k=2 独立复现（20/20），与 INT 的 16 位半区键同形；但它的映射是 16 槽位表，不是 4 成员置换 + 步进律——「同类映射、不同基置换」只对键成立。BRAM/DSP 需要 V7 实测位表，本轮未测。可证伪预测：造 k=18、k=25 两个受控位流检验剩余槽位公式。
+
+## 169. T89 交付复核 + 复用在位级上的定位 + 一条负结果
+
+日期 2026-11-13 · 复核对象 `step03_pip/_row_gen.py`、`gen_mux_rowlaw.py`、`v7re/steps/tile_pip_lawscan.json`
+
+### 169.1 复核结果（重跑，非采信）
+
+| 脚本 | 输出 | 与 T89 报告一致 |
+|---|---|---|
+| `_row_gen.py` | `RESULT: PASS (2048/2048)`，16 张表与原表逐行相同，`p7==p0` 仅 DIAG/ORTH 为真 | ✅ |
+| `gen_mux_rowlaw.py` | 旧 slots 1,536 条差分 0；`predict()` 1,536/1,536；两侧方向线 2,048/2,048；随机 200 对 0 不符 | ✅ |
+| `tile_pip_lawscan.json` | 636 族；`sources>=8` 的族数：INT 172/172、BRAM 3/63、DSP 1/79、CLBLI/LM 各 2/2 | ✅ |
+
+### 169.2 定位结论：位级上的「复用」是 INT 的 24 源 mux 现象
+
+| tile_type | family 数 | 源数 ≥8 的族 | 最大源数 |
+|---|---|---|---|
+| `INT_L` / `INT_R` | 172 | **172（100%）** | **24** |
+| `BRAM_L` / `BRAM_R` | 63 | 3 | 111 |
+| `DSP_L` / `DSP_R` | 79 | 1 | 280 |
+| `CLBLM_L/R` | 2 | 2 | 358 |
+| `CLBLL_L/R` | 2 | 2 | 338 |
+
+INT 的复用形状统一是「24 源 = 6 行（帧 16..21）× 4 列（帧 22..25 的四位码）」；
+其它类型的「多源」是 111–358 的超大 fan-in，不是 4×6 网格，所以**行序律不能直接搬**。
+这解释了 T89 选项 2 的负结果：`CLK_HROW` 只有「键」同形，映射是 16 槽位表。
+
+### 169.3 负结果：ρ 共轭不能让 R/L 的 8 步闭合成环
+
+试过 `p∘ρ`、`ρ∘p`、`ρ∘p∘ρ` 三种共轭，步进序列都仍是 `[r,ρ,r,X2,r,ρ,r]`，
+第 8 步不回到起点 ⇒ **「周期 8」在 R/L 上确实不成立，不是坐标系没选对**。
+所以 `j` 的 0..7 不是循环，而是一条开链；步进律里那个 j=3 的例外跳 `X2` 是真实的断裂点。
+
+### 169.4 建议的下一步（按主线价值排序）
+
+| 优先级 | 事项 | 判据 / 可证伪预测 |
+|---|---|---|
+| P0 | `INT_INTERFACE_L/R`（4,550+3,850）与 `INT_FEEDTHRU_1/2`（525+600）是否也是 24 源 6×4 | 若源数分布与 INT_L 一致，则把律扩到 INT 全家；若出现 2/4/8 源的小 mux，则先记形状再谈律 |
+| P1 | 行 4/5 的 512 个槽位（LOGIC/GFAN 与 BOUNCE 的成员→列归属） | 收口后 mux 区除了 4 个基置换外不再有表 |
+| P2 | 4 个基置换的出处 | 位级大概率无解，需要 die shot 或官方 CRAM 图；建议限时，做不到就标「数据」并停止追问 |
+| P3 | `CLK_HROW_CK_MUX_OUT_L8` 的 16 槽位表定性 | 明确写「律不迁移」，避免后人误以为可套 4 置换模型 |
+
+## 170. T90 —— INT_INTERFACE / FEEDTHRU 的 PIP 形状：24 源假设被否证（2026-11-13）
+
+**结论**：这四类 tile 没有 24 源 6x4 mux。接口类是 1:1 直通（无选择器，无需配置位），FEEDTHRU 类 PIP 数为 0。
+「位级复用 = INT 的 24 源 6x4」这一判断成立，且更干净。
+
+| tile_type | 实例 | pips/实例 | dst 数 | fan-in 分布 | 1:1 直通 |
+|---|---|---|---|---|---|
+| INT_INTERFACE_L | 4,550 | 24 | 24 | `1:24` | 24/24 |
+| INT_INTERFACE_R | 3,850 | 24 | 24 | `1:24` | 24/24 |
+| BRAM_INT_INTERFACE_L | 2,400 | 24 | 24 | `1:24` | 24/24 |
+| IO_INT_INTERFACE_L | 350 | 24 | 24 | `1:24` | 24/24 |
+| HCLK_INT_INTERFACE | 301 | 0 | 0 | — | — |
+| INT_FEEDTHRU_1 | 525 | 0 | 0 | — | — |
+| INT_FEEDTHRU_2 | 600 | 0 | 0 | — | — |
+
+接口类 24 条 PIP 的实际内容是 `INT_INTERFACE_LOGIC_OUTS_L_Bk ->> INT_INTERFACE_LOGIC_OUTS_Lk`
+（B 侧线到同号 A 侧线的拷贝，tile 边界续接）。**「24」是巧合**：INT 的 24 是「每目的 24 个源」，
+接口类的 24 是「有 24 对线要续接」——原假设把两个 24 混为一谈。
+
+独立旁证：本地 `prjxray_ref/artix7/` 22 个 db 只覆盖 10 种 tile_type（BRAM/CLBLL/CLBLM/DSP/INT），
+`segbits_*` 与 `ppips_*` 里没有任何 interface / feedthru 类型 —— prjxray 逐位挖矿都没挖出配置位。
+
+覆盖口径修正：207,253,149 = INT 198,434,700 + 其它 8,818,449；后者里接口类的
+**342,000 个实例是纯 1:1 直通（不可配置）**，FEEDTHRU 类 0 个。所以「还有 4.3% 没做」的说法不成立，
+那 4.3% 的大头是不可配置的直通线。
+
+顺带测到的其它类型 fan-in（同一脚本）：`LIOI` 467 pips / fan-in 1,2,11,12,16,17,18；
+`CLK_BUFG_BOT_R` 304 pips（32 个 5 源）；**`HCLK_L` 200 pips / 20 dst = 8 个直通 + 12 个 16 源 mux**；
+`CMT_FIFO_L` 278 pips 几乎全直通；`GTX_INT_INTERFACE` 168 pips（48 个 2 源）。
+`HCLK_L` 的 16 源 mux（529 实例/侧）是 INT 之外第一个宽度 >=16 的真选择器，编码形态未测 —— 新的下一步。
+
+产物：`v7re/scripts/iface_feedthru_probe.py`、`v7re/steps/T90_INTERFACE_FEEDTHRU.md`、
+`v7re/steps/t90_tile_fanin.json`、`PROMPT_P0_INTERFACE_FEEDTHRU.md`。
+边界：纯静态统计，未起构建；「1:1 直通不需要配置位」依据是结构无选择 + prjxray 缺席，未做位流实测。
+
+## 171. T91 —— HCLK_L 叶子时钟 mux（16 源）：真 crossbar，但工具只用一档（2026-11-13）
+
+**结构**（`_tif/HCLK_L.json`）：20 目的 / 200 PIP = 8 个 1:1 直通 + **12 个 16 源选择器**
+（`HCLK_LEAF_CLK_B_{BOT,TOP}L0..5`）。**12 个选择器的 16 个源完全相同**：
+`BUFHCLK8..11`(4) + `BUFRCLK0..3`(4) + `OUTIN_L0..7`(8)。即 16 进 12 出的 crossbar，
+`12x16 = 192` 条 PIP —— 若 12 个出口共用一份「选了第几路」，只需 4 位，这是复用可能发生的地方。
+
+**实测**（292 个 `.pips` / 281 设计）：按 `(side, grid_x)` 汇总，**同列 tile 恒用同一个源** ——
+L 列 3/17/21/31/51/67/72/77/91/112/126/189/195 全用 `BUFHCLK8`（→ BOTL5 或 TOPL5）；
+L 列 **301** 用 `BUFHCLK11`；R 列 4/78 用 `BUFHCLK0`。
+唯一例外：`HCLK_L_X91Y338` 同时出现过 `BUFHCLK8`（61 设计）与 `BUFHCLK9`（1 设计 `_hb3_out/h08`）。
+16 个源里实测只出现 4 个（0、8、9、11）⇒ crossbar 在真实设计里几乎不被「选择」。
+
+**位级**（新增 `v7re/scripts/hclk_leaf_diff.py`，按帧聚簇 + 控制减法）：
+- 对照 `h00 vs h01`（叶子源同为 8，只差 HCLK_CMT 槽位）：**10 格**，全在帧 `22146..22147` word 48
+  （与 T71 一致，已知字段）；
+- 目标 `h00 vs h08`（叶子源 8→9，HROW 轨道 L8→L9）：**38 格**，两簇 —— `22146..22147`(4) 与
+  **`23512..23589`(34)**；控制减法后剩 33 格，仍分不开「HROW 轨道 mux」与「HCLK_L 叶子 mux」，
+  因为两者都在同一帧段，而**时钟 tile 的 tile->frame 基址没有**（`clb_blocks` 只覆盖 CLB，
+  INT 有 `law_cells`，时钟 tile 缺地址表）。
+
+**主线判断**：HCLK_L 不是「第二个 24 源复用现象」。结构上有复用的可能性（12 出口共享 16 源），
+但工具行为让「选择」几乎不发生 —— 没有可枚举样本，就没有可验证的编码律。
+
+**下一步（建议先做 1）**：1) 建时钟 tile 的 frame 映射（离线，把 34 格拆成 HROW / HCLK_L 两部分）；
+2) 构造强制换源（BUFR / OUTIN），若工具坚持不换就写「选择不可达」而不是继续猜位。
+
+产物：`v7re/scripts/hclk_leaf_diff.py`、`v7re/steps/T91_HCLK_LEAF_MUX.md`。
+
+## 172. 坐标系审计（clock_blocks 前置）：`band` 实证撞名，`far_bands` 154 列分 5 类
+
+用户 m17093 质疑「grid_x 会不会撞名」，审计结论：**会，而且库里已经撞了**。
+
+- `clb_blocks.band` vs `far_bands.band`：同名、同范围、基数相同，但 763 个块**全部不一致**
+  （0→6、1→5、2→0、3→1、4→2、5→3、6→4）。任何按 band 相等的 join 都静默出错。
+  本审计过程中我最初就犯了此错（得出 111 个 AMB），已更正。
+- `far_bands` 的 154 列按「7 个 band 上的帧数」分 5 类，签名在 7 带上完全一致：
+  36 帧 = **111 列 = CLB 列**（与 763 个 clb_blocks 映射到的 111 列集合**完全相同**）；
+  28 帧 = 35 列（推断 INT）；**30 帧 = 4 列（33/62/75/120）= 时钟列**；
+  32 帧 = 2 列（0/153，边界）；42 帧 = 2 列（32/121，未定）。
+- `grid_x` 有 412 个值而 `far_col` 只有 154 个；同一 `grid_x` 上叠多种 tile
+  （192 同时是 `CLK_HROW_TOP_R` 与 `CLK_BUFG_BOT_R`）⇒ 映射表主键必须带 `type`。
+- 已验证安全的映射只有一条：`clb_col → far_col` 111↔111 严格 1:1
+  （5→1、6→2、9→3、11→4、16→6、19→7、20→8、23→9、25→10；旁证 31752→(band6,col8)）。
+- 未定项不猜：`column_offsets.x` 属哪个命名空间、42 帧列、32 帧列、28 帧列与 154 个 INT 列位的关系。
+- 方法验证：`h00` vs `h08` 38 格落区 —— col33(4 格 word48，CMT 槽位)、**col75(26 格，时钟 mux)**、
+  col74(6 格)、col76(2 格) ⇒ 时钟相关位**不只在 4 个时钟列**，CLB 列里也有。
+- 文档 `v7re/steps/COORD_AUDIT.md`（含 10 节）；本条同时确立命名硬规则
+  （禁裸 `col`/`band`/`x`，跨坐标系 join 前打印基数，结论一律回到 `frame_index`）。
+
+## 173. 两个「为什么」的初步答案（2026-11-13）
+
+### 1. 为什么覆盖率停在 97.7% 而不是 100%
+
+【数据事实】剩余 82 条 feature 全在 6 个长线族（`LH0` 12 / `LH12` 12 / `LVB_L0` 18 / `LVB_L12` 18 / `LV_L0` 10 / `LV_L18` 12），它们的**源不是本 tile 的普通线，而是别的长线与长线的端点线**：
+- `LH0` 的 12 个源 = `EE4END3, ER1END3, LH12, LV_L0, LV_L18, LV_L9, NE2END3, NE6END3, NW2END3, SR1END3, SS6END3, SW6END3`；
+- `LVB_L0` 的 18 个源里含 `LH0, LH12, LH6, LVB_L12, LV_L0, LV_L18`；
+- `LV_L18` 含 `LH0, LH12, LH6, LV_L0`。
+
+【数据事实】这 6 族也是**唯一**存在跨族共享格的族：`(1,6,0) ∈ {LH0, LV_L0, LV_L18}`、`(0,2,0) ∈ {LH0, LV_L0}`、`(0,9,0) ∈ {LV_L0, LV_L18}`（`_q_longline_why.py`）。
+
+【推断】所以这 82 条编码的是**长线之间的邻接关系**（谁与谁相邻、哪一段接哪一段），属于「器件布线拓扑的数据」，不是名字的派生量。要把它公式化，需要额外数据源（长线的物理次序/坐标），而当前工具链没有暴露：`templates/*.json` 的 `pip_defs` 第三字段 `delayIndex` 在 INT 全为 0，RapidWright 也没有 mux 内部或长线相邻关系的 API（`PIP_BIT_REUSE_REPORT.md` §6 记录过这一点）。
+
+⇒ 结论：97.7% 是「名字可派生」的上界；剩下 2.3% 是拓扑数据。**不写成 100% 是诚实，不是没做完**。
+
+### 2. 码集 `{1,2,7,11}` 的结构（`_q_longline_why.py`）
+
+【数据事实】4 个合法列码两两异或后 popcount 恒为 **2**：
+`1^2=3(2位)`、`1^7=6(2位)`、`1^11=10(2位)`、`2^7=5(2位)`、`2^11=9(2位)`、`7^11=12(2位)` → **最小汉明距离 = 2**。
+【数据事实】任取一个合法码、翻转任意 1 位，得到的 7 个 4 位字 `{0,3,5,6,9,10,15}` **全部非法**。
+⇒ 【推断】码集的设计使其具备**单比特错误可检出**性质（检错、不纠错）；这与篡改实验中「mux 区清位方向单 bit 检出 100%」是同一事实的编码论表述。
+【数据事实】码集还存在子集关系：`1 ⊂ 11`（0001 ⊂ 1011）、`2 ⊂ 7`（0010 ⊂ 0111）——与全表统计的 1,632 对族内严格子集同源。
+【推断】这不是最大码集（4 位、距离 2 的最大规模是 8），说明码集还受别的约束（候选：4 个线长类别只能两两正交到 2 位；成因未测）。
+
+## 174. 「mux 为什么是 6 行」的分解（2026-11-13）
+
+**结论先行**：6 = **4 个「线源槽」+ 1 个「旁路槽」+ 1 个「本地槽」**；其中 2 个槽的名字可解释，另 4 个槽只知其划分、不知其语义。
+
+### 实测（`_q_mux6_sig.py`、`_q_mux6_verify.py`，`law_cells` INT_L sense=1）
+- 64 个 24 源族，**64/64 族每一行（`frame_off` 16..21）都恰好 4 个源**；6 × 4 = 24，组格总数 1,536 = 24 × 64 ✔。
+- 每 `(行, 列码)` 格恰 1 个源（列码 ∈ {1,2,7,11}），即 6×4 网格**满填、无空洞**。
+- **第 20、21 行的构成对 64 族完全一致**：恒为「4 个 bounce 类（2×`BYP_BOUNCE` + 2×`FAN_BOUNCE`）」与「4 个本地类（1×`GFAN` + 3×`LOGIC_OUTS`）」，两行谁在上随族交替。
+- **第 16..19 行装的是 16 个「线源」**（方向 END 线，如 `EE2END0`、`NL1END0`、`SR1END_N3_3`），每行 4 个；其**行归属随族变化**：64 族去重后恰 **16 种签名、每种 4 族**——与 §11 的「16 种配置 × 4 族」是同一个 16。
+
+### 判读
+- 【数据事实】「6」不是一个均匀的维度，而是 **`4（线）+1（旁路）+1（本地）`** 的拼合；旁路/本地两行由名字直接决定，线源四行的排列是族参数（已由 §11 的 `(前缀, i//8, i%2)` 规则给出）。
+- 【数据事实】**否定**一个自然猜测：这 4 行**不是**「四个方向」。实测每行混装多个方向（例 `IMUX_L40` 第 16 行 = `EE2END0`(E)、`NL1END0`(NL)、`SE2END0`(SE)、`SR1END_N3_3`(SR)），故「6 行 = 6 个方向分组」的说法不成立（`PIP_BIT_REUSE_REPORT.md` 里把它列为语义猜测，此处正式否证）。
+- 【推断】线源四行的语义（为什么恰 4 组）仍未解；候选是「到达边」或「IMUX 内部四段驱动」，两者都缺直接证据，标未测。
+
+### 复算
+`python step03_pip\_q_mux6_sig.py`（打印 16 种签名）、`python step03_pip\_q_mux6_verify.py`（每行 4 源、20/21 行构成）。
+
+## 175. 线源四组的语义：查到了什么、否证了什么（2026-11-13）
+
+**问题**：§174 把「6 行」拆成 `4 线 + 1 旁路 + 1 本地` 后，剩下「为什么恰好 4 个线源组、这 4 组是什么」。
+
+### 实测（`_q_mux6_partition.py`、`_q_mux6_latin.py`、`_q_mux6_edges.py`）
+- 【数据事实】每族的 16 个线源恒分成 **4 组 × 4**；并且**每组恰含一个长度类**（码 1/2/7/11 各一）：64 族 × 4 行 = **256/256 组零异常**。即线源部分是「4 组 × 4 长度类」的拉丁方。
+- 【数据事实】组划分**不是全局唯一**：64 族去重后 **32 种划分、每种 2 族**。最常见的一种划分（去后缀名）：
+  `{EE2END, NL1END, SE2END, SR1END}`、`{EL1END, SS2END, SW2END, WR1END}`、`{ER1END, NW2END, WL1END, WW2END}`、`{NE2END, NN2END, NR1END, SL1END}`。
+- 【数据事实】**否证「4 组 = 4 个方向」**：组内混装方向（第一组就有 E/NE?/SE/SR 混装），且每组的 4 个源在 `tileconn` 里的到达偏移根本不唯一——例 `EE2END0` 有 `(-18,0) (-9,0) (-7,0) (-6,0)` 四个到达偏移。
+- 【数据事实】**否证「4 组 = 4 条到达边」**：同上，一个源可来自多条边，边与组不是一一对应。
+
+### 判读：与仓库既有结论一致，且给出「为什么 6」的答案
+- 既有结论（`IMUX_INDEX_SOLVED.md` §2）：同一源在不同 mux 上的 `(row,col)` 会变，「哪个布线资源接到哪个输入脚由芯片物理走线决定，是逐 mux 不同的常量表」。
+- 与本轮实测合起来看：【推断】**6×4 网格是物理开关矩阵**（6 个开关行 × 4 个开关列），而不是逻辑分组；「4 线 + 1 旁路 + 1 本地」是**这些开关行实际接了哪类线**的描述；「16 种配置」是 64 个 mux 的物理排列被压缩成 16 类。
+- 因此「为什么 6」的答案是：**6 = 物理开关行数**；「为什么 16」= 64 个 mux 的布线排列恰好只有 16 种。这两条都是【推断】，缺一份硅片/版图级证据。
+
+### 这条对论文的意义（诚实提醒）
+若 6 与 16 的成因是「物理布线常量表 + 16 类排列」，那么「生成式公式」这个说法的准确含义是：**把 172 份逐 mux 常量表压缩成 16 类 + 名派生规则**，而不是「从名字推导出硅片结构」。写作时应按前者表述，否则会被审稿人反问「你这公式的物理依据是什么」。
+
+## 173a. 长线族验证：用真实位流反解 INT tile 基址，长线格 23/23 命中
+
+用户问「INT 里的长线组能解决吗」。结论：**能，且已验证**。
+
+- 长线族共 6 个（`LV_L0` 10 源、`LV_L18` 12、`LH0` 12、`LH12` 12、`LVB_L0` 18、`LVB_L12` 18），
+  **82 个源、每源恰好 2 格**（A 侧 + B 侧），与 BEG 同构。
+- 长线→长线的**续接边 26 条**（去重后）：`LV_L0←{LH12,LH6}`、`LV_L18←{LH0,LH12,LH6,LV_L0}`、
+  `LH0←{LH12,LV_L0,LV_L18,LV_L9}`、`LH12←{LH0,LV_L0,LV_L18,LV_L9}`、
+  `LVB_L0↔LVB_L12` 互连且吃下全部 6 条；每条长线同时被 8 个 BEG 族当源。
+  **「段数/跨度」没有独立编码**——跨 N 个 tile 就是 N 次续接的组合（bounce）。
+- `LV_L9` 与 `LH6` **没有自己的驱动族**（只作源），是待查缺口。
+- 新工具 `v7re/scripts/int_base_solve.py`：用 `law_cells` 的相对格约束 + 暴力扫，
+  从**真实位流**反解每个 INT tile 的帧基址；解唯一即视为可信。
+- 在 `_n1.bit`（+`_n1.pips`，392 个 INT tile）上：**258 个 tile 得到唯一基址**
+  （2 个多解、5 个无解）；同列多 tile 基址一致（`INT_R_X29Y105..109` 全为 992）。
+- **长线专项：23 条长线相关 PIP，23/23 的全部预测格在该位流中为 1**（0 不符）。
+- 负对照的边界（如实记）：同族「未使用源」的格本应全 0，实测 106 正确 / 182 误置位——
+  这是已知的 **2 格 pattern 歧义**（符号级解码 full8 曾多解 92 条同一现象），
+  不是位错误；因此「某源未用」不能用格全 0 来证否。
+- 另做一致性对拍：`pip_bits`（3,528 条实测绝对位）与 `law_cells` 在 12 个 (tile,PIP) 组上
+  **base 全一致（12/12）**，行间差 5,246 = `row_frames`，与配置行结构吻合。
+
+## 176. 版图级证据：工具链里查不到（2026-11-13，A 路失败记录）
+
+**目标**：为 §175 的【推断】「6×4 是物理开关矩阵、行是物理开关行」找版图级佐证。
+
+**查了什么**
+- RapidWright `Site` API：`site.getSiteWireCount()` = **96**（`SLICE_X0Y0`，含 `A1..A6`、`CYINITGND_HARD0` 等）；`site.getSitePIPs()` = **138** 条，形态全是 `D6LUT.A1->>O6`、`D5LUT.A1->>O5` 这一类**LUT 输出选择**，**没有** IMUX/开关矩阵的内部坐标。
+- `Tile` API：只有 `getWireCount/getWireName/getWireIndex/getWireIntentCode/getPIPs`，**不提供** tile 内开关的物理行列。
+- 线序/意图码能否分开那 4 组：
+  | 组 | 线索引 | 意图码 |
+  |---|---|---|
+  | G1 | 237, 333, 226, 348 | DOUBLE, SINGLE, DOUBLE, SINGLE |
+  | G2 | 268, 277, 270, 295 | DOUBLE, DOUBLE, SINGLE, SINGLE |
+  | G3 | 297, 231, 267, 300 | SINGLE, DOUBLE, DOUBLE, SINGLE |
+  | G4 | 334, 273, 301, 293 | DOUBLE, SINGLE, DOUBLE, SINGLE |
+  → **线索引离散、组内不连续**；但**每组恒为 2 DOUBLE + 2 SINGLE**（与「每组恰含 4 个长度类」一致）。
+- Vivado 2017.2：`link_design -part xc7vx485tffg1157-3` 后取 `get_tiles/get_pips/get_site_pips` 的批处理探针**挂死无输出**（>10 分钟，已终止），未取得 tile 内部几何。
+
+**结论**
+- 【数据事实】当前工具链（RapidWright 2026.1.1 + Vivado 2017.2）**都不暴露** CRAM 开关矩阵的物理行列坐标；能看到的只有「线—PIP 连接关系」。
+- 【推断】因此「6 行是物理开关行、4 列是物理开关列」这条**无法在本仓库取证**；可用的最强证据仍是行为学的（6×4 满填、每组 4 类、16 种排列）。
+- 【数据事实】列轴有厂商元数据佐证：`getWireIntentCode()` 把长度类分开（DOUBLE = 2 跳线，SINGLE = 1 跳/R 线），且每组 2+2 恒定；**行轴没有任何厂商元数据**。
+
+**对论文的处置**：把「6 行」写成【推断】（物理开关矩阵的假设），把「4 列 = 长度类」写成【数据事实 + 厂商 intent code 佐证】。这样即使审稿人追问行轴，我们也没有把推断当事实。
+
+## 177. PIP 复用规律现状盘点（2026-11-13）
+
+按 `step03_pip/PROMPT_PIP_REUSE_STATUS_V2.md` 生成、并按 A/B/C 三档 + 缺陷账 + 自我攻击三节写成：**`step03_pip/PIP_REUSE_STATUS_20261113.md`**（80 行）。
+
+**当日复跑（全部 2026-11-13）**
+- `python step03_pip/gen_slots.py` → `[mux] 64/64`、`[BEG] 96/96（变体 32/32）`、`[复合] 96/96`、覆盖 **3,552/3,634 = 97.7%**、余 82 条（6 长线族）。
+- `python v7re/scripts/verify_all_pip.py --tile-type INT_L|INT_R --normalize` → `家族 172`、`精确命中 3634（100.0%）`、`mux 1536/1536`、`beg 2098/2098`、不符 0、未覆盖 0。
+- `python -m pytest v7re\tests -q -p no:cacheprovider` → `15 passed in 0.37s`。
+
+**三档结论（详见文档）**
+- A 已证明 6 条（生成器闭合 / 校验双向 / 回归 15 passed / 复用度量 / 槽位编码 231,656 位 0 违例 / 真值 91.45%）。
+- B 只有行为学证据 5 条（6×4 物理矩阵、列=长度类、BEG 二分、E5 全器件抽样、跨类型同形 19/32）。
+- C 明确没做到 4 条（82 条长线无公式、行轴无版图证据=工具上限、跨类型 3/115、跨器件 0/1、26 帧块外与 word 50 未建模）。
+
+**缺陷账排序（影响×可修性）**：①82 条长线（可修性高，判据 ≥80/82）②行轴版图证据（工具上限）③跨类型 3/115 ④跨器件 0/1 ⑤ECC 未闭合 ⑥位库粒度。
+
+**自我攻击三条**（文档「如果我错了」节）：97.7% 是否自证（1 天：生成器不读 `law_cells` 直接比对，差异 ≤82 为通过）、列=长度类（≥95% 一致为通过）、跨类型同形（另选 `CK_BUFG_CASCO*` 复跑，≥50% 0 差异为成立）。
+
+## 178. 6 个长线族的编码结构（2026-11-13 晚，缺陷账第 1 行的推进）
+
+**做了什么**：把 6 个长线族从「逐源 2 格」重写成 **A 轴 × B 轴的双格边编码**（源 = 一条边 = 一个 A 格 + 一个 B 格），判据 = 源图能否 2-着色成二分。
+
+**结构（`step03_pip/_q_longline_pairs.py`，实测）**
+
+| 族 | 源 | 格 | A×B | 边/满格 | 完全性 |
+|---|---|---|---|---|---|
+| `LH0` | 12 | 9 | 5×4 = 20 | 12 | 稀疏 |
+| `LH12` | 12 | 7 | 4×3 = 12 | 12 | **完全** |
+| `LVB_L0` | 18 | 9 | 6×3 = 18 | 18 | **完全** |
+| `LVB_L12` | 18 | 9 | 3×6 = 18 | 18 | **完全** |
+| `LV_L0` | 10 | 7 | 4×3 = 12 | 10 | 缺 2 |
+| `LV_L18` | 12 | 9 | 4×5 = 20 | 12 | 稀疏 |
+
+- 【数据事实】**48/82 = 58.5% 落在完整乘积网格上**（`LH12` 4×3、`LVB_L0` 6×3、`LVB_L12` 3×6），与 mux（6×4）、BEG（5×4）是**同一种「双格边编码」**；剩下 34/82 是稀疏子集。
+- 【数据事实】跨族共享的 3 个格正是长线互相选的结果：`LH0`/`LH12`/`LV_L0`/`LV_L18` 互为对方族的源，`(1,6,0)`、`(0,2,0)`、`(0,9,0)` 被 2–3 个族共用。
+- 【数据事实】同一源在不同族里的 **A/B 序号不一致**（`LH0` 的 A 序号 = 0/1/3，B 序号 = 0/0/0/0）⇒ 没有全局「端口序号」规则。
+
+**被证伪的三条候选规则（`_q_longline_order.py`、`_q_longline_ordinal.py`）**
+1. 「按模板 `pip_defs` 顺序编号」：`LH0` 族的 11 个源按序排列后 A/B 格无周期（0..10 逐个不同），否。
+2. 「按方向/到达边归类」：`LH0` 的 A 组 =「1 条长线 + 2 个端线」，但配对方向无固定规律（`NW2`+`NW6`、`NR1`+`SW2`、`NN6`+`SW2` 混装），否。
+3. 「源名 → 全局端口序号」：`LH0` 在 `LH12`/`LVB_L0`/`LVB_L12`/`LV_L18` 里 B 序号恒 0，但 A 序号 1/0/1/3 不固定；`LH12` 的 B 序号 0/3/5/2/4 全不同，否。
+
+**结论（更新缺陷账第 1 行）**
+- 【数据事实】这 82 条不是「乱码」，而是**同一编码形式的稀疏实例**；两轴承载的是「物理到达端口」，不是名字属性，故不能用名字推导。
+- 【数据事实】落表代价重新算过：**6 族共 ≤54 个格 + 82 条边**（远小于原估计的「6 张 9 格 × 18 边表」），且其中 48 条落在 3 个完整网格上，可按「4×3 / 6×3 / 3×6 的坐标表」压缩存储。
+- 【推断】要把这 82 条彻底公式化，需要开关矩阵每个输入端口的物理编号（RapidWright/Vivado 均不提供，见 §176）⇒ 维持「表数据」判定，但表格规模已从 82 条压到 ≤54 格。
+
+
+
+## 179. 数据盘点（2026-11-13 22:3x，按用户「重新更新我的数据」要求重跑）
+
+**库**
+| 库 | 大小 | 关键表 |
+|---|---|---|
+| `E:\v7work\model\v7_model.sqlite` | **7,949.3 MB** | `site_frames` **36,799,100 行 / 9,156 帧（全量，已补齐）**、`frame_map` 50,176、`sites` 86,022、`site_pins` 5,489,706、`tiles` 150,380、`pip_bits` 3,528 |
+| `E:\v7work\model\v7_law.sqlite` | 15.2 MB | `law_cells` 24,328、`law_tiles` 62,625、`clb_cells` 3,884、`clb_blocks` 763、`far_bands` 1,078、`frame_blocks` 1,038、`tile_blocks` 53,102、`ppips` 2,958、`law_ctrl` 132、`law_iob` 37、`law_ppips` 216、`clk_cells` 94 |
+
+**重要变化**：本机 `site_frames` 已是**全量 36,799,100 行 / 9,156 帧**（此前记录的 19,819,900 行残缺状态已不存在）⇒ 交接不再依赖远端那 7.6 GB 副本。
+
+**代码/文档**：`v7re/steps/*.md` **123**、`v7re/scripts/*.py` **75**、`step03_pip/*.py` **433**、`v7re/docs/` 3（`PROJECT_PLAN.md`/`CLB_BIT_SPEC.md`/`CHIP_485T.md`）、`STATUS.md` **6460 行 / 204 个 `## N.` 小节**。
+
+**发现的记账缺陷**：`## N.` 编号**有 39 个重复**（5, 6, 35, 52, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 114, 115, 117, 119, 126, 127, 147, 148, 149, 173），其中 87/88/89 各 3 次、`173` 两次（一为坐标系审计、一为长线族验证）。写论文引用前必须重编号，否则引不动。
+
+**两个口径必须写清**（不是矛盾）：`gen_slots.py` 的 **3,552/3,634 = 97.7%** 指「能由槽位表生成」的 feature；`verify_all_pip.py` 的 **3,634/3,634 = 100%** 指「用表+定律整体校验无不符」。差集 82 条 = 6 个长线族，其中 48/82 已在完整乘积网格上（§178）。
+
+## 180. 讲解稿：INT tile 族实验的思路 / 结果 / 问题（2026-11-13）
+
+- 交付 `step03_pip/INT_TILE_FAMILY_EXPERIMENT_STORY.md`（298 行、11 节）：§3 八步链（每步写"排除了什么"）、§4 时间线（当时以为 → 后来改成）、§5 结果两列表（已外部验证 / 仅自洽分开）、§6 **17 个问题分五类**（数据获取/判读/统计/工具能力/文档脚本，每条含"没发现会得出什么错结论"）、§7 撤回表 7 行、§8 重做 10 条带代价、§9 缺口、§11 复算入口索引。
+- 提示词：`step03_pip/PROMPT_INT_TILE_STORY_V1.md`（756 字符）→ `_V2.md`（1,281 字符，MCP `optimize-user-prompt` + `iterate-prompt`）；V2 追加六条硬要求（时间线专节、五类问题各≥2、错误结论必须带数字、撤回表、结果两列、重做 10 条带代价）。
+- 稿中直接引用的最新数字：生成器 **3,552/3,634 = 97.7%** 0 差异；槽位不变量 **231,656 位 0 违例**；真值 1,155/1,263 = 91.45%；线长律 12,565 tile / 64,686 位表外 0；E8 50,176 帧全等；单 bit 检出 99.4438%；误报 240 位 / 120 tile（白名单后 0）。
+- 该稿的定位：对外讲解件，不新增实验；所有数字均指向 `step03_pip/` 现有脚本（§11 索引）。
+
+
+
+## 180a. 单一口径收口（①）+ 一键复现（②）落地（2026-11-13 22:4x）
+
+按用户「欧克」启动收口工作。三件事里的前两件已完成。
+
+### ① `SINGLE_SOURCE_OF_TRUTH.md`（仓库根，9 节）
+把会写进论文的数字集中登记：每行=**值 / 口径 / 命令 / 状态**，状态分 ✅已现场验证、📊数据事实、🧩推断未闭合、❌作废。
+- §1 器件与位流基础 9 行；§2 INT 复用主线 **24 行**；§3 其它 tile 类型 12 行；§4 **作废清单 9 条**（36 种行序、T13 INIT 表、24 源接口假设、word50、4.3% 残余、CLB 151 条可配置、site_frames 残缺…）；§5 CLB 位级 12 行；§6 CRC/ECC 7 行；§7 **待对账 5 条**；§8 复现入口；§9 术语表 10 条（外部 Agent 必读）。
+- 关键新数字（本次重跑得到，此前未单独登记）：`(feature,cell)` 记录 **8,900**、不同 cell **1,598**（sense=1）、sense=0 **3,264 行/280 格**、BEG cover **640** feature、长线 **48/82 = 58.5%** 落在完整乘积网格。
+
+### ② `repro.py`（仓库根，172 行）
+一条命令跑 9 项检查：`python repro.py` → 逐项打印 `expect / 耗时 / PASS|FAIL`，末行 `OVERALL: PASS (9/9)`。
+检查项与期望：`slots.coverage` 3552/3634、`slots.families` 族数 172、`verify.INT_L` 与 `verify.INT_R` 各 3634/3634、`mux.law` 1536/1536、`beg.shape` 32/32、`row.generator` 2048/2048、`tiles.instances` residual=0、`unit.tests` 15 passed。
+踩坑：`gen_mux_rowlaw.py` 打印的是 `2048 / 2048`（带空格），正则写成 `2048/2048` 会假 FAIL——已改为 `2048\s*/\s*2048`。
+**实测：9/9 PASS，总耗时 9.2 s**（`tiles.instances` 占 7.1 s）。
+
+### 剩余
+③ 图表数据包（把 134 个 json 收敛成 6 张图的 CSV，删 `_x.json` 类垃圾）——未开始。
+④ `STATUS.md` 的 38 个重复小节编号未重编（写论文引用前必须处理）。
+
+## 181. 术语+流程+覆盖指南（2026-11-13）
+
+- 交付 `step03_pip/INT_EXPERIMENT_GUIDE.md`（167 行 / 8 节）：§2 **24 条术语四列表**（定义/本项目取值/真实例子/常见误解）、§3 单个 PIP 的端到端样例（`INT_R_X37Y199` 的 `SS6END0->>SS2BEG0`，两格 `(11,0,10)(13,0,10)`）、§4 八步流程（目的/做法/判据/产出/不做会怎样）、§5 六条"为什么"（替代方案/否掉原因/否掉会犯什么错）、§6 **覆盖三层账**、§7 六个易错概念、§8 复算入口。
+- 提示词：`PROMPT_INT_GUIDE_V1.md`（1,636 字符）→ `_V2.md`（2,113 字符，MCP）。
+- **覆盖结论（新核对的精确口径，与旧稿的 59 不一致）**：一个 INT tile 3,737 条 = **3,629 条有位记录的信号 PIP（97.1%）+ 64 条 `VCC_WIRE` 常量（1.7%）+ 44 条直通（1.2%）**；`law_cells` 3,634 与模板 3,629 差 **5** 条（长线跨族选源拼写差异，**未核实**）。
+- 两个分母必须分开说：按 tile 内 PIP 算规则覆盖 **3,552/3,737 = 95.0%**；按 `law_cells` 特征算 **3,552/3,634 = 97.7%**。
+- 器件级：**7,474/35,126 = 21.3%**（仅 INT_L/INT_R，单器件）；未覆盖的 27,652 条中 D 类密集多源占 15,518（44.2%）。补齐估算 **25–35 人日**。
+- 脚本：`_q_cover_tile.py`（四类分解）、`_q_cover_pairs.py`（law vs 模板 归一化比对：tpl 3,737 / law 3,634 / law_only 5 / tpl_only 108 = 64 VCC + 44 直通）。
+
+
+
+## 182. 小节编号收口（④）—— 并更正一条我自己报错的数字（2026-11-13 22:5x）
+
+### 先更正
+我在 §179 / §180 里写「`STATUS.md` 有 38 个重复小节编号」，**这是错的**，是我自己的统计 bug：正则写成 `^## (\d+)\.`，只抓整数前缀，于是把 `## 87.1.` `## 88.2.` `## 100.1.` 这类**小数小节**误算成 `87`/`88`/`100` 的重复。
+用允许小数的正则 `^## (\d+(?:\.\d+)?)\.` 重算：208 个数字标题里**真重复只有 2 处**——`173`（两个「为什么」）与 `180`（讲解稿 / 收口）。
+
+### 做了什么
+- 备份：`_status_before_renumber_20261113.md`（改前的完整快照）。
+- 把重号的**后一个**改为字母后缀：`173` → `173a`（长线族验证）、`180` → `180a`（单一口径收口）。
+  选字母后缀而不是顺延重编，是因为全仓库有 **1,431 处 `§N` 引用**（113 个 md 文件，最多的是 `STATUS.md` 285 处、`step03_pip/_status_before_renumber_20261111.md` 218 处），整体重编会把这些引用全部打断；后缀法保留原有单个编号的全部语义。
+- 新建 `STATUS_SECTION_INDEX.md`（274 行）：**206 个数字小节**的「编号 / 行号 / 标题」总表 + **53 个非数字遗留标题**（`## S26`、`## §18`、`## 附：…` 这类）单列一节。以后写论文引用一律查这张表。
+- 复检：`STATUS.md` **6,512 行 / 206 个数字小节 / 0 重复**，最大号 `181`（`180a` 不占整数位）。
+
+### 教训（写进纪律）
+统计类断言必须先验证正则/口径本身。这次差点把 40 个正常的小数小节改成字母后缀，**是在写盘前用备份回滚才发现的**——所以今后任何批量改写 `STATUS.md` 前必须先 `copyfile` 备份。
+
+## 183. 为什么 97.7% 补不到 100%：帧块分区 + 82 条的本性（2026-11-13）
+
+**新实测（`step03_pip/_q_frame_partition.py`，INT_L sense=1，按源数分组）**
+
+| 组 | 族数 | frame_off 范围 | 帧块位置 |
+|---|---|---|---|
+| 复合族（16 源） | 6 | **0..1** | 26 帧块最前 2 帧 |
+| 长线族（18/12/10 源） | 6 | **0..1** | 同上（与复合族共用 0..1） |
+| BEG（20 源） | 96 | 2..15（三种区间 2–7 / 6–15 / 7–15） | 中间 14 帧 |
+| mux（24 源） | 64 | 16..25 | 最后 10 帧 |
+
+- 【数据事实】**26 帧块按功能分区**：0–1 = 时钟/长线（12 族）、2–15 = BEG（96 族）、16–25 = mux（64 族），三块互不重叠。
+- 【推断】这解释了 82 条为何推不出：它们与复合族同居帧 0..1，该区编码的是「物理到达端口」，不是名字属性；mux/BEG 区编码的是「逻辑方向 + 线长」，名字里就带着。
+
+**为什么没补到 100%（四条原因，按强度排序）**
+1. 【数据事实】四条候选规则全被证伪：模板 `pip_defs` 顺序（`LH0` 11 源无周期）、方向/到达边配对（A 组混装方向）、全局端口序号（`LH0` A 序号 1/0/1/3、B 序号恒 0）、几何类→格对（22/36 唯一）。
+2. 【数据事实】6 族长线**互相选源形成闭环**：`LH0←LH12`、`LVB_L0←LVB_L12`、`LV_L18←LH0/LH12`、`LV_L0←LH12`，共享 3 个格（`(1,6,0)`、`(0,2,0)`、`(0,9,0)`）⇒ 无法用「族自身名字」闭合，必须外部锚（物理次序）。
+3. 【数据事实】工具不给物理编号：`Site.getSitePIPs()` 只给 LUT 输出选择；`Tile` 无内部行列；Vivado `link_design` 几何探针挂死（§176）。
+4. 【推断】再加样本（每源一个受控位流，82 个构建 ≈3 h）只能验证「表对不对」，不能把表变成公式——公式需要端口编号，样本再多也不产生编号。
+
+**已做到的最好状态**：82 条 = 6 张表，合计 **≤54 个格 + 82 条边**；其中 48/82（`LH12` 4×3、`LVB_L0` 6×3、`LVB_L12` 3×6）落在**完整乘积网格**上，可按坐标表压缩存储。
+
+**口径提醒**：数据覆盖是 100%（82 条全在 `law_cells`，解码器可用）；缺的是**公式覆盖**（能否只凭名字算出）。报告时必须分两列，否则会被当成"数据缺失"。
+
+
+
+## 183. 图表数据包（③）落地（2026-11-13 22:5x）
+
+### `make_fig_data.py`（仓库根，205 行）
+从两个 SQLite 库 + 既有 json **自动生成** `figs/` 下 6 张图的数据，不手工编辑：
+
+| 文件 | 行数 | 内容 |
+|---|---|---|
+| `fig1_frame_blocks.csv` | 1,078 | 帧布局：7 band × 154 列区块 + 帧区间 + 类别（36=CLB 111 列 / 28=INT / 30=CLOCK 4 列 / 32=BOUNDARY / 42=UNDETERMINED） |
+| `fig2_fanin_families.csv` | 636 | 各 tile_type 每族的 fan-in 与 cell 数 |
+| `fig2_fanin_hist.csv` | 45 | fan-in 直方图（INT 最大 24；BRAM 111 / DSP 280 / CLBLM 358 / CLBLL 338） |
+| `fig3_coverage.csv` | 7 | 三档覆盖率：172/172、3634/3634、3552/3634、12565/53100、95.75% |
+| `fig4_family_shape.csv` | 178 | mux 6×4 ×64、BEG K(a,b) ×108、长线 ×6 |
+| `fig5_clb_bits.csv` | 2,875 | CLB 每个 cell 的语义 + 置信度四档 |
+| `fig6_cells_per_feature.csv` | 6 | 复用度量：20→1、24→3、36→2、40→96(BEG)、48→6、72→64(mux) |
+
+配套 `figs/README.md`：每列含义 + 四条画图注意（坐标系别混、word 50 排除、帧号 vs 块偏移、按 tile_type 分组）。
+`--check` 走临时目录，不碰 `figs/`；已接入 `repro.py` 作为第 10 项检查。
+
+### 新增的关键数字（画图时才发现）
+- `fig6` 揭示的复用强度：**64 个 mux 族每族 72 格、96 个 BEG 族每族 40 格**——这是「复用」最直接的一句话量化。
+- `beg_families.json` 里 108 个族中 **7 个不是二分形状**（`CLK_L0/L1`、`CTRL_L0/L1`、`GFAN0/1`、`LV_L0`），它们走 `kind/note` 字段，画形状图时必须单列，否则会 `KeyError: 'A'`（我第一版就崩在这里）。
+
+### 垃圾文件清理
+22 个下划线开头的 json 里，**16 个在 `*.py`/`*.md` 中 0 引用**，已移入 `_trash_20261113/`（含 `MANIFEST.json` 记录原路径、大小、理由），**没有删除**，可随时 `move` 回来。
+保留 6 个有引用的：`step03_pip/_x.json`（STATUS 引用）、`_clbll_map.json`（T57 文档）、`_mcp_opt_raw.json`（提示词文档）、`_famspec.json`/`_famspec_r.json`（REMOTE_CLEANUP_PLAN）、`_famexp.json`（verify_reuse.py 等 12 处）。
+
+清理后重跑 `repro.py`：**10/10 PASS**（新增 `figs.data` 检查）。
+
+
+## 184. A 档交付提示词（给 ClawsGO 写论文用）（2026-11-13 23:0x）
+
+### 产物
+`HANDOFF_A_CLAWSGO_PROMPT.md`（仓库根，8 节）：0 角色与任务、1 数据包（10 个文件的表格 + 明确「不给 site_frames」）、2 引言素材三项要求、3 方法章节三件事、4 六张图画什么、5 六条硬性纪律、6 八条机械验收、7 卡住怎么办、8 可放心引用的核心数字表。
+
+### 关键设计（为什么要这么写）
+| 设计 | 原因 |
+|---|---|
+| 明说「v7_model.sqlite 7.9 GB 不给你」 | 它连不上这台机器；与其让它猜，不如规定「需要就写需要」 |
+| 作废清单**点名 4 条**（36 种行序、24 源接口、word50、4.3% 残余） | 这四条是最容易被外部 Agent 从旧文档里捡走复述的 |
+| 三套坐标系写死基数 154/412/111 | 我们自己也在这上面栽过（`band` 撞名，见 §172） |
+| 验收 #6「输入未改（sha256 一致）」 | 云端 Agent 改输入是真实风险 |
+| 验收 #7「空话检测」 | 论文引言最容易写「显著提升」而无数字 |
+| 8 节数字表带脚注（1,598 vs 1,602） | 真源表 §7.1 有 4 格待对账，先给口径再给它，避免它二选一混用 |
+
+### 数字核对（交付前逐条 grep 过）
+`fig3_coverage.csv` 七行与真源表一致：172/172、3634/3634、3552/3634=97.74%、8900、(1,598)、12565/53100=23.66%、198434700/207253149=95.75%。`fig6` 六行确认「40→96 族（BEG）、72→64 族（mux）」。
+`fig3_coverage.csv` 编码复核为**合法 UTF-8**（PowerShell `Get-Content` 默认按 GBK 显示才出现的乱码，文件本身没问题）。
+
+### 生成方式
+草稿经 `cd E:\DEEPSEEK\tools\prompt-optimizer; node po.mjs user <草稿> --template user-prompt-professional` 处理；优化器基本原样返回（本提示词结构已足够规整），人工补回硬数据表与脚注。
+
+## 185. 流水线视角：INT tile 规律是怎么被处理出来的（2026-11-13）
+
+- 交付 `step03_pip/INT_TILE_LAW_PIPELINE.md`（16 节）：九阶段（S1 位流→位矩阵 / S2 帧→tile 基址 / S3 受控差分 / S4 差异→cell 三元组 / S5 三套结构判据 / S6 两轴归属 / S7 172 族分桶 / S8 生成器 / S9 四支路验证），每阶段写「输入/处理(≤15 行伪代码)/输出/判据/真实数字/失败分支」。
+- 关键新增表格：§11 一条真实连接的九阶段形态（`INT_R_X37Y199` 的 `SS6END0->>SS2BEG0`）、§12 数据量演进（162,168,832 位 → 88,358,400 建模位 → 8,900 记录 → 3,634 连接 → 1,598 格 → ~600 数字，总压缩 ≈2.7×10⁵）、§13 表结构演进、§14 「600 个数字重建 8,900 条记录」的 3 条前提、§15 12 行文字流程图。
+- 提示词：`PROMPT_INT_PIPELINE_V1.md`（1,048 字符）→ `_V2.md`（1,524 字符，MCP；V2 增：表结构演进、每阶段失败分支、三套判据完整写法+真实反例、压缩代价、文字流程图）。
+- 该文只整理既有实测，不新增实验；所有数字指向 `step03_pip/` 现有脚本（§16 索引）。
+
+
+
+## 185. 复核 ClawsGO A 档交付：六条口径冲突全部成立（2026-11-14 10:4x）
+
+对 ClawsGO 报的 6 条逐条机械复核，**全部成立**（我这边 R/CSV 实测确认），并已修复：
+
+| # | 它报的问题 | 复核 | 处理 |
+|---|---|---|---|
+| 1 | `fig5` 缺 `word` 列，三维图无法画 | ✅ 确认：列里确实没有 `word` | **不补列**——`word = 2*(y%50)+(1 if y%50>=25 else 0)+parity`，随站点 y 变，**不是 tile_type 级量**。改为在 `figs/README.md` 写明为何没有、以及要画三维须先指定实例 |
+| 2 | `fig5` 置信度只有 2 档（512 + 2,363），README 写 4 档 | ✅ 确认 | 新建 `v7re/steps/clb_manual_bits.json`（18 行，T82–T87 实测位），`make_fig_data.py` 合并 → 现在 **2,893 行 / 5 档**：confirmed 14、confirmed(INIT) 512、strong-candidate 1、candidate 3、unknown 2,363；新增 `provenance` 列（`db:clb_cells` 2,875 / `manual:T82-T87` 18） |
+| 3 | `fig2_fanin_hist.csv` 26 行，README 写 45 | ✅ 确认（26 行） | README 改正为 26，并注明「只保留实际出现过的 (type, fan-in)」 |
+| 4 | `fig4` 的 BEG 实际 101 行、全 `complete_product=True`，与「32/32」不是同一对象 | ✅ 确认（101 BEG + 64 mux + 6 longline + 7 composite = 178） | README 改正为 101，并加注「101/101 结构全二分」≠「32 族做过位流重建」；同时说明 64+101+7=172 与「每侧 172 family」自洽 |
+| 5 | **`fig1` 只覆盖帧 0–36,719（36,708 帧），全器件 50,176** | ✅ 确认：`sum(frames)=36,708`、`max(end_frame)=36,719` | **这是本次最重要的发现**：`far_bands` 只覆盖 `FAR_BLOCK_0`，另一部分 13,440 帧（`FAR_BLOCK_1`）不在表内。已写入真源表 **§1.3**（36,708/50,176 = 73.2%），并在 `figs/README.md` 加「不得外推」警告。此前 §172/COORD_AUDIT 里「1,078 区块覆盖全部 50,176 帧」的说法**作废** |
+| 6 | `fig3` README 称「三档」，CSV 实为 7 行 | ✅ 确认 | README 改正为「五档指标 + 两行交叉校验」 |
+
+### 顺带闭环的数字
+它做的交叉校验 `Σ(格数 × 族数) = 20+72+72+3,840+288+4,608 = 8,900` 与 `fig3` 的 `(feature,cell)` 记录数**逐位相等** —— 已固化为 `repro.py` 第 11 项检查 `figs.sum`（`sum 8900`）。
+
+### 结论
+A 档产出可用；**6 条冲突里 5 条是我方文档/CSV 的错，1 条是它的合理误判（`word` 列）**。它没有编造数字、没有混坐标系、输入未改 —— 三个校准点都过了。
+`repro.py` 现 **11/11 PASS**；`STATUS.md` 本节约 6,6xx 行。
+
+
+## 186. 补全器件区块表：`FAR_BLOCK_1` 的 13,440 帧（2026-11-14 11:2x）
+
+### 背景
+§185 复核时发现 `far_bands` 只覆盖 36,708 帧（73.2%），另 13,440 帧属 `FAR_BLOCK_1` 且**没有任何块表**。论文若画「器件完整布局」会少 27%。
+
+### 做法
+新增 `v7re/scripts/build_frame_blocks_full.py`（约 290 行）：直接读 `frame_map` 的真实 FAR，用 `bitstream.far.FarAddress.decode` 拆字段，按 `(block_type, top_bottom, row, column)` 聚块：
+
+```
+blocks                1183  (type0 1078 / type1 105)
+frames                50148  (type0 36708 / type1 13440)
+by class              BOUNDARY=14, BT1=105, CLB=777, CLOCK=28, INT=245, UNDETERMINED=14
+columns per class     BOUNDARY=2, BT1=15, CLB=111, CLOCK=4, INT=35, UNDETERMINED=2
+band -> (top,row)     0->(0,0) 1->(0,1) 2->(0,2) 3->(0,3) 4->(0,4) 5->(1,0) 6->(1,1)
+clb_col attached      763/777
+problems              none
+```
+
+产出 `v7_law.sqlite:frame_blocks_full`（1,183 行）+ `v7re/steps/frame_blocks_full.json`。
+
+### 三条新结论
+1. **`band` 的含义首次确定**：`far_bands.band` 0..4 = `(top_bottom=0, row 0..4)`，5 = `(1,0)`，6 = `(1,1)`。此前只知道它撞名、不知道它到底是什么。
+2. **`FAR_BLOCK_1` 结构规整**：105 块 = 15 列 × 7 带，每块恰好 **128 帧**（其余类都是 28–42 帧）。
+3. **`FAR_BLOCK_1` 在所有采样设计中恒为 0**（36 份：30 份随机 + 6 份定向 `_n1`/`_n3`/`_n4`/`_full8`/`_c0`/`f_o6`），逐帧统计非零数据字合计 **0**（已排除 word 50）。即：位流里这 26.8% 的帧被写进器件，但**不含任何配置数据**。用途未定（可能是大器件才用的第二 FAR 块，或 485T 上的填充）。
+
+### 校对与收口
+- 自检项：总帧 50,148、type0 1,078 / type1 105、每块帧段连续、覆盖 = 全帧减 28 overhead（无缝隙无重叠）、CLB 777 块 / 111 列、BT1 15 列。
+- `fig1_frame_blocks.csv` 从 1,078 行（仅 bt0）换成 **1,183 行**（全器件），列增加 `block_type/top_bottom/row_addr`。
+- `repro.py` 新增第 12 项 `frames.full`（`(1183, 50148)`）；现 **12/12 PASS**。
+- 真源表新增 §1.11（全器件区块表）、§1.12（BT1 恒零）；原 §1.10 把「73.2%」标为**作废**。
+- `figs/README.md` 的 fig1 段落整段重写（新列含义 + `band→(top,row)` 表 + BT1 灰色建议）。
+
+### 一处自我纠错（第二次同类错误）
+我第一次「补 §1.3」用 `"| 1.3 |" in s` 当成功判据——但该文件**本来就有**一张表存在 §1.3（行开销帧），所以判据恒真、插入其实没生效。同类的「存在性 grep ≠ 正确性」在 T24 的 15 位十六进制串上已经踩过一次。这次改为按行号定位 + 断言唯一匹配才落地。
+
+
+## 187. fig1 绘图任务书（给 ClawsGO 的完整提示词，2026-11-14 20:5x）
+
+产物 `HANDOFF_FIG1_PROMPT.md`（8 节）。经 `node po.mjs user <草稿> --template user-prompt-professional` 优化后再人工补硬数据表、验收项与作废口径。
+
+### 结构
+§0 角色与边界（只读一个 CSV、缺数据写「需要但未提供」）→ §1 输入（sha256 `ef36d862…510a8`、39,869 B、1,183 行 + 已核基线）→ §2 五条不可改写事实（含 `far_band→(top,row)` 对应表）→ §3 画什么（主图 + **BT1 必须独立面板**）→ §4 五条硬性纪律 → §5 三个交付物 → §6 八条机械验收 → §7 卡住怎么办 → §8 可放心引用数字 + 作废口径。
+
+### 本任务书针对的三个真实陷阱
+1. **BT1 列号与主图 far_col 数值重叠**（都是 0..14，但一个是 `FAR_BLOCK_1` 块内编号、一个是 `FAR_BLOCK_0` 列号）。不显式禁止就会画进同一坐标系，得到一张看似合理、实际把两套不相干的东西叠在一起的图。
+2. **恒 0 的那些帧必须视觉区分**：`BT1` 13,440 帧有表、无内容。若与 CLB 同色，读者会以为器件下半部分有 13,440 帧配置数据。
+3. **三套坐标系基数**：`far_col` 154 / `grid_x` 412 / `clb_col` 111。验收第 7 条要求全文检索裸 `col`/`band`/`x`。
+
+### 验收里两条是「可机检的诚实性」
+- 第 3 条：让它从 CSV **独立重算** 1,183 行、Σ=50,148、CLB 111 列、BT1 15 列，与图例逐一相等 —— 防它手抄错。
+- 第 7 条：空话检测（显著/大幅/极大）。
+
+### 输入核对数据
+`figs/fig1_frame_blocks.csv`：39,869 B、1,183 数据行、sha256 `ef36d862c579db43d41f4f2b2a4630bec3ca96a33c80847e1912507b60a510a8`；
+`class×block_type`：CLB/INT/CLOCK/BOUNDARY/UNDETERMINED 全为 bt=0，BT1 全为 bt=1；`Σn_frames=50,148`；`clb_col` 非空 763/1,183。
+
+## 188. 复用规律讲解材料（任务书 + 三张图）
+
+用户 m17600 要求「解释复用规律怎么找到的/长什么样/还缺什么，最好有图解，给提示词并使用」。
+
+- 任务书 `HANDOFF_REUSE_LAW_EXPLAIN.md`（经 `node po.mjs user … --template user-prompt-professional` 生成提示词，人工补硬数据附录 2.1–2.7，含作废口径 6 条）。
+- 出图脚本 `v7re/scripts/make_reuse_law_figs.py`（读 `v7_law.sqlite`，离线约 3 s），产物：
+  - `v7re/steps/figs_law/law_1_reuse.png`：`IMUX_L40` 24 源 → 10 格（6 行格 帧 16–21 + 4 列格 帧 22–25），每源恰好 5 格（`Counter({5: 24})`）。
+  - `v7re/steps/figs_law/law_2_codes.png`：S4 生成链（DIAG/ORTH 周期 8、R/L 周期 4 且 `j=3` X2 断裂）+ 16 种行序码 / 每码 4 族。
+  - `v7re/steps/figs_law/law_3_coverage.png`：四档覆盖 172/172、3,634/3,634、3,552/3,634（97.74%）、12,565/53,100（23.66%）。
+- 排版踩坑：`DejaVu Sans Mono` 无 CJK 字形（`Glyph 22522 missing`）→ 去掉该 font family；fig1 三版重排（源盒重叠 → 总线穿框 → 底部文字压网格）才可读。
+
+## 189. 6×4 的第 4/5 行 512 槽位：列归属被压到 2 位/族
+
+用户 m17684「试一下」→ 把 `6×4` 网格里第 4、5 行（BOUNCE 与 LOGIC/GFAN）的 512 个槽位压成生成律。
+
+### 数据事实（`v7_law.sqlite:law_cells`，INT_L，64 个 mux 族）
+- 每个源恰好 2 个 sense=1 格：1 个行格（帧 16–21）+ 1 个列格（帧 22–25）；24 个源的 (行,列) 对**互不相同**（48/48 族、64/64 族均 0 重复）。
+- 第 4/5 行只放 LOGIC/GFAN 与 BOUNCE 两个类，**哪个类放第 4 行由 `(族号//8) 的奇偶` 决定**（`IMUX_L0..L7`、`IMUX_L16..L23`、`IMUX_L32..L39`、`BYP_ALT*` → row4；其余 → row5）。
+- 行内 4 个成员占 4 个不同列。
+
+### 规律：列先分「对」，再分「对内顺序」
+列对（pair）由**源的类**唯一决定，512 个源、0 例外：
+
+| 源 | 列对 |
+|---|---|
+| `LOGIC_OUTS_L0..L15` | `{0, 1}` |
+| `LOGIC_OUTS_L16..L23` | `{2, 3}` |
+| `GFAN*` | `{2, 3}` |
+| `BYP_BOUNCE*` | `{2, 3}` |
+| `FAN_BOUNCE*` | `{0, 1}` |
+
+对内顺序只有 1 位：
+- **LOGIC 组完全确定**：row4 → 排列 `(1,0,3,2)`；row5 → `(0,1,2,3)`（规范序 = L 序号升序、GFAN 排最后）。**64/64 族、0 例外**。
+- **BOUNCE 组**：BYP 对与 FAN 对各剩 1 位，4 种组合 `((3,2),(1,0))` 18 族、`((2,3),(0,1))` 18、`((3,2),(0,1))` 14、`((2,3),(1,0))` 14 —— 仍是**数据**（2 位/族）。
+
+### 量化
+| 项 | 值 |
+|---|---|
+| 槽位数 | 512（64 族 × 8） |
+| 每个槽位信息量 | 2 bit（4 列选 1） |
+| 压缩前 | 1,024 bit |
+| 压缩后 | **128 bit**（2 bit/族，仅 BOUNCE 的内对顺序） |
+| 压缩比 | **8×**；LOGIC 那 256 个槽位**0 自由位** |
+
+### 一条负结果
+「BOUNCE 的列 = f(源名, 行)」不成立：14/42 个 (源,行) 组合仍取到两列（如 `BYP_BOUNCE1` 在 row4 既是 2 又是 3），所以对内存顺序不能从源名推出。
+
+### 复现
+```python
+# 读 law_cells，按 sense=1 取每源的 (行格, 列格)，按上表校验列对；
+# 已在 /tmp 探针里跑过：checked sources: 512  violations: 0
+```
+
+## 190. CRAM 排布图成因与"行"的四个义项（2026-11-14）
+
+**文档**：`step03_pip/CRAM_LAYOUT_WHY_AND_ROW_TERMS.md`（199 行 / 12,638 B）
+**提示词**：`step03_pip/PROMPT_CRAM_LAYOUT_WHY_V1.md`（2,043 字符）→ `_V2.md`（2,625 字符，MCP 两轮）
+**缘起**：论文图 1（整片配置帧布局）被问「为什么长这样 + 行到底是什么」。
+
+### 新增的可复算事实
+
+1. 【数据事实】单段列深直方图（`far_bands`，7 段完全同构）：**36 帧 111 列 / 28 帧 35 列 / 30 帧 4 列 / 42 帧 2 列 / 32 帧 2 列**；`111×36+35×28+4×30+2×42+2×32 = 5,244` 帧/段，×7 = 36,708 帧。
+2. 【数据事实】30 帧的 4 列 = `far_col 33 / 62 / 75 / 120`（时钟 CMT 列）；42 帧的 2 列 = `col 32 / 121`（紧邻 CMT）；32 帧的 2 列 = `col 0 / 153`（左右边缘）。
+3. 【数据事实】守恒式 `30 + 42 = 36 + 36 = 72`：CMT 列少 6 帧、邻列多 6 帧，合计不变。
+4. 【数据事实】与 §162 的时钟区实测互相印证：时钟 mux 位落在 `col 33` 的 `minor 26–29`（即 30 帧列的尾部），两条方法（读 FAR 布局 / 位流差分）独立同结论。
+5. 【数据事实】block1 = 7 段 × 15 列 × 128 帧 = 13,440 帧；`36,708 + 13,440 + 28 = 50,176` 帧 = FDRI 5,067,776 ÷ 101。
+
+### "行"的四义（此后引用必须带记号）
+
+| 记号 | 范围 | 含义 |
+|---|---|---|
+| `y` | 0–349 | 瓦片行（几何纵坐标） |
+| `row` | top=0: 0–4；top=1: 0–1 | FAR 段号 |
+| `r` | 0–5 | tile 内 mux 输入组号（与纵向位置无关） |
+| `minor` | 0–27/29/31/35/41 | 列内帧偏移（= `frame_off`） |
+
+图 1 的细横线是 `minor`，不是 `y`；`y` 的信息编码在 `word` 里，不画在该图上。
+
+### 复算入口
+
+- `SELECT frames, count(*) FROM far_bands GROUP BY frames ORDER BY frames;` → `28:245, 30:28, 32:14, 36:777, 42:14`
+- `SELECT band, count(*), sum(frames) FROM far_bands GROUP BY band;` → 7 行，各 154 列 / 5,244 帧
+- `python step03_pip/_q_far_minor_identity.py` → 36,708/36,708
+- `python step03_pip/_q_col_three.py` → tile 列 158 / FAR 列 154 / grid_x 412
+
+### 未测（文档 §6.3 明列）
+
+① 28 帧 35 列 vs 36 帧 111 列的资源差异（只做了推断，未逐列核对）② FAR `top` 字段物理含义（为何 5+2 段）③ block1 的 15 列与 grid_x 的对应 ④ "36" 这个常数是否等于某类资源配置位 ÷ 3,200。
+
+---
+
+## 191. 全量活跃实例扫描（92 位流 / 7,453 扫描 / 0 违例）
+
+**文档**：step03_pip/ALL_BITS_SCAN_20261114.md　**脚本**：step03_pip/_q_all_bits_scan.py　**结果**：step03_pip/out/all_bits_scan.json
+
+### 一句话
+
+【数据事实】本地 92 个位流、7,453 次活跃 tile 扫描（去重 1,965 个 tile，占 INT 实例 3.70%）、32,350 个置位上：**L2 槽位违例 0**（95% 上界 0.040%）；L1 未解释位 576（1.78%），其中 558（96.9%）落在 3 个已知标记格 (1,0,0)/(1,1,0)/(0,16,1)，其余 18 个散在 5 个格且**只出现在手工探针设计**；真实设计 
+ef.bit 982 tile / 240 未解释（全为上述 3 格）/ 0 违例。
+
+### 关键数字
+
+| 指标 | 值 |
+|---|---|
+| 位流 / 扫描次数 / 不同 tile | 92 / 7,453 / 1,965 |
+| 扫描置位数 | 32,350 |
+| L2 违例 | **0** |
+| L1 未解释 | 576 = 558(3 格) + 18(5 格) |
+| 非白名单位所在文件 | _c3/_c3_rt/_c4/_c4_rt/_c5/_c0_to_c3/_g16_edit/_rt_g16_s0/_resynth/_s8v0（全为手工探针） |
+
+### 口径
+
+L1 = 未被任何命中族解释的置位（扫 rame_off 0..25）；L2 = 槽位编码律（一热 ≤1 行 / 有行⇒码∈{1,2,7,11} / 有码⇒有行）；活跃 tile = 该 tile 帧 0..25 有任一置位；上界用 rule of three 3/n。
+
+### 边界
+
+只覆盖 3.70% 实例；92 个位流全是 INT 相关设计，不能证跨类型普适；18 个非白名单位除 (1,7,1)/(1,3,1) 外尚未逐位归因。
+
+---
+
+### S71 · fuzz 流水线文档化（2026-11-15）
+
+新增两份交付物（不改动任何实测数据）：
+
+- `step03_pip/FUZZ_PIPELINE_DETAIL.md` —— 七段流水线详解：语料 fuzz（被动）→ 定向 fuzz（主动）→ 并发执行 → 差分判读 → 归属判定 → 写回验证 → 落库。每段按「输入/操作/输出/判据」组织，判据写成可执行断言；每段附「这一步会怎样静默撒谎」（症状 / 为什么看起来正常 / 如何区分）；含失败传播图与止损点；含吞吐表（32 并发 214 s、峰值 RSS 3.0 GB、语料扫描 ≈3 min）。
+- `step03_pip/PROMPT_FUZZ_PIPELINE_V1.md` —— 生成该文档的提示词（`optimize-user-prompt` + `iterate-prompt` 两轮）。
+
+同时新增 `step03_pip/FRAME_ADDRESS_FUZZ_GUIDE.md` + `PROMPT_FRAME_ADDR_FUZZ_V1.md`（帧结构/寻址/复用规律的新人材料）与配图 `fig_frame_addressing.png`。
+
+**本轮澄清的三条概念**（已在文档中体现）：① `parity` 是行槽低/高字索引，不是校验位；② `101 = 50 行 × 2 字 + 1 校验字`；③ 文件内 band 顺序为 `2,3,4,5,6,1,0`（非单调），band 间各有 66 帧间隙，尾部 13,488 帧属 IO/GTX/CFG 侧。
+
+## 192. G1 关闭：INT tile 的 3,737 条 PIP 全部有交代
+
+**文档**：step03_pip/G1_SPECIAL_PIPS.md　**脚本**：step03_pip/_g1_special_pips.py　**结果**：step03_pip/out/g1_special_pips.json
+
+### 结论
+
+【数据事实】**3,737 = 3,629（位坐标实测）+ 64（VCC 常量，无位）+ 44（扇入=1 直通，无位）**。L1 位坐标完备度由 3,629/3,737 = 97.1% 升为 **3,737/3,737 = 100%**。
+
+### 分类（templates/INT_L.json，按目的 wire 扇入分组）
+
+| 扇入 | 目的 wire | PIP | 说明 |
+|---|---|---|---|
+| >1 | **172** | **3,693** | 172 个 mux 族，其中 64 族含一条 VCC_WIRE |
+| =1 | **44** | **44** | 无选择的直通 |
+| 合计 | 216 | **3,737** | — |
+
+### VCC 无位（三条独立证据）
+
+1. law_cells 里源名含 VCC 的 feature **0** 条；族坐标制只有 24 槽（6 行×4 码），VCC 没有第 25 个槽。
+2. pip_bits 3,528 条里 **frame/word/bit 为 NULL 的恰 48 条，全部是 VCC_WIRE → IMUX_L***（non-NULL VCC = 0）；同批实验 IMUX_L0 的 23 个信号源全部有位。
+3. 外部独立实现 prjxray_ref/PRJXRAY_COMPARE.md:74：INT 3,737 → 有位 3,629 → **无位 108**，与本地逐条一致（本地缺 0、prjxray 多 7）。
+
+### 直通无位（结构 + 统计）
+
+- 扇入=1 ⇒ 无选择 ⇒ 无选择位；law_cells 172 族全为扇入>1。
+- 位池恒 1 检测（ref.bit 982 活跃 tile / 1,664 池格）：曾有置位 448 格，**恒 1 的 0 格、≥90% 的 0 格**；若直通/VCC 占位则必恒 1。
+
+### 边界
+
+INT 侧的 VCC 无法用本地位流差分直接证明（常量输入不产生受控对），故依赖证据 1+3；证据 2 来自同机制的 CLBLL_L 类型（CLBLL_L_X6Y11 的 IMUX_L0）。
+
+### 复算
+
+python step03_pip/_g1_special_pips.py；SQL：SELECT count(*), sum(CASE WHEN frame IS NULL THEN 1 ELSE 0 END) FROM pip_bits WHERE wire_a LIKE '%VCC%' OR wire_b LIKE '%VCC%'; → 48 / 48。
+
+### 剩余闸门
+
+G2 精确覆盖解码真值对账（1–2 人日，本地）｜G3 82 条长线公式（可选）｜G4 跨类型（需远端）｜G5 分母表述（0.2 人日）。
+
+---
+
+### S72 · INT tile 建立流程文档化（2026-11-15）
+
+- `step03_pip/INT_TILE_CONSTRUCTION.md` —— 把 S9/S10/S24/S30/S31/S37/S38 合并成一条线：拓扑层（prjxray V7 原生库 + 106 条 IO 补丁 + get_pips 真值）→ 位层（同一 DCP 改一根网的 1,200 变体）→ 地址层（frame_blocks + wof(Y) + 45 个 LOC 锚点）→ 同质性（14 tile × 6 邻接字节级相同；181→140 L/R 去重）→ 三条独立校验（CSP 48/48、ROUTE 6/6、写回 864/864）。
+- 配图 `step03_pip/fig_int_tile_build.png`（四面板：拓扑层 / 变体位流水线 / 地址层 / 收敛指标）。
+
+## 193. G2 关闭：精确覆盖解码与真值对账
+
+**文档**：step03_pip/G2_EXACT_COVER_RECONCILE.md　**脚本**：step03_pip/g2_exact_cover.py、_q_g2_debug.py　**结果**：step03_pip/out/g2_exact_cover.json
+
+### 判据
+
+把解码从「逐 PIP 独立判全格置位 + min-cells」换成**精确覆盖**：	arget = observed − KNOWN_UNMODELED，解 S 满足 ∪cells(S) = target（不允许余量、不允许少解释）；枚举极小覆盖，每 tile 解上限 200、节点 40 万（本实验未触顶）。
+
+### 结果（	amper/ref/ref.bit，982 活跃 INT tile）
+
+| 指标 | 旧判据 | 新判据 |
+|---|---|---|
+| 解出 PIP | 1,886 | 1,413 |
+| TP | 1,155 | **1,407** |
+| FP | 731 | **6** |
+| FN | 108 | **21** |
+| 精确率 | 61.24% | **99.58%** |
+| 召回率 | 91.45% | **98.53%** |
+| 解唯一性 | 无定义 | **868/868 唯一解**（0 多解/0 零解/0 截断/0 孤格） |
+
+- 有真值 tile **868**，其中 **857（98.7%）逐条相同**。
+- 另有 **114** 个活跃 tile 的真值只有一条长线行（LV_L18 63 + LV18 51）、数据位为 0 —— 长线「记账位置≠位位置」，不计入对账。
+
+### 残差（21 FN / 6 FP，全部有名有姓）
+
+- FN 6 条：方向反转（LH12←LV0 解成 LV0←LH12，两条反方向 PIP 共用格）。
+- FN 9 条：目的线扇入=1（如 FAN_BOUNCE7←FAN_ALT7），固定直通无位，与 §192 的 44 条同源。
+- FN 6 条：真值 LV_L18←LV0 的 2 格已被其它 PIP 点亮，极小覆盖不重复记账。
+- FP 6 条：LVB0←LVB12(3)、LH0←LH12(2)、LV0←LH12(1)，与第一条同源。
+
+### 两个坑（都已写进文档）
+
+1. **真值方向**：get_pips 写法是 <src>->><dst>，而 law_cells.family 是目的线；取反会得到 TP=0/FP=1,413 的整齐崩坏，可作自检信号。
+2. **名字归一化**：真值里有 LV0<< 之类方向后缀；剥离后 **153 条真值行**由漏报转为命中，候选池归一化后为 3,634。
+
+### 一句话
+
+「位流→配置」是唯一映射（868/868 单解），此前的 731 条多报是**判据缺陷**而非编码歧义；换判据后多报降到 6 条且全部归因。
+
+### 剩余缺口
+
+单一设计（只有 ref.bit 有真值）｜114 个长线记账 tile 需「位归到线」的新模型｜跨类型 0/115（G4，需远端）｜21 条 FN 的口径需在论文里明写。
+
+### 复算
+
+python step03_pip/g2_exact_cover.py → 期望 唯一解 868 / 真值∈解空间 857 / TP 1407 FP 6 FN 21；残差归因 python step03_pip/_q_g2_debug.py。
+
+---
+## 194. P1 级补强：7 个独立设计上的位级复现与真值对账（2026-11-15）
+
+**一句话**：7 个结构互不相同的新设计、656 个活跃 INT tile，位坐标 + 精确覆盖解码 vs Vivado `get_pips` 真值 —— **精确率 100%（FP=0）**、**可检出行召回 100%（4,682/4,682）**；未检出的 1,348 行全部是结构上无配置位的连接（620 常量源 + 728 扇入=1 直通），**真漏 0**。
+
+### 设计（`step03_pip/gen_p1_designs.py` → `tamper/ref/p1/`）
+
+| 设计 | 结构 | 活跃 tile | 置位 | 构建 |
+|---|---|---|---|---|
+| d1_lut_chain | 24 级 LUT6 链 | 31 | 1,744 | OK |
+| d2_lut_big | 64 LUT6 / 2 列×32 行 | 56 | 4,368 | OK |
+| d3_carry | 16 级 32 位累加器链 | 125 | 25,340 | OK |
+| d4_fanout | 1 驱动 64 LUT | 51 | 3,906 | OK |
+| d5_srl | 32 SRL16E / 4 时钟区 | 314 | 3,908 | OK |
+| d6_muxtree | 8 组×6 层 2:1 | 47 | 2,698 | OK |
+| d7_spread | 16 LUT / 4 region | 32 | 1,264 | OK |
+| d8_dense | 96 LUT 单 region | — | — | 失败 |
+
+d8 失败原因：`ERROR: [DRC LUTLP-1] Combinatorial Loop Alert: 96 LUT cells form a combinatorial loop`（设计写成 `t[i] ← t[(i+1)%96] / t[(i+5)%96]`，确实成环；不是工具问题）。
+
+### 结果（`out/p1_replication.json`）
+
+| 设计 | tile | 唯一解 | 多解 | 零解 | 表外位 | 完全一致 | TP | FP | FN | 精确率 | 召回 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| d1_lut_chain | 31 | 31 | 0 | 0 | 0 | 26 | 183 | 0 | 63 | 1.000 | 0.744 |
+| d2_lut_big | 56 | 56 | 0 | 0 | 0 | 45 | 590 | 0 | 103 | 1.000 | 0.851 |
+| d3_carry | 125 | 125 | 0 | 0 | 98 | 40 | 2,392 | 0 | 605 | 1.000 | 0.798 |
+| d4_fanout | 51 | 51 | 0 | 0 | 0 | 36 | 419 | 0 | 157 | 1.000 | 0.727 |
+| d5_srl | 314 | 314 | 0 | 0 | 64 | 280 | 581 | 0 | 246 | 1.000 | 0.703 |
+| d6_muxtree | 47 | 47 | 0 | 0 | 0 | 36 | 381 | 0 | 135 | 1.000 | 0.738 |
+| d7_spread | 32 | 32 | 0 | 0 | 0 | 28 | 136 | 0 | 39 | 1.000 | 0.777 |
+| **合计** | **656** | **656** | **0** | **0** | **162** | **491** | **4,682** | **0** | **1,348** | **1.000** | **0.7765** |
+
+### 残差归因（`out/p1_residual.json`）
+
+- 【数据事实】620 行常量源（`VCC_WIRE`/`GND_WIRE` 驱动目的线，无可编程连接）
+- 【数据事实】728 行目的线扇入=1（`pip_defs` 固定连接，无选择位）
+- 【数据事实】**真漏 0 行** ⇒ 可检出召回 = 4,682/4,682 = 100%
+
+### 判据与唯一放宽处
+
+判据与 G2 一致（obs → 去 3 个标记格 → 候选 ⊆ obs → 穷尽枚举要求 union == target → 恰 1 解）。
+唯一放宽：`target` 中任何候选都覆盖不到的格（模型外位，GCLK 时钟字段）单列 `outside_bits` 后剔除，否则 96 个 tile 判零解。合计 162 个表外位（d3 98、d5 64），全在 `frame_off 0..2`。
+
+### 边界
+
+单器件 `xc7vx485tffg1761-2`、单类型 INT_L/INT_R（2/115）；真值为 Vivado 自身导出，**非硅片回读**；d8 未建成（样本 7）；表外位未解释编码。
+
+复算：`python step03_pip/p1_replication_cells.py` / `python step03_pip/_q_p1_residual.py`；文档 `step03_pip/P1_REPLICATION.md`。
+
+## 195. 项目工作详情总表（PROJECT_WORK_SUMMARY.md）
+
+用户 m17786「帮我把当前项目工作详情整理 md 文件」→ 新建仓库根 `PROJECT_WORK_SUMMARY.md`（11 节 / 387 行 / 21,908 B）。
+
+- 结构：一句话现状 → 目标与边界 → 环境与数据资产（含「只在本机 / 只在远端」表）→ 已闭合成果（帧系统 / INT 四类机制 / CLB / 时钟 / 其它类型 / ECC-CRC）→ 关键数字总表 → 方法论八条 → 未闭合清单（数据缺口 vs 方法上限）→ 代码与文档索引 → 作废口径九条 → 复现方式 → 对外交付现状 → 术语表。
+- 数字现场重取：`v7_model.sqlite` 7,581.1 MB（`site_frames` 36,799,100 / `frame_map` 50,176）、`v7_law.sqlite` 14.61 MB（`law_cells` 24,328 / `frame_blocks_full` 1,183 / `clb_cells` 3,884）、`v7re/scripts` 77、`step03_pip` 462、`v7re/steps/*.md` 123、单元测试 15 passed、`repro.py` **12/12 PASS（约 9 s）**。
+- 族按机制分解（修正此前「172/64/96」混用）：172 = `IMUX` 48 + `BYP_ALT`/`FAN_ALT` 16（24 源 mux，1,536 feature）+ BEG 96（1,920）+ 时钟/控制 6（96）+ 长线 6（82）⇒ 3,634 feature。
+- 注意：本节编号原写 §191，与另一线（`P1_REPLICATION`）已占用的 §191 冲突，改为 §195；`STATUS.md` 现另有 §185 重号待清，最大号 195。
+## 196. P1 补强第二轮：12 个设计、844 个 tile、零误报（2026-11-15）
+
+**相较 §194 的变化**：第一轮 7 个设计（656 tile、TP 4,682、FP 0、FN 1,348）扩到**第二轮 12 个设计**——新增 `d8b_dense`（96 LUT 密集，修掉 d8 的组合环）、`d9_wide`（32 个 LUT6 全 6 输入）、`d10_long`（16 LUT 横跨最远列，压长线族）、`d11_mix`（24 LUT + 16 SRL16E）、`d12_fanout2`（2 源各驱动 48 LUT）。
+
+### 汇总
+
+| 指标 | 数值 |
+|---|---|
+| 设计数 | **12**（全部建成，各 20,273,538 B） |
+| 活跃 INT tile | **844** |
+| 唯一解 / 多解 / 零解 | **844 / 0 / 0** |
+| TP / FP / FN | **5,940 / 0 / 1,400** |
+| 精确率 | **1.000** |
+| 召回（对全部真值行） | 0.8093 |
+| 可检出行召回 | **5,940/5,940 = 100%** |
+| 表外位（GCLK 时钟字段） | 164（d3 98 + d5 64 + d11 2） |
+| 完全一致的 tile | 656/844 |
+
+### FN 1,400 行逐条归因（`out/p1_residual.json`）
+
+- 【数据事实】**775 行扇入=1 直通**（`pip_defs` 固定连接，无选择位）
+- 【数据事实】**625 行常量源**（`VCC_WIRE`/`GND_WIRE` 驱动目的线，无可编程连接）
+- 【数据事实】**真漏 0 行**（775 + 625 = 1,400，`misses` 为空）
+
+### 分设计（`out/p1_replication.json`）
+
+| 设计 | tile | 唯一解 | 表外位 | 完全一致 | TP | FP | FN | 精确率 | 召回 |
+|---|---|---|---|---|---|---|---|---|---|
+| d1_lut_chain | 31 | 31 | 0 | 26 | 183 | 0 | 63 | 1.000 | 0.744 |
+| d2_lut_big | 56 | 56 | 0 | 45 | 590 | 0 | 103 | 1.000 | 0.851 |
+| d3_carry | 125 | 125 | 98 | 40 | 2,392 | 0 | 605 | 1.000 | 0.798 |
+| d4_fanout | 51 | 51 | 0 | 36 | 419 | 0 | 157 | 1.000 | 0.727 |
+| d5_srl | 314 | 314 | 64 | 280 | 581 | 0 | 246 | 1.000 | 0.703 |
+| d6_muxtree | 47 | 47 | 0 | 36 | 381 | 0 | 135 | 1.000 | 0.738 |
+| d7_spread | 32 | 32 | 0 | 28 | 136 | 0 | 39 | 1.000 | 0.777 |
+| d8b_dense | 44 | 44 | 0 | 31 | 761 | 0 | 23 | 1.000 | 0.971 |
+| d9_wide | 39 | 39 | 0 | 37 | 122 | 0 | 4 | 1.000 | 0.968 |
+| d10_long | 34 | 34 | 0 | 32 | 125 | 0 | 5 | 1.000 | 0.962 |
+| d11_mix | 41 | 41 | 2 | 35 | 201 | 0 | 20 | 1.000 | 0.910 |
+| d12_fanout2 | 30 | 30 | 0 | 30 | 49 | 0 | 0 | 1.000 | 1.000 |
+| **合计** | **844** | **844** | **164** | **656** | **5,940** | **0** | **1,400** | **1.000** | **0.8093** |
+
+### 关键工程细节（复现必须知道）
+
+1. 一帧被同一 `(band,col)` 的 **50 个 tile 共享**，必须按 `word → row` 分位，否则全部解判零解（第一版踩过）。
+2. 模型三元组是 **`(frame_off, bit, parity)`**，不是 `(frame_off, word, bit)`；word 由实例的 `Y%50` 现算。
+3. word 50 是 ECC，必须跳过；不跳过会引入每帧 1 个字的结构性噪声。
+4. 表外位（GCLK 时钟选择）需单列剔除，否则 96 个 tile 判零解；本轮共 164 个。
+5. `d8_dense` 第一轮失败于 `DRC LUTLP-1`（组合环），改链式后成功；写 Verilog 时要自己先看有没有环。
+
+### 边界
+
+单器件 `xc7vx485tffg1761-2`、单类型 INT_L/INT_R（2/115）；真值是 Vivado 自身导出、**非硅片回读**；12 个设计均为小规模单时钟、无 BRAM/DSP 实例。
+
+复算：`python step03_pip/gen_p1_designs2.py` → 远端 `bash run_new.sh` → `_dump.py out2` → `python step03_pip/p1_replication_cells.py` / `_q_p1_residual.py`；文档 `step03_pip/P1_REPLICATION.md`。
+
+## 197. 逆向 Vivado：7 系列 CRC 是 CRC-32C，并已提取出 32×37 线性矩阵（2026-11-15）
+
+背景：§152 的「路线 B（反解多项式）」失败，CRC 一直停在「按锚点局部可用」。本次改为**直接逆向 Vivado 的比特流库**。
+
+### 目标定位（关键：bitgen 功能在共享库，不在巨型可执行文件）
+
+- `$XILINX_VIVADO/lib/lnx64.o/librdi_bitstream.so`（3,252,032 B，**符号未剥离**）
+- `$XILINX_VIVADO/ids_lite/ISE/virtex7/lib/lin64/libBsFuji_Bitgen.so`（499,288 B）
+- `$XILINX_VIVADO/ids_lite/ISE/virtex7/lib/lin64/libBsFuji_Bitstream.so`（185,440 B）
+
+`lnx64.o` 下没有 `bitgen` 可执行文件（只有 vivado/xelab/hw_server 等），Vivado 的 bitgen 走库调用。
+
+### 符号表直接给出算法入口
+
+- `FUJIBS_BITFILE::crc32_37(char*, char const*, char const*)` @ `0x80b0`（3,498 B）
+- `FUJIBS_BITFILE::crc32_37(char*, int, char const*)` @ `0x8e60`（65 B，把整数展开成 32 个 '0'/'1'）
+- `FUJIBS_BITFILE::add_crc(bool, char*)` @ `0x8eb0`、`add_rbcrc` @ `0x8f00`、`recalc_crc()` @ `0xc110`
+- `Bs_FujiBitfile::calcCRC(std::bitset<32>&, std::bitset<32> const&, std::bitset<5> const&)` @ `0x14f590`
+- `Bs_FujiBitfile::calcRBCRC(std::bitset<32>&)` @ `0x15d260`
+
+### 不能 dlopen：安装完整性自检
+
+`dlopen(librdi_bitstream.so)` 在**加载阶段**就打印 `Error: The file  is corrupt. Please re-install this software from the original media.`（字符串来自 `librdi_common.so` / `librdi_device.so`，不在 librdi_bitstream 里）。设 `XILINX_VIVADO`、把测试程序放进安装目录、伪造 `argv[0]`、改 cwd 均无效；ISE 侧 `libBsFuji_Bitstream.so` 单独加载缺 `BS_BITFILE::getNumOptions()`。
+
+### 绕过：Unicorn 直接模拟核心 `0x14d870`
+
+`calcCRC` 只是壳（检查 `[this+0x125]` 后 `jmp 0x14d870`）；核心 7,456 B，是 37 位向量 → 32 位的位运算网络。用 Unicorn 按 PT_LOAD 映射 ELF 段，从 `0x14d870` 以 `(rdi=out, rsi=in, rdx=sel)` 调用（wrapper 已重排参数，非 SysV 原序），得到 37 列矩阵。
+
+### 结果
+
+**第 36 列（选择器最高位）= `0x82F63B78` = 反射版 CRC-32C（0x1EDC6F41 位反转）**。即 7 系列用的是 CRC-32C，不是 zlib 的 CRC-32 —— 这解释了 §152 为什么按 0x04C11DB7 怎么试都不中。
+
+矩阵全文见 `step03_pip/crc_matrix.json`，过程见 `step03_pip/CRC_RE_FINDINGS.md`，脚本 `step03_pip/_crc_emu.py`（Unicorn）与 `dis*.py`（capstone）。
+
+### 尚未闭合
+
+- 调用语义：32 位输入是「上一轮 CRC」还是「数据字」、5 位选择器各位含义、循环覆盖区间（UG470 说自 RCRC 之后、含头部包）——需读 `recalc_crc`(`0xc110`) 与 `calcRBCRC`(`0x15d260`) 的循环。
+- 与真实 .bit 对齐：`_crc/c_base.bit` 的 `0x591AE6B5`（§151）尚未被矩阵复现；已排除 sync 起点 + `M(c^w)`/`M(w)^c` + 位反转/字节序 + init 0/0xFFFFFFFF 的直白组合。
+- 结论不影响主线（PIP 编码规律/解码器/FASM 层），仅影响「自造位流能否被器件加载」。
+
+### 附带
+
+REA（npm `rea-agents` 6.7.0）已装；`rea` 的 Ghidra 依赖用 ghproxy 镜像下载到 15 MB 后连接被重置，暂不影响（Unicorn 路线不需要 Ghidra）。
