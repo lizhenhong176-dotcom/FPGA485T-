@@ -1,0 +1,18 @@
+{
+  "source": "librdi_bitstream.so Bs_FujiBitfile::calcCRC core @0x14d870, emulated with Unicorn 2.1.4",
+  "polynomial_hint": "0x82F63B78 (reflected CRC-32C / Castagnoli; 0x1EDC6F41 bit-reversed)",
+  "bits": 37,
+  "note": "column k = output for input with only bit k set; k=0..31 data bits, k=32..36 selector bits",
+  "matrix": [
+    "c5670b91", "8f2261d3", "1ba8b557", "37516aae",
+    "6ea2d55c", "dd45aab8", "bf672381", "7b2231f3",
+    "f64463e6", "e964b13d", "d725148b", "aba65fe7",
+    "52a0c93f", "a541927e", "4f6f520d", "9edea41a",
+    "38513ec5", "70a27d8a", "e144fb14", "c76580d9",
+    "8b277743", "13a29877", "274530ee", "4e8a61dc",
+    "9d14c3b8", "3fc5f181", "7f8be302", "ff17c604",
+    "fbc3faf9", "f26b8303", "e13b70f7", "c79a971f",
+    "8ad958cf", "105ec76f", "20bd8ede", "417b1dbc",
+    "82f63b78"
+  ]
+}
