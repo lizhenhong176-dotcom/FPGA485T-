@@ -1,0 +1,103 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Conclusion is now airtight:\n\n**The physical cell set (relative frames 0-3, bits) is identical across rows and columns (row3, row4, row20 all use the same 64-cell relative pattern). All apparent differences are affine permutations of the truth-table index — i.e., LUT input pin permutations introduced by the placer/router because we didn't constrain LOCK_PINS.**\n\nPermutations found:\n- row4 vs row20: (0,4,2,1,3,5)\n- row4 vs row3: (4,0,1,2,5,3)\n\nSo: one universal table; the observed index permutation corresponds to how I0..I5 are assigned to BEL pins. If we fix LOCK_PINS I0:A1...I5:A6, all builds give the same map.\n\nThis is a major correction and a clean result. Now:\n\n1. Write it up (T16 or update T15 §10).\n2. Prove it once: run 2 builds with LOCK_PINS at two different rows and confirm identical maps. That's 1 build each (minterm 0) — but to prove the permutation claim, better: use the known permutation to predict the other's map. Already done by fitting.\n\nCheap decisive test: build at row 4 and row 20 with LOCK_PINS I0:A1..I5:A6, INIT=1<<k for a few k (say k=1,2,4,8,16,32) → 2×7 builds ≈ 18 min, and check maps match exactly.\n\nActually we can do better: just take the existing _full8 design (row 20 without LOCK_PINS) and apply the inverse permutation to decode — that works but doesn't prove the physical identity.\n\nGiven budget, report now with the permutation-fit result, and propose the LOCK_PINS confirmation run.\n\nLet me write docs and report.\n\nAlso note: this resolves T14's retraction — the "row-dependent layout" was an artifact.\n\nLet me write the doc."}, {"type": "tool-call", "id": "call_00_Y6AfZKTfTzNjFwZmT64w9635", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+doc = \\"\\"\\"# T16：INIT 位布局是全局统一的 —— 之前看到的「行间差异」是 LUT 输入脚置换
+
+日期：2026-11-06
+关键结论：**物理格集合在行/列之间完全一致；所有\\"不同\\"都是 truth-table 索引的仿射置换**，
+来源是构建时没有约束 `LOCK_PINS`，Vivado 自由重排了 LUT 的 I0..I5。
+
+## 1. 三张独立测出的表
+
+| 来源 | 位置 | 方式 | word | 帧 |
+|---|---|---|---|---|
+| row 3 | `SLICE_X2Y3` / A6LUT | 单 LUT × 64 最小项 | 6 | 31576–31579 |
+| row 4 | `SLICE_X12Y4` / A6LUT | 单 LUT × 64 最小项 | 8 | 31784–31787 |
+| row 20 | `SLICE_X12Y20` / A6LUT | 8 LUT 位平面 + 随机值验证 | 40 | 31784–31787 |
+
+每张都是 64 格、4 帧 × 16 位；帧按各自块基址归一化后都是 `+0..+3`。
+
+## 2. 位置集合完全相同
+
+```
+row4 归一化位置集合 == row3 归一化位置集合   → True（64/64 完全相交）
+row4 位置集合      == row20 位置集合        → True
+```
+
+**同一列的 row4 与 row20 用的是同一批绝对帧（31784–31787），同一批位**。
+
+## 3. 索引映射只差一个仿射置换
+
+求 `a[k] = b[perm(k) ⊕ c]` 形式的解（6 个索引位的置换 + 常数）：
+
+| 对比 | 解 |
+|---|---|
+| row4 → row20 | `perm = (0,4,2,1,3,5)`，`c = 0` |
+| row4 → row3 | `perm = (4,0,1,2,5,3)`，`c = 0` |
+
+即：**truth-table 索引被重排了，物理格没变**。
+
+例（归一化后）：
+
+```
+row4: minterm 0 → (frame +2, bit 15)   minterm 1 → (+2, 7)
+row3: minterm 0 → (+2, 15)             minterm 1 → (+3, 15)
+```
+
+## 4. 原因
+
+构建脚本只写了：
+
+```tcl
+set_property LOC  SLICE_X12Y4 [get_cells u0]
+set_property BEL  A6LUT       [get_cells u0]
+```
+
+**没有 `LOCK_PINS`**。于是 router 可以把 `I0..I5` 接到任意的 BEL 输入脚 A1..A6，
+接线的不同就是 truth-table 索引位的置换 —— 这正好解释了我们看到的一切\\"行间不一致\\"。
+
+历史对照：早期那批 PIP 实验（`p6_make2.py` / `build_bel.tcl`）是**加了** `LOCK_PINS I0:A1 … I5:A6` 的，
+所以那时没出现这个问题；T13/T14 的 INIT 扫描漏了这一条。
+
+## 5. 修正
+
+1. 物理表用任意一张即可（三张等价，取 row 4 这张 `v7re/steps/clb_init_row4_a6.json`）；
+2. 所有后续 INIT/特征位构建必须加 `LOCK_PINS`，否则结果只在\\"该次构建的接线\\"下成立；
+3. 若某设计无法加 LOCK_PINS，则需同时测出该构建的引脚置换并复合回去。
+
+## 6. 待确认
+
+用 `LOCK_PINS I0:A1 … I5:A6` 在两个不同行各造一小批（如 k=1,2,4,8,16,32），
+直接验证\\"加了约束后两张表逐项相同\\"。这是最后一步确认，预计 2×7 个构建。
+
+## 7. 意义
+
+- 之前 T14 收回的结论里，「布局随行变化」这条**是错的**，真正的原因是测量没锁引脚；
+- `site_frames` 的 CLB INIT 部分可以**用一张表覆盖全器件**（帧偏移 + word 公式已独立验证）；
+- 同一 bug 也可能污染 CLB 的其它特征位（FF/进位）——那边同样要加 `LOCK_PINS` 复查。
+\\"\\"\\"
+io.open(\\"v7re/steps/T16_INIT_LAYOUT_UNIVERSAL.md\\", \\"w\\", encoding=\\"utf-8\\").write(doc)
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 46. T16 —— INIT 布局全局统一（2026-11-06）
+
+单 LUT 最小项法在 row 3 / row 4 / row 20 各测一张 A6LUT 表（帧归一化后都是 +0..+3，4 帧 × 16 位）。
+三者**位置集合完全相同**；索引映射只差一个仿射置换：
+
+| 对比 | 解 |
+|---|---|
+| row4 → row20 | `perm=(0,4,2,1,3,5)`, `c=0` |
+| row4 → row3 | `perm=(4,0,1,2,5,3)`, `c=0` |
+
+原因：INIT 扫描脚本没加 `LOCK_PINS`，router 自由重排 `I0..I5` → truth-table 索引被置换。
+早期 PIP 实验（`build_bel.tcl`）是加了 `LOCK_PINS` 的，所以没这个问题。
+
+**结论**：物理布局与行/列无关，`site_frames` 的 CLB INIT 可用一张表覆盖全器件（取
+`v7re/steps/clb_init_row4_a6.json`）。T14 里「布局随行变化」的判断作废。
+后续所有特征位构建必须加 `LOCK_PINS`；FF/进位需同样复查。
+
+文档：`v7re/steps/T16_INIT_LAYOUT_UNIVERSAL.md`。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Write T16 universal-layout doc and STATUS", "timeoutMs": 300000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "6c86cee7-8024-464b-a6f9-bef22ed11265"}, {"type": "tool-call"}]}}, "id": "454e93ae-088c-41a6-af88-1c18c8afa2cd"}

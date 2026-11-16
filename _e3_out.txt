@@ -1,0 +1,29 @@
+﻿CHK_e3_e SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0055005500550055 PART=xc7vx485tffg1157-3
+OK e3_e
+CHK_e3_d SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0000000000000014 PART=xc7vx485tffg1157-3
+OK e3_d
+CHK_e3_a SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0000000000000005 PART=xc7vx485tffg1157-3
+OK e3_a
+CHK_e3_b SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0000000000000055 PART=xc7vx485tffg1157-3
+OK e3_b
+CHK_e3_base SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0000000000000000 PART=xc7vx485tffg1157-3
+OK e3_base
+CHK_e3_c SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0000000000000003 PART=xc7vx485tffg1157-3
+OK e3_c
+-rw-r--r-- 1 root root 20273538 Nov 10 23:51 e3_a.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:51 e3_b.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:51 e3_base.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:51 e3_c.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:51 e3_d.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:51 e3_e.bit
+Traceback (most recent call last):
+  File "diff_e3.py", line 87, in <module>
+    main()
+  File "diff_e3.py", line 50, in main
+    base = payload(os.path.join(d, base_tag + ".bit"))
+  File "diff_e3.py", line 11, in payload
+    raw = open(path, "rb").read()
+FileNotFoundError: [Errno 2] No such file or directory: '/opt/lzh/v7re/work/e3_base.bit'
+E3DIFF_JSON_BEGIN
+E3DIFF_JSON_END
+E3DONE

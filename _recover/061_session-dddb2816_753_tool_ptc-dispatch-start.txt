@@ -1,0 +1,57 @@
+{"cwd": "E:\\DEEPSEEK\\FPGA比特流逆向", "code": "\np = r"E:\\DEEPSEEK\\FPGA比特流逆向\\STATUS.md"\nt = open(p, encoding='utf-8').read()\nif not t.endswith("
+"): t += "
+"\nt += "
+## 51. Skill V2 升级落地 + manifest 机检 + site_frames 债的可行性分析（2026-11-06）
+
+T20 跑完后按实测缺口把 `.agents/skills/fpga-bitstream-experiment` 升级到 V2（110 行）。改动的每一段都经 prompt-optimizer（`iterate-prompt`，template=`iterate`）生成后落盘，没有手写规则正文。
+
+### 51.1 skill 新增的硬条款
+
+| 门 | 新增条款 | 触发它的实测事实 |
+|---|---|---|
+| 4 构建 | 显式 `-part` 并断言回读；base64 落地成文件；远端差分只回 JSON | T20 顺带发现 `locked/mk.tcl` 写的是 `ffg1761-2`；回传 base64 被终端污染 |
+| 5 自校验 | 集合级自证（`missing=0` 且 `extra=0`，禁抽样）；自证须打印四个数；word 50 ECC 单独计数；**交叉自证（另一脚本 + 另一批独立构建）** | T19 的 46 位是拿 T17 独立构建复核的 6/6 才算数 |
+| 6 判读 | **未解释差异处置纪律**：不许用「不影响结论」结案，必须归因或显式写「本结论不覆盖 N 帧 / M 位」 | T20 的 133 帧 / 1,210 位至今未归因 |
+| 7 落库 | 必须产出 manifest JSON 并经 `step03_pip/check_manifest.py` 校验 PASS；FAIL / WARN 未处置不得写入 STATUS 当结论 | T13 的错表无格式可机检 |
+| 8 交付 | 结论等级 `verified` / `unverified` + 判定依据；未解释区间必须列出 | 同上 |
+
+新增 `reference/commands.md`：ssh 调用姿势、远端并行构建骨架、远端差分只回 JSON、base64 落地、增量 ECC、错误对照（CRLF / ENAMETOOLONG / tar 无成员 / scp 挂死 / license）。
+
+### 51.2 manifest 机检（新脚本）
+
+- schema：`.agents/skills/fpga-bitstream-experiment/reference/manifest.schema.json`（含 `parts_allowed`，封装对拍实验必须显式列白名单，否则校验器判 FAIL —— 这是校验器第一次跑就抓出来的建模漏洞）。
+- 校验器：`step03_pip/check_manifest.py`（Windows 控制台 GBK 会 UnicodeEncodeError，已 `reconfigure(encoding='utf-8')`）。
+- 示例：`v7re/steps/t20_manifest.json`（INIT 映射，`verified`，PASS 15 ok）、`v7re/steps/t20_manifest_partpair.json`（封装对拍，`unverified` + `coverage_exclusion`，PASS 14 ok / 1 warn）。
+
+【数据事实】校验器不是橡皮章：对 T20 manifest 做了 8 个变异，全部被抓。
+
+| 变异 | 校验器输出 |
+|---|---|
+| `missing=3` | FAIL 集合级自证未过 |
+| `extra=1` | FAIL 集合级自证未过 |
+| 负对照差分帧=2 | FAIL 环境有问题 |
+| 交叉不一致但仍标 verified | FAIL ×2（不一致项 + 等级不成立） |
+| 删 `cross_check.batch` 仍标 verified | FAIL ×2 |
+| 少锁 `I5` | FAIL LOCK_PINS 未锁全 I0..I5 |
+| 封装对拍缺 `parts_allowed` | FAIL part 不在白名单 |
+| 有未解释差异且无处置 | FAIL 禁止「不影响结论」结案 |
+
+### 51.3 T19 表接进 site_frames：现在接不了（两条未测）
+
+`v7re/scripts/build_site_frames.py:109-123` 的 INIT 映射来自 `v7_law.sqlite` 的 `clb_cells`（T13 血统的表），落库时用 `frame = base + off`、`word = w0 + parity`。
+
+【数据事实】`v7re/steps/clb_init_locked_x12y20_a6lut.json` 覆盖 **64/64** 个 INIT 索引（0..63 全在，frame_off 落在 `base+68..base+71`、word 40），所以「表不全」不是障碍；T20 自证只动 46 位是因为 `0xDEADBEEFCAFEBABE` 的 popcount 正好 46，不是索引缺失。
+
+【未测】接进去还缺两条实测：
+1. **bel 不变性**：B6LUT / C6LUT / D6LUT 的 frame_off / word 是否与 A6LUT 同构（每 word 装哪个 LUT 未测）。
+2. **位置不变性**：frame_off 是否真按 block 相对地址走（T14 的跨位置推广就翻过车），只测了 `SLICE_X12Y20`。
+
+最小实验（T21，约 8 个构建 / 2 分钟）：`SLICE_X12Y20` 的 B6LUT / C6LUT / D6LUT 各跑 INIT=0 与 `0xDEADBEEFCAFEBABE` 对（管脚前缀 B/C/D、`LOCK_PINS {B1:B1 … B6:B6}` 形式），再加 `SLICE_X12Y21` 的 A6LUT 一对验位置不变性；四组 frame_off 集合若与 A6LUT 的 `{68,69,70,71}` 同构，才能把该表替换进 `emit_site_frames`。在此之前用 T13 血统的表生成 site_frames 属**已知风险**（见 51.4）。
+
+### 51.4 结论等级
+
+【数据事实】本次 skill 升级与校验器均已跑通（示例 manifest PASS + 8 变异全被抓）。
+【未测】skill 的行为验证（正例 / 近例 / 压力场景）未跑，按 `writing-skills` 只能报 needs-verification，不宣称 deployment-ready。
+"\nopen(p, "w", encoding="utf-8", newline="
+").write(t)\nprint("lines", t.count("
+") + 1)\n"}

@@ -1,0 +1,60 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Decisive result: applying 78 covered bit-changes to c0 produces a bitstream where **50,172 of 50,176 frames are byte-identical to Vivado's c3.bit**, and the only 4 differing frames are exactly those containing positions not in our ECC model (model errors: 0).\n\nThat's a very strong end-to-end validation:\n- bit-level editing correct\n- ECC recomputation correct on 64 changed frames\n- 0 model errors\n\nLet me record this in the doc/STATUS and report.\n\nLet me update T8 doc with this test."}, {"type": "tool-call", "id": "call_00_zzIj4ozTRKtDSEO8hnJb2573", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+p = \\"v7re/steps/T8_BITGEN.md\\"
+s = io.open(p, encoding=\\"utf-8\\").read()
+s += \\"\\"\\"
+
+## 5. 决定性验证：用 c0 生成 c3（对照 Vivado 产物）
+
+c0 与 c3 是两个真实设计（c3 的 CE 经 FAN 走线），逐帧比较共 94 个数据位不同。
+把其中 **78 个落在 ECC 模型覆盖范围内**的位，用 `bitgen.py` 从 `_c0.bit` 写进去，
+再与 Vivado 自己产出的 `_c3.bit` 逐帧比较：
+
+```
+可写入改动 78 位，影响 64 帧
+生成文件与 Vivado 产物不同的帧数: 4
+  这些帧: [32500, 32574, 32606, 32607]
+  其中属于「含未覆盖位」的: [32500, 32574, 32606, 32607]
+  其余（模型算错）: []
+逐帧完全相同: 50172 / 50176 (99.99%)
+```
+
+关键点：
+
+* **模型算错的帧 = 0**；
+* 仅有的 4 个不同帧，全部是「含未覆盖位置」的帧（16 个未覆盖位的分布正好落在这 4 帧）；
+* 也就是说：**凡是 ECC 模型覆盖到的改动，生成结果与 Vivado 逐字节一致**，
+  包括这 64 个受影响帧的 word50。
+
+补全那 16 个位置（word 2/3/4/5/14/16 的若干 bit）后，这条链路就能做到 100% 位级一致。
+\\"\\"\\"
+io.open(p, \\"w\\", encoding=\\"utf-8\\").write(s)
+
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 36. T8b —— 用 c0 生成 c3：50,172/50,176 帧与 Vivado 逐字节一致（2026-11-04）
+
+把 ECC 模型扩到 154 个位置（新增 2020 探针 a/b/bit_base 三份位流训练；
+
+```
+初始方程 978 → 秩 236（矛盾）保留 787 → 秩 163 保留 771 → 秩 155 保留 756 → 秩 154 收敛
+```
+
+决定性验证：c0 与 c3 逐帧比较有 94 个数据位不同，其中 78 位在模型覆盖内。
+用 `bitgen.py` 把 78 位写进 `_c0.bit`，与 Vivado 的 `_c3.bit` 比较：
+
+| 指标 | 结果 |
+|---|---|
+| 改动位数 / 受影响帧 | 78 / 64 |
+| 与 Vivado 产物不同的帧 | **4**（32500/32574/32606/32607） |
+| 其中属「含未覆盖位」的帧 | **4（全部）** |
+| **模型算错的帧** | **0** |
+| 逐帧完全相同 | **50,172 / 50,176 = 99.99%** |
+
+即：ECC 模型覆盖到的改动，生成结果与 Vivado **逐字节一致**（含 64 帧的 word50）。
+剩余 16 个未覆盖位置在 word 2/3/4/5/14/16 的若干 bit，补全后可达 100%。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Record c0-to-c3 regeneration result in docs", "timeoutMs": 180000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "7d4a6ca4-dbaa-4ba1-8e81-63c1682568cf"}, {"type": "tool-call"}]}}, "id": "a0525f9b-4170-4b28-b717-c00a016570d4"}

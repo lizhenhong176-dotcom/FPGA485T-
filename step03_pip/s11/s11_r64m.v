@@ -1,0 +1,3 @@
+module top(input clk, input we, input [5:0] a, input [5:0] b, input [5:0] c, input [5:0] d, input di, output o1, output o2, output o3);
+  RAM64M #(.INIT(64'h9E3779B97F4A7C15)) rA (.A0(a[0]), .A1(a[1]), .A2(a[2]), .A3(a[3]), .A4(a[4]), .A5(a[5]), .B0(b[0]), .B1(b[1]), .B2(b[2]), .B3(b[3]), .B4(b[4]), .B5(b[5]), .C0(c[0]), .C1(c[1]), .C2(c[2]), .C3(c[3]), .C4(c[4]), .C5(c[5]), .D0(d[0]), .D1(d[1]), .D2(d[2]), .D3(d[3]), .D4(d[4]), .D5(d[5]), .DI(di), .DIO(o1), .SPO(o2), .DPOO(o3), .WCLK(clk), .WE(we));
+endmodule

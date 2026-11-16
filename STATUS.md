@@ -7495,3 +7495,370 @@ payload 内：48 B `0xFF` 填充，sync `aa995566` 在 word 12；word 数组 5,0
 
 ### 203.6 教训
 我此前把「形状像 BEG」当成「律能搬过来」的充分证据，这是错的：BEG 的 96 族之所以能纯律，是因为**成员→格**由族内固定顺序给出；长线的成员是**异质线**（长线、BEG 端点、1:1 端点混在一起），没有可复用的顺序。**形状同构 ≠ 生成律同构。**
+
+## 204. 长线缺边的复查：8 条缺口是「合并 parity」造成的假象，真缺口只有 1–2 条
+
+2026-11-16。§203 报的缺口是 `LV_L0` 缺 2、`LV_L18` 缺 8、`LH0` 缺 8。按用户要求复查后确认：**那两个「缺 8」是我把不同 parity 平面混在一张图里算出来的**，不是数据事实。
+
+### 204.1 两处错误
+1. **必须按 parity 分图**。同一个族的 feature 可能分布在不同 parity 平面上（例如 `LH0` 里 11 条在 parity 1、1 条（源 `LV_L0`）在 parity 0），把两个平面的 cell 放进同一张二分图，会人为制造出大量「本不该存在」的 A×B 组合，于是缺口被放大成 8。
+2. **单条 feature 的两个 cell 一定同 parity**（`LH0` 的 `(0,1,26)/(1,1,29)`、`LV_L0` 的 `(0,0,2)/(1,0,6)` 都如此）。这条是硬约束，可用来校验分图是否正确。
+
+### 204.2 修正后的缺口
+| 族 | parity | feature | 形状 | 缺边 |
+|---|---|---|---|---|
+| `LH12` | 1 | 12 | K(3,4) | **0** |
+| `LVB_L0` | 1 | 18 | K(3,6) | **0** |
+| `LVB_L12` | 1 | 18 | K(6,3) | **0** |
+| `LV_L0` | 0 | 10 | K(3,4) | **2** |
+| `LV_L18` | 0 | 11 + 1(孤立) | K(4,3) | **1** |
+| `LH0` | 1 | 11 + 1(孤立, parity 0) | K(3,4) | **1** |
+
+合计：**完全乘积 48 条 + 近乘积 32 条 + 孤立 2 条 = 82 条**。缺口总数只有 **4 条边**，不是 18 条。
+
+### 204.3 4 条缺边长什么样
+```
+LV_L0  : (1,0,6)x(0,0,9)      A 侧被 LH12/LH6 共用，B 侧被 NN6END0/SW6END0 共用
+LV_L0  : (1,0,6)x(0,0,2)      A 侧同上，            B 侧被 NR1END0/WR1END0 共用
+LV_L18 : (1,0,0)x(1,0,1)      A 侧被 NN6END0/SW6END0，B 侧被 NW6END0/WR1END0/WW4END0
+LH0    : (1,1,24)x(1,1,26)    A 侧被 LH12/LV_L18/LV_L9，B 侧被 NE6END3/SS6END3
+```
+四条的共同点：**A 侧与 B 侧的 cell 都被两条以上 source 共用**。也就是说这些组合一旦存在，只会是「又多一条共用边」，不会破坏解码；它们缺席更像是布局器/网表根本不产生这种线对，而不是位语义上的禁止。
+
+### 204.4 结论
+- 「34 条无法生成」这个说法要改口径：**48 条是完全乘积，32 条是「完全乘积 − 1/2 条边」，2 条是孤立单点**。
+- 但**律仍然拿不到**：完全乘积族的 source→(a,b) 配对仍是数据（§203.3 已测两个候选公式均失败），近乘积族还多一层「例外表」。
+- 纯律维持 **3,456 / 3,634 = 95.10%**。
+- 若把 6 个长线族统一写成「A 集 × B 集 + 配对置换 + 例外」，可覆盖 82 条，但描述量仍是表，收益只在存储（约 69.5%）。
+
+### 204.5 方法学教训
+**多平面（parity）数据必须先按平面切图再判形状**。这次我先合图后判，得出「缺 8 条」的错误结论，还据此推断「34 条像是有系统性限制」——方向是对的（确实有规律），但量级错了一个数量级。
+
+## 205. 为什么长线拿不到律：mux/BEG 的槽位由「名字里的几何」决定，长线的配对由「tile 内的位置」决定
+
+2026-11-16。§203/§204 只证明了「长线的 source→格 配对不是公式」，没解释原因。本节给出直接对照实验。
+
+### 205.1 对照：mux 与 BEG 的律是怎么成立的
+`step03_pip/gen_slots.py` 里两条律都是**只吃线名**：
+
+| 类 | 槽位 = 什么函数 | 自变量来自名字哪一段 | 覆盖率 |
+|---|---|---|---|
+| mux（24 源） | 列码 = `line_class`（axis/diag/rlineL/rlineR/longL）<br>行 = `dir_token`（EE/WW/NN/SS/NE/NW/SE/SW…） | 方向字母 | 64/64 族 |
+| BEG（20 源） | 列 = `geo_class`（`len2`/`len4`/`len6`/`line`/`LH`/`LV`）<br>组 = `dir_token` | 方向字母 + 长度数字 | 96/96 族 |
+
+也就是说，**mux 和 BEG 的「哪条源落在哪个格」，完全由线名里已经写着的「方向 + 长度」决定**，所以能用几行名字解析代码算出来。
+
+### 205.2 同样的预测器套到长线上，全部失效
+把 `geo_class → a`、`dir_token → b` 这两个在 BEG 上 96/96 成立的预测器，原样套到 6 个长线族：
+
+| 族 | parity | |A| | |B| | feature | `geo_class→a` 唯一 | `dir_token→b` 唯一 |
+|---|---|---|---|---|---|---|
+| `LH12` | 1 | 3 | 4 | 12 | **否** | **否** |
+| `LVB_L0` | 1 | 3 | 6 | 18 | **否** | **否** |
+| `LVB_L12` | 1 | 6 | 3 | 18 | **否** | **否** |
+| `LV_L0` | 0 | 3 | 4 | 10 | **否** | **否** |
+| `LV_L18` | 0 | 5 | 4 | 12 | **否** | **否** |
+| `LH0` | 1 | 3 | 4 | 11 | **否** | **否** |
+
+失效的形态是「同一个名字类别落进多个槽位」，例如 `LH12` 族里 `line`（`NL*/SL*/EL*/WL*/NR*…`）占了 `a=0` 和 `a=2` 两个槽位，`len6` 也同时占 0 和 2；`dir_token=EXTRA`（长线自身 `LH*/LV*`）的 b 值覆盖 0..3 全部。
+
+### 205.3 根因：cell 不是「线的身份证」
+对同一个线名，把它在各个 family 里用到的 cell 集合摊开看：
+
+```
+LH12   : 出现在 13 个 family，cell 集合 13 种，全不相同
+LV_L0  : 13 个 family，13 种
+LV_L18 : 12 个 family，12 种
+LH0    : 12 个 family，12 种
+LVB_L0 : 9 个 family，9 种
+LVB_L12: 9 个 family，9 种
+```
+
+cell 是 **(family, wire) 的函数**，不是 wire 的函数。所以「源→格」这件事在长线里没有全局坐标系可依：同一条 `LH12`，在 `LV_L0` 族里占 `(0,0,5)/(1,0,6)`，在 `LH0` 族里占 `(1,1,22)/(1,1,24)`，在 `LVB_L12` 族里占 `(0,1,14)/(1,1,21)`。
+
+### 205.4 更深一层：BEG 是「tile 内一跳」，长线是「跨 tile 续接」
+- BEG 的一个特征 = 源线在**本 tile 内**从某个入口走到某个出口。入口由方向决定、出口由长度决定，tile 内只有一种合法接法 ⇒ **名字里已有全部信息**，所以是律。
+- 长线的一个特征 = 两段长线**在 tile 边界上的续接许可**。哪一段接到哪一段，取决于这两段线在 tile 内的**相对位置**（谁在上、谁在左），而**方向与长度都不携带位置信息**。名字说得出「我一跳跨 12 个 tile」，说不出「我在这一列的第 3 个槽」。
+
+### 205.5 所以要拿到长线的律，缺的是什么
+需要**tile 内长线的几何坐标**（每段长线的行/列位置），而三处现成数据源都没有：
+- Vivado `get_wires` / `get_pips`：只给名字与连接，不给坐标；
+- prjxray `segbits_int_l.db`：只给位，不给几何；
+- RapidWright：有 tile 级几何，但没有 INT 内部长线的段坐标。
+
+唯一可能的自证路线是「用位模式自己反推几何」——那是循环论证，不做。
+
+### 205.6 结论
+- 长线**有结构**（48 条完全乘积 + 32 条近乘积 + 2 孤立），但**没有名字可导出的律**。
+- 纯律维持 **3,456 / 3,634 = 95.10%**；剩下 82 条是「配对数据」，可压到 82 组 (a,b)（约为原始 2 个 cell 引用的 1/12 描述量），但仍需存表。
+- 这条边界**不是工具没使够**，而是数据类型不含所需信息：位流里没有「长线在这一列的哪一行」这种坐标。
+
+## 206. 收口：INT 配置位「四级可解释性」写入总表与真源表
+
+2026-11-16。把 §198–§205 的结论压缩成一句可引用的结构性结论，并落到两份对外文档。
+
+### 206.1 四级分级的数字
+| 级 | 含义 | feature | 占比 | 载体 |
+|---|---|---|---|---|
+| L1 纯公式 | 槽位由线名（方向+长度）决定 | 3,456 | 95.10% | `step03_pip/gen_slots.py` |
+| L2 乘积 + 置换 | `A×B` 成立，配对需置换表 | 48 | 1.32% | `longline_product_model.json` |
+| L3 纯查表 | 直接存 feature→2 cell | 34 | 0.94% | `longline_lookup_table.json`（21 个不同 cell） |
+| L4 零配置位 | ppip / 单扇入 | 108 行（44 always + 64 default） | — | `v7_law.sqlite:law_ppips` |
+
+### 206.2 L3「纯查表」到底是什么
+3 个族、34 条 feature，每条只写「源线名 → 两个 (frame_off, parity, bit)」：
+
+| 族 | feature | 形状（按 parity 分图） | 说明 |
+|---|---|---|---|
+| `LV_L0` | 10 | K(3,4) 缺 2 边 | 完全乘积都不成立，配对无规律 |
+| `LV_L18` | 12 | K(4,3) 缺 1 边 + 1 孤立（parity 0） | 同上 |
+| `LH0` | 12 | K(3,4) 缺 1 边（parity 1）+ 1 孤立（parity 0） | 同上 |
+
+- 共 **21 个不同 cell**，68 个 (feature, cell) 引用。
+- 表就是 `v7re/steps/longline_lookup_table.json`，形状 `{族: {源线名: [[frame_off,parity,bit],[...]]}}`。
+- **解码时的角色**：`verify_all_pip.py` 查 `law_cells`，对这 34 条走的是「精确匹配」分支——有位、能命中、0 不符；缺的只是「生成」而不是「使用」。
+
+### 206.3 L4「零配置位」到底是什么
+`law_ppips` 在 INT_L 上 108 行，分两类：
+- **44 always**：`BYP_BOUNCE0..7`、`BYP_L0..7`、`FAN_BOUNCE0..7`、`FAN_L0..7`（32 条）+ `GCLK_L_B6..B11_EAST/WEST`（12 条）——硬连线，PIP 存在但**没有任何位控制**。
+- **64 default**：`IMUX_L0..47`（48 条）+ `BYP_ALT0..7`/`FAN_ALT0..7`（16 条），每条一个 `src_wire='VCC_WIRE'` 的默认选项——语义是「不选任何源时取常量」。
+
+### 206.4 落盘
+- `PROJECT_WORK_SUMMARY.md` 新增 **§3.2.1 INT 配置位的可解释性分级（四级）**（插在 3.2 与 3.3 之间，207 行起）。
+- `SINGLE_SOURCE_OF_TRUTH.md` 新增 **§2.9**（表 + 判定标准 + 状态列）。
+- `v7re/steps/longline_lookup_table.json`：L3 的 34 条表。
+
+### 206.5 一句话结论（可引用）
+> INT 路由 PIP 的位映射按「槽位能否由线名确定」分成四级：纯公式 95.10%、乘积+置换 1.32%、纯查表 0.94%、零配置位 108 行。分级边界由**特征是否发生在单个 tile 内**决定，而不是由资源类型决定。
+
+## 207. region 到底是什么：图解 + 数据位置
+
+2026-11-16。回答「region 是什么、相关数据在哪」，产出两图与提示词。
+
+### 207.1 region = 时钟区域（clock region），是「物理行带」而不是存储单元
+`tiles.clock_region` 的 15 个取值里，**14 个是真实时钟区域**（X0Y0..X0Y6、X1Y0..X1Y6），第 15 个是**空串**，含 10,436 个 tile（I/O、GT 等特殊 tile），不属于任何区域。
+
+| region | tile 数 | grid_y | grid_x | tile 名 Y | band | base_frame |
+|---|---|---|---|---|---|---|
+| X0Y0 | 9,741 | 313..363 | 0..190 | 0..49 | 6 | 31,748 |
+| X0Y1 | 9,741 | 261..311 | 0..190 | 50..103 | 5 | 26,502 |
+| X0Y2 | 9,741 | 209..259 | 0..190 | 100..149 | 0 | 272 |
+| X0Y3 | 9,741 | 157..207 | 0..190 | 150..199 | 1 | 5,518 |
+| X0Y4 | 9,741 | 105..155 | 0..190 | 200..249 | 2 | 10,764 |
+| X0Y5 | 9,741 | 53..103 | 0..190 | 250..299 | 3 | 16,010 |
+| X0Y6 | 9,741 | 1..51 | 0..190 | 300..349 | 4 | 21,256 |
+| X1Y0..X1Y6 | 各 10,251 | 同上 | 194..394 | 同上 | 同上 | 同 X0（alias） |
+
+两条要点：
+1. **一个 region 恰好对应一条配置行带 band**，`meta.band_by_region=[6,5,0,1,2,3,4]`；Y0/Y1 是「最后两条带」，Y2..Y6 是前五条（因为 y=0 在器件底部，而 band 从帧 0 开始向上排序）。
+2. **X1 的 base_frame 是 X0 的别名**（`X1_alias_of_X0Y?`），不是独立测量——X1 列与 X0 列在配置地址上共享同一基址空间，这一点不能用来推断「两列的帧基址相同/不同」。
+
+### 207.2 三套坐标（禁止混用）
+| 坐标 | 基数 | 出处 |
+|---|---|---|
+| tile 名列位 / 行 | 154 / 350 | tile 名 `_X<n>Y<m>` |
+| `grid_x` / `grid_y` | 412 / 365 | `tiles` 表 |
+| `far_band` / `far_col` | 7 / 154 | `far_bands` |
+
+1:1 的只有 `clb_col`(111) 与 `far_col`(111)、列位(154) 与 `far_col`(154)；`grid_x` 412 个是列位的另一种编号，**不能与 `far_col` 混用**（§172 已实证撞名：`band` 在两表语义相反）。
+
+### 207.3 数据在哪
+| 表 | 库 | 内容 | 口径 |
+|---|---|---|---|
+| `tiles.clock_region` | `v7_model.sqlite` | 每个 tile 的区域 | 15 取值 = 14 真实 + 1 空串 |
+| `region_bases` | `v7_model.sqlite` | 14 行 `base_frame` + 锚点 | X1 行为 alias |
+| `meta.band_by_region` | `v7_model.sqlite` | `[6,5,0,1,2,3,4]` | region→band |
+| `far_bands` | `v7_law.sqlite` | 1,078 行 = 7×154 | 只覆盖 `FAR_BLOCK_0`（36,708 帧） |
+| `frame_blocks_full` | `v7_law.sqlite` | 1,183 块（50,148 帧） | 含 `FAR_BLOCK_1` 105 块 × 128 帧 |
+| `tile_blocks_fixed` | `v7_law.sqlite` | 53,102 行 | 实测反解的 tile 基址 |
+
+### 207.4 产出
+- 图 1：`v7re/steps/figs_law/region_1_map.png`（2 列 × 7 行，每格标 band / base_frame / tile 数 / Y 范围，底部注明 10,436 个空串 tile）
+- 图 2：`v7re/steps/figs_law/region_2_chain.png`（tile Y → y//50 → band → frame 的换算链 + 三套坐标警示）
+- 提示词：`PROMPT_REGION_EXPLAIN.md`（`prompt-optimizer` 优化后的正文 + 硬数据附录 A–F）
+- 出图坑：`Microsoft YaHei` 缺 `⇒`/`⇔`/`⟷`/`↔`/`✓` 字形（会显示成方块），已改用文字表述。
+
+### 207.5 一句话
+> region 是器件上「2 列 × 7 行、每格 50 个 CLB 行」的物理分区；它唯一的作用是把 tile 的行坐标折算成配置帧的**行带**，列坐标与它无关。
+
+## §206 LV_L18 族 cell 表复测（2026-11-16）
+
+### 起因
+§201.7 第 3 项落地（`tile_blocks_fixed` 接入 `tilemap.py` / `blockmap.py` / `int_base_solve.py --fixed`）后，
+全量 PIP 复跑 82 条中 72 命中（87.80%）；10 个 miss 全是 `INT_L_X34Y*` 的 `LV_L0<<->>LV_L18`。
+本轮追这 10 个 miss，结论是**`law_cells` 的 LV_L18 族多行编码错误**，不是基址问题。
+
+### 已验证
+1. **基址无错**：X32/X34 逐 band 基址与 `frame_blocks_full` 的 clb_blocks 完全一致；
+   `tile_blocks_fixed` 与 `frame_blocks_full` 在 col32/col34 上逐 band 相同。
+2. **family 名无错**：`law_tiles.tile_type` 在 X32/X34/X36 全是 `INT_L`；`INT_INTERFACE_L/R`、
+   `INT_FEEDTHRU_1/2` 只占特定列（INTERFACE_L 列 = 14,20,26,36,42,62,66,72,78,84,100,106,120）。
+3. **`LV_L18 ← LV_L0` 是双编码**：
+   - A：`(frame_off=0, bit=9)` AND `(frame_off=1, bit=6)`
+   - B：`(frame_off=1, bits 0,1)`，即 `(F[base+1][word] & 3) == 3`
+   - `word = 2*(y%50) + (1 if y%50>=25 else 0)`
+   - 命中 = A or B。ON 样本 **415/415**，对照 **0 假阳性**。
+   - 加入 B 后 82 条 PIP 复跑从 72 提到 **81（98.80%）**。
+   - A/B 按列分布无简单规则（全 A：X46,62,66,68,78,106,110,114,124,152；全 B：X4,14,16,34,102；
+     混合：X32/X70/X74/X80/X94）。**这是两张实际编码表，不是可闭式推导的属性**。
+4. **`LV_L18 ← LH12` 的 law_cells 行是错的**：表记 `(fo1,bit2)+(fo1,bit8)`，
+   实测为 `(frame_off, word0+60, bit30)`，`frame_off` 由 `word0+60 > 100` 决定（>100 则 fo=1, word-=101）。
+   验证：正样本 **41/42**，负样本 **0/1050** 误触发。唯一 miss 是 `INT_L_X102Y344`，
+   根因是该 tile 与 15 个同 block（base 24456）的活跃 tile 共用一个帧，差分被邻居污染。
+
+### 方法教训（重要）
+- **差分对照组必须选「同一 tile 在 pips 里活跃但没有目标 PIP」的设计**，不能选「该 tile 完全没出现」的设计。
+  用后者会把 tile 级共享使能位（尤其 `word 8` 的 bit0/1/2/3）当成 PIP 的 cell，导致每次聚合都出不同结果
+  （本轮 `q60/q61/q62/q64` 三代脚本全部因此失败）。
+- 差分必须**逐 (tile, src)**，且**只在该 tile 单独出现该 PIP**（`len(pr)==1`）时才算干净；
+  跨设计做全局 ON∩/OFF∪ 会把同一 src 触发的其它 PIP 混进来。
+
+### 未解决
+- LV_L18 其余 10 个 src（LH0/LH6/ER1END0/NN6END0/NW6END0/SR1BEG_S0/WR1END0/WW4END0/NE6BEG3/NN6BEG3）
+  的干净样本都存在但 tile 数很少（1–26），且用 tile-active 对照后可用于差分的 tile 骤减（每 src ≤9）。
+  需要专门的采样实验（固定其它 PIP、只开目标 PIP 的 Vivado 设计）才能补齐。
+- `law_cells` 里 LV_L18 的 `sense=1` 行**不可信**，下游 `fasm2bit.py` / `decode_law.py` / `bitwriter.py`
+  在 LV_L18 上会产出错误位。修复前应在这三个脚本里对 LV_L18 显式告警或改走 §206 的 A/B 规则。
+
+### 复现
+- 干净差分：`E:\v7work\q75.py`（单 tile，tile-active 对照，能列出全部 CLEAN cell）
+- 全族普查：`E:\v7work\q76.py` → `E:\v7work\lv18_clean.json`
+- A/B 判别与验证：`E:\v7work\q69.py`（LH12 正负样本）
+
+## 208. 进度汇报（2026-11-16，面向导师/评审）
+
+提示词：`step03_pip/PROMPT_PROGRESS_20261116_V1.md` → `PROMPT_PROGRESS_20261116_V2.md`（MCP `optimize-user-prompt` / `iterate-prompt`）。
+成稿：`step03_pip/PROGRESS_20261116.md`（六节：一句话结论 / 主线与边界 / 分层进度表 / 增量 / 缺口账 / 下一步三件事 + 能宣称两句）。
+
+- 汇报口径的一句话结论：公式化覆盖 **3,552/3,634 = 97.7%**（分母 = `law_cells` INT_L 的 sense=1 feature 数），外部真值 **844/844 活跃 tile 唯一解、FP 0**。
+- 分层进度表按「已验证（外部真值/真实位流）」与「仅自洽（同表两种求和）」**分列**，不再合并成一个状态词（本轮新增的写作纪律）。
+- 缺口账按「影响 × 可修性」排序，每行带「修它需要什么前提」；首位 = ECC 地址项 `A(frame)` 未定（阻挡可加载位流）。
+- 字数 775 汉字（限 1,200），`\ufffd`=0。
+
+
+## 209. CRAM 布局图解说明（带 SVG 图解，2026-11-16）
+
+- 用户贴出整片 CRAM 布局图（`pip_reuse_paper` 图 1，1,183 列 / 50,148 帧）问「为什么长这样 + 行到底是什么」，并要求带图解详细解释。
+- 交付 `step03_pip/CRAM_LAYOUT_EXPLAINED_WITH_DIAGRAMS.html`（59 KB，自包含单页 / 7 张内联 SVG / 无外部依赖 / 无 JS）+ 可复算生成脚本 `step03_pip/_build_cram_explainer.py`（所有数字从 `v7_law.sqlite` / `v7_model.sqlite` 实时读取）。
+- 7 图：①一帧=101 word=50×2+1(ECC)；②350 行÷50=7 段 + band 置换表 `[6,5,0,1,2,3,4]`；③158 tile 列−4 穿通列=154 FAR 列；④单段 154 列五档列深（36×111 / 28×35 / 30×4 / 42×2 / 32×2）+ 守恒式 30+42=36+36=72；⑤50,176=36,708+13,440+28；⑥「行」四义（y / row / r / minor）；⑦`INT_L_X8Y20` 地址链演算。
+- 【数据事实】本轮重跑确认：`far_bands` 每 band 154 列 / 5,244 帧、列深直方图全库 `{28:245,30:28,32:14,36:777,42:14}`、`frame_map` 50,176 行（`far` 非空 50,148 / overhead 28）、`law_tiles` y=0–349、col 0–157、col≥154 共 325 行全是 `INT_FEEDTHRU_1/2`。
+- 文字版详见 `step03_pip/CRAM_LAYOUT_WHY_AND_ROW_TERMS.md`（199 行）与本文 §190；「行」四义另见 §174/§183。
+- 校验：Chrome 打开 `file:///.../CRAM_LAYOUT_EXPLAINED_WITH_DIAGRAMS.html`，7 张 SVG 全部渲染、无横向溢出（docWidth 1253 < winWidth 1268）、10 节齐全；本模型为文本模式，截图已存但未能逐像素目视。
+
+## 210. row / band / y / 时钟区域 / block 图解（2026-11-16）
+
+- 用户要求「图解 row 和 band 是什么、怎么来的、y 到底是什么、时钟区域和 block 又是什么，完成提示词并使用」。
+- 按 AGENTS.md 硬规则经 prompt-optimizer MCP：`step03_pip/_req_row_band_block_y.txt` → `PROMPT_ROW_BAND_BLOCK_Y_V1.md`（1,559 字符）→ `_req_row_band_block_y_v2.txt`（6 条追加：四列口径逐项展开、三个「为什么」、clock_region 恒 0 局限、数字带复算入口、图解每概念一图带数值、5 分钟自测 8 问）→ `PROMPT_ROW_BAND_BLOCK_Y_V2.md`（2,157 字符）。
+- 交付 `step03_pip/ROW_BAND_BLOCK_Y_EXPLAINED.html`（29,423 B，5 张内联 SVG / 8 节 / 22 表行，自包含无 JS 离线可开）+ 生成脚本 `step03_pip/_build_row_band_block_explainer.py`（所有数字实时读库）。
+- 【数据事实】本轮决定性新证据：7 个 band 首帧解出 FAR 与三字段一一对应、0 例外 —— band0→(block0,top0,row0)、band4→(0,0,4)、band5→(0,1,0)、band6→(0,1,1)，证明 **band = FAR 的 (block,top,row)**。
+- 【数据事实】列深分档（band0，7 段同构）：`{28:35,30:4,32:2,36:111,42:2}`；CMT 列 col33/62/75/120（各 30 帧）与邻列 col32/121（各 42 帧）守恒式 `30+42=36+36=72`；`band_by_region=[6,5,0,1,2,3,4]`；`INT_L_X8Y20`→band6→start31752→frame31768→word40/41。
+- 【数据事实/局限】`law_tiles.clock_region` 实测全为 0，不携带真实分区；真实时钟区号只能由 y//50 推出（已在图解里明确标注）。
+- 校验：Chrome 打开该 HTML，5 SVG 全渲染、8 节、22 表行、docWidth 1253 < winWidth 1268 无横向溢出、bodyLen 4955；文本模型无法逐像素目视（截图已存）。
+
+## 211. 主线进度复盘现场核对（2026-11-16）
+
+- 按 `PROMPT_PROGRESS_REVIEW.md`（prompt-optimizer `user-prompt-professional` 优化）执行，产出 `PROGRESS_REVIEW_20261116.md`。
+- **重要口径修正**：文档多处记 `repro.py 12/12 PASS`，现场实跑为 **11/12 FAIL**：
+  `verify.INT_L` 报 1 条不符 `LV_L18/LH12`：`law_cells=(0,1,30)(1,1,30)` vs `beg_families.json=(1,0,2)(1,0,8)`。
+- 根因：§207 已确认旧表值 `(1,0,2)+(1,0,8)` 错误（实测 bit30，正 41/42、负 0/1050），
+  `law_cells` 已更正，但派生表 `beg_families.json` 与 `longline_lookup_table.json` **未同步**。
+  §207 对下游脚本的告警建议也未执行。
+- 现场复核：`all_int_tiles_check.py --bit _tilecov2/cov2.bit` → 12,565/53,100（23.66%）、residual 0、PASS；
+  8 份不同布局位流并集仅 306/53,100（0.58%）⇒ 实例覆盖靠刻意铺开布局的设计，不靠堆位流数量。
+- 建议下一步（零机时、论文前置）：同步两个派生表的 `LV_L18.LH12` 或让 verify 走 L3 查表并标注；
+  恢复 12/12 后给 `fasm2bit/decode_law/bitwriter` 的 LV_L18 加告警。预计不到 1 小时。
+
+## 212. LV_L18/LH12 失同步修复（repro 回到 12/12，2026-11-16）
+
+### 起因
+§211 现场核对发现 `repro.py` 为 11/12（非文档记的 12/12），`verify.INT_L` 不符：
+`('LV18','LH12', law_cells=[(0,1,30),(1,1,30)], beg_families.json=[(1,0,2),(1,0,8)])`。
+§206 已于 2026-11-16 实测更正 INT_L 的 `LV_L18←LH12` 真值为 `(fo0,par1,bit30)+(fo1,par1,bit30)`，
+写入了 `law_cells`，但三份派生表没同步。
+
+### 关键发现（比预想深一层）
+只把派生表改成 bit30 后，`verify.INT_L` 过了但 `verify.INT_R` 失败——
+INT_R 的 `law_cells` 里 `LV18/LH12` **仍是旧值** `(fo1,par0,bit2)+(fo1,par0,bit8)`。
+即：两侧 law_cells 对这一个 (family,src) 的编码**不一致**。
+- 全族扫描：LV18 家族 12 个源，两侧只有 `LH12` 一格不同（其余 11/12 全等）。
+- 本地 679 条含 LV18 的 .pips 中**没有任何一条用到 INT_R 的 LV18←LH12**，
+  故无法用现有语料直接判定 INT_R 旧值对错。
+
+### 修复与证据强度（如实分级）
+依据 T66/§125「INT_L 与 INT_R 去后缀后格集合 172/172 全等、同名源 3,586/3,586 零差异」，
+判定该 (family,src) 是 tile_type 级属性、两侧本应一致，INT_R 那行是 A7 移植后从未实测更正的漏网值。
+- 操作：`v7_law.sqlite:law_cells` 的 INT_R `LV18/LH12` 两行改为 `(0,1,30)+(1,1,30)`（改前整库备份 `v7_law.sqlite.bak_20261116_lv18`）；
+  同步三份派生表 `beg_families.json` / `longline_lookup_table.json` / `longline_product_model.json`。
+- **证据强度：INT_L 值 = 实测（§206，正 41/42、负 0/1050）；INT_R 值 = 由 T66 两侧全等推出（间接），非直接位流实测。**
+  限制：若将来出现真正使用 INT_R LV18←LH12 的设计且实测≠bit30，需回退本修复。
+
+### 验证
+`python repro.py` → **OVERALL: PASS (12/12)**，含 `verify.INT_L` 与 `verify.INT_R` 均 3634/3634。
+
+
+## 213. 长线 cell 的「双编码」结构：A/B 两套并存，`law_cells` 单值模型不足（2026-11-16）
+
+### 起因
+§201.7 落地（把 `tile_blocks_fixed` 接入按绝对帧对位的脚本）后，82 条 PIP 复跑剩 10 个 miss，
+全部是 `INT_L_X34Y*` 上的 `LV_L18 <<->> LV_L0`；同族在 `INT_L_X32Y*` 上 8/8 命中。
+
+### 决定性 bug（已修正，务必记住）
+`q59`–`q76` 期间所有 mmap 直读帧用的偏移 `102 + i*404` **算错了**，读到全 0，
+导致那一轮"干净差分"结论全部污染。正确偏移：
+```
+o = 102 + (59 + i*101) * 4        # 102 = 头部长度；59 = FDRI 数据首 word 的 payload 下标
+struct.unpack(">101I", mm[i:o+404])
+```
+（`w58 = 0x504d5400` 是 type-2 header，`w59` 起才是数据；每帧 101 word × 4 byte。）
+校验：`INT_L_X34Y121`（base=1164, y=121）读 `_hb3_out\h00.bit` → `f0[42]=0`、`f1[42]=3`，
+与 `v7re/bitstream/parser.py` 的 `frames_from_bit` 一致。**读写位流优先用 `parse_bit()`/`frames_from_words()`，
+手写偏移必须对齐 FDRI 起点 59。**
+
+### 核心发现：长线 cell 不是单值，而是 A/B 两套编码
+用「同 tile 活跃但无目标 PIP」作对照（不是「tile 未出现」，否则 word8 的 tile 级使能位会被误当 cell），
+在 279 份真实设计上差分，得到两套互斥的编码：
+
+| PIP | A 变体 | B 变体 |
+|---|---|---|
+| `LV_L18 ← LV_L0` | `(fo0, w0, b9) + (fo1, w0, b6)` | `(fo1, w0, b0) + (fo1, w0, b1)`，即 `(F[base+1][w0] & 3) == 3` |
+| `LV_L18 ← LH12` | `(fo0, w0+1, b30) + (fo1, w0+1, b30)` | 旧值 `(fo1, w0, b2) + (fo1, w0, b8)` |
+| `LH12 ← LH0` | `(fo0, w0+1, b29) + (fo0, w0+1, b31)` | `(fo1, w0+1, b22) + (fo1, w0+1, b24)` |
+| `LH0 ← LV_L0` | `(fo0, w0, b2) + (fo1, w0, b6)` | `(fo1, w0+1, b24) + (fo1, w0+1, b26)` |
+
+其中 `w0 = 2*(y%50) + (1 if y%50>=25 else 0)`，`w0+1 == word_of(y, parity=1)`（逐 y 验证恒成立）。
+判定 = **A or B**。
+
+逐项验证（ON = 有该 PIP；OFF = 同 tile 活跃但无该 PIP）：
+- `LV_L18←LV_L0`：pos 822/823、negfire 0/269
+- `LV_L18←LH12`：pos 42/42、negfire 0/1050
+- `LH12←LH0`：pos 218/218、negfire 0/155
+- `LH0←LV_L0`：pos 4/4、negfire 0/368
+
+### A/B 的分布不是可计算的列属性
+按列统计（`LV_L0→LV_L18`，282 tile）：全 A 列 X30/32/46/62/66/68/70/74/78/80/94/106/110/114/124，
+全 B 列 X4/14/16/30/32/34/70/74/80/94/102，**有多列同时出现 A 与 B**（X30/32/70/74/80/94）。
+`clock_region` 全为 0，`y%50` 上下半各约一半 → 没有闭式规则，**是两张实际编码表**。
+（`LH12←LH0` 的 182 个 miss 全落在 `INT_R`，A 只覆盖 36 个 → INT_R 侧也确实是双编码，不是移植错误。）
+
+### 落地：`law_cells_var` + `law_cells_all` 视图
+- `law_cells` 增列 `variant INTEGER NOT NULL DEFAULT 0`（主编码 = variant 0，行数不变）。
+- 新表 `law_cells_var(tile_type,family,src_wire,variant,frame_off,bit,sense,parity)`，存 variant ≥ 1。
+- 新视图 `law_cells_all` = `law_cells` ∪ `law_cells_var`。
+- `v7re/export/decode_law.py`：`load_cells()` 改读 `law_cells_all`（无该表时回落旧查询并补 variant=0）；
+  `groups` 由 `src → [cells]` 改为 `src → {variant: [cells]}`；判定改为 **任一 variant 全 match 即命中**。
+  `--legacy-allones` 分支同步。
+- 当前 `law_cells_var` 共 14 行（4 条 PIP × 2 个 tile_type + 2 条 LV_L18 旧值）。
+
+### 全量验证（279 份设计，.pips 与 .bit 配对）
+```
+LONG recall 2591/2591 = 100.00%     false-pos 0     residual 0
+```
+（长线 8 族：LV_L0/LV_L18/LH0/LH12/LVB_L0/LVB_L12/LV_L9/LH6，含 INT_R 去后缀写法 LV0/LV18。）
+修前：1638/1830（`LH12←LH0` 单条就占 182 个 miss）；`LV_L18` 双编码落地后 2589/2591；`LH0←LV_L0` 补齐后 100%。
+非长线 PIP 的剩余 miss 集中在 `GCLK_L_B11`（30）、`BYP_ALT0`（27）、`IMUX*`（各 6–8），属另外两类（GCLK 走独立还原路径、BYP/IMUX 走 law json），不在本次范围。
+
+### 教训
+1. **对照组的选法决定成败**：OFF 必须是「同 tile 活跃、无目标 PIP」，否则 tile 级共享使能位污染差分。
+2. **同一 (tile_type, family, src) 可以在不同 tile 上有两套完全不同的 cell** —— 这是 §205「长线不可律化」的又一表现，
+   单值 `law_cells` 模型本身不够，必须扩成 variant 集合。
+3. 动手前先核对 mmap 偏移（+59 而非 +0），一个 4 字节偏移能让整轮实验白做。

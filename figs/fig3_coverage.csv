@@ -1,0 +1,8 @@
+metric,covered,total,pct,note
+family,172,172,100.0,两侧各 172 族，verify_all_pip.py
+feature,3634,3634,100.0,verify_all_pip.py 精确命中 0 不符
+feature(可由槽位表生成),3552,3634,97.74,gen_slots.py；差集 82 = 6 长线族
+"(feature,cell) 记录",8900,8900,100.0,law_cells sense=1
+不同 cell,1598,1598,100.0,law_cells sense=1 去重
+INT tile 实例(实测),12565,53100,23.66,all_int_tiles_check.py；23.66%
+全器件可配置 PIP 实例,198434700,207253149,95.75,INT 占比 95.7%

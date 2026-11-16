@@ -17,7 +17,7 @@
 
 | 项 | 本地(V7) | prjxray(artix7) |
 |---|---|---|
-| INT PIP 命名 | `SRC->>DST`(RapidWright) | `INT_L.DST.SRC`(**目的在前**) |
+| INT PIP 命名 | `SRC->>DST`(Vivado `get_pips` 的 NAME 属性,直出见 `tamper/ref/build.tcl:15-16`;RapidWright 模板同形) | `INT_L.DST.SRC`(**目的在前**) |
 | LUT 命名 | `A6LUT`(Vivado BEL) | `ALUT`(合并 A5/A6) |
 | site 命名 | `SLICEM_X0` | `SLICEM_X0` / `SLICEL_X1`(一致) |
 | bitindex | word×32+bit(word 绝对,Y10 行基址 20) | word 相对(tilegrid `offset` 补基址) |
@@ -114,3 +114,43 @@ python compare_coverage.py   # 对表4:六 tile 覆盖率
 grep "NR1BEG2.LOGIC_OUTS_L20" artix7\segbits_int_l.db
 grep -E "INT_R\.IMUX[18]\.NR1END0 " artix7\segbits_int_r.db
 ```
+
+## 8. 补充：draft → prjxray 原生格式的转换已闭环（2026-10-27）
+
+`E:\v7work\db\prjxray\xc7vx485t\segbits_int_l.draft`（13 个 feature，由
+`v7re/export/emit_segbits_draft.py` 从 V7 实测 `pip_bits` 生成）的 README 里留了一个**未解问题**：
+
+> “我们的观测带显式 word，尚未确认 prjxray 如何把变化的 word 映射到 `offset`/alias。
+> 确认之前不改名成 `segbits_<t>.db`。”
+
+§5 的结构确认已经回答了它，本轮把它变成可执行的转换式：
+
+```
+offset = 2*(Y%50) + [Y%50 >= 25]        # 来自 tilegrid.json 的 bits.offset，§5 逐点证实
+s      = word - offset                  # 该 tile 的 2 个字里的槽位，s ∈ {0,1}
+bitidx = s*32 + bit                     # prjxray 原生 segbit
+→ 原生行： "frame_%02d" % bitidx
+```
+
+用这个式子把 draft 的 13 行全部转成 prjxray 原生格式，与
+`artix7/segbits_int_l.db` 的对应行（只比正位，artix7 的 `!` 负位另算）逐条比对：
+
+| 结果 | 数量 |
+|---|---|
+| **MATCH（逐字节相同）** | **13 / 13** |
+| DIFF | 0 |
+
+其中 `LOGIC_OUTS_L20->>NR1BEG2` 一条覆盖了 Y = 20/22/30/31/32/40/41/42/50/52/60 共 11 个行点，
+**跨越了 region 0→1 边界（Y≥50）与 word-50 跳变**，转换后全部收敛到同一个原生串 `08_39 14_39`；
+`NR1END0->>IMUX_L8`（X6Y11）与 `LOGIC_OUTS_L12->>NR1BEG0`（X6Y10）同样精确命中。
+
+### 意义
+
+1. **V7 实测数据与 artix7 prjxray-db 在 INT 位库上是同一套编码**，且这个等价关系
+   在“显式 word ↔ (offset, s) 分解”这一层也成立——不再是抽样几条的巧合，
+   而是覆盖跨 region、跨 word-50 跳变的 13/13。
+2. **draft 可以正式改名成 `segbits_int_l.db`**（改名前需做的只剩两件事：
+   把键从 tile **实例**名 `INT_L_X6Y11.` 换成 tile **类型**名 `INT_L.`，
+   并补上 artix7 的 `!` 负位）。这解决了 draft README 自己标注的阻塞点。
+3. 由此，**移植路线的关键假设获得了双向证据**：artix7 → V7 方向（§1 的 3 条手工核对
+   + 3,270 条观测 0 反例）与 V7 → artix7 方向（本节 13/13）都成立。

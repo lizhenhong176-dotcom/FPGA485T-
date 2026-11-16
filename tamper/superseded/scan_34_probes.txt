@@ -1,0 +1,2 @@
+﻿_resynth.bit :: 基线: active_tiles=108  L1 未解释位=5  L2 槽位违例=0
+_s8v0.bit :: 基线: active_tiles=110  L1 未解释位=5  L2 槽位违例=0

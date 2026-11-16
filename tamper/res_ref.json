@@ -1,0 +1,169 @@
+{
+  "bitstream": "ref.bit",
+  "setbits": 13426,
+  "baseline": {
+    "unexplained": 234,
+    "slot_violations": 0,
+    "active_tiles": 945
+  },
+  "attack_fake_mux": {
+    "attempted": 200,
+    "undetected_with_phantom_pip": 200,
+    "detected": 0,
+    "no_phantom_no_anomaly": 0,
+    "detect_rate_pct": 0.0,
+    "examples": [
+      {
+        "tile": "INT_R_X17Y222",
+        "family": "BYP_ALT0",
+        "src": "SW2END0",
+        "bits": [
+          [
+            16,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X17Y222",
+        "family": "BYP_ALT0",
+        "src": "SS2END0",
+        "bits": [
+          [
+            16,
+            7,
+            0
+          ],
+          [
+            24,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X17Y222",
+        "family": "BYP_ALT0",
+        "src": "NW2END0",
+        "bits": [
+          [
+            17,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X17Y222",
+        "family": "BYP_ALT0",
+        "src": "WW2END_N0_3",
+        "bits": [
+          [
+            17,
+            7,
+            0
+          ],
+          [
+            24,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X17Y222",
+        "family": "BYP_ALT0",
+        "src": "LOGIC_OUTS_L22",
+        "bits": [
+          [
+            20,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      }
+    ]
+  },
+  "attack_swap": {
+    "attempted": 200,
+    "detected": 66,
+    "detect_rate_pct": 33.0,
+    "bits_changed_hist": {
+      "2": 59,
+      "4": 141
+    },
+    "detect_by_cost": {
+      "2": {
+        "n": 59,
+        "detected": 28,
+        "rate_pct": 47.5
+      },
+      "4": {
+        "n": 141,
+        "detected": 38,
+        "rate_pct": 27.0
+      }
+    },
+    "exposure_model": {
+      "with_exposure_n": 73,
+      "with_exposure_detected": 42,
+      "with_exposure_rate_pct": 57.5,
+      "no_exposure_n": 127,
+      "no_exposure_detected": 24,
+      "no_exposure_rate_pct": 18.9
+    },
+    "undetected_examples": [
+      {
+        "tile": "INT_L_X92Y0",
+        "family": "EE2BEG2",
+        "from": "EE2END2",
+        "to": "NE6END2",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X92Y0",
+        "family": "EE4BEG0",
+        "from": "EE2END0",
+        "to": "SS6END0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X92Y0",
+        "family": "EE4BEG1",
+        "from": "EE2END1",
+        "to": "LOGIC_OUTS9",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_R_X71Y195",
+        "family": "SS2BEG0",
+        "from": "SE6END0",
+        "to": "SS2END0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_R_X37Y317",
+        "family": "NN2BEG2",
+        "from": "NN2END2",
+        "to": "LOGIC_OUTS_L16",
+        "bits_changed": 4
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+﻿CHK_e3_a2 SITE=SLICE_X12Y20 BEL=SLICEM.A6LUT INIT=64'h0000000000000005 PART=xc7vx485tffg1157-3
+OK e3_a2
+ERR_BEGIN
+{"base_frames": 50176, "base_words": 5067776}
+done e3_a2 content 0 eccframes 0
+ERR_END
+E3NC_JSON_BEGIN
+{"frame_words": 101, "frames": 50176, "variants": {"e3_a2": {"content_positions": [], "n_content": 0, "ecc": {}, "frames_touched": []}}}
+E3NC_JSON_END
+E3DONE

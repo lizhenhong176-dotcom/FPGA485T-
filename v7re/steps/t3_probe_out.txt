@@ -1,0 +1,184 @@
+S1 元数据
+  bitstream = _full8.bit  size=20273538  sync@150  payload_words=5068346  nframes=50181
+  decode.fasm = t2b_full8_decode.fasm
+  非空 FASM 行 = 191   PIP 行 = 190   带 PIP 的 tile = 76
+  tile_type 分布 = {'INT_L': 70, 'INT_R': 6}  列集合 = [8, 9, 10, 11, 12, 14, 15, 16, 18, 19, 20, 22, 24, 26, 28, 30, 32]
+
+S3 组内一致性（组 = (tile_type, family, src)）
+  组数 = 119   多 tile 组 = 30
+  组大小分布 = {1: 89, 2: 20, 3: 2, 4: 3, 5: 1, 6: 2, 13: 2}
+  组内 tile 对总数 = 240
+  INT_L      BYP_ALT0         EE2END0        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      EE2BEG0          SS6END0        n= 2 rel种类=1 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      EE2BEG2          SE6END2        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      EE4BEG0          EE4END0        n= 6 rel种类=4 abs种类=6 db=  408 dy= 4 dc=12
+  INT_L      EE4BEG0          SE6END0        n= 2 rel种类=2 abs种类=2 db=  272 dy= 4 dc= 8
+  INT_L      EE4BEG1          EE4END1        n= 5 rel种类=3 abs种类=5 db=  480 dy= 8 dc=14
+  INT_L      EE4BEG1          SE6END1        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      EE4BEG2          EE4END2        n= 4 rel种类=3 abs种类=4 db=  128 dy= 4 dc= 4
+  INT_L      EE4BEG2          SE6END2        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      EE4BEG3          LH0            n= 2 rel种类=2 abs种类=2 db=   72 dy= 0 dc= 2
+  INT_L      FAN_ALT7         EE2END2        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      IMUX_L34         BYP_BOUNCE0    n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      IMUX_L34         FAN_BOUNCE7    n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      IMUX_L34         SL1END1        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      IMUX_L34         SR1BEG_S0      n= 2 rel种类=1 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      LH12             EE4END3        n= 2 rel种类=2 abs种类=2 db=   72 dy= 0 dc= 2
+  INT_L      NL1BEG_N3        WW4END0        n= 2 rel种类=2 abs种类=2 db=    0 dy= 1 dc= 0
+  INT_L      NN6BEG0          LOGIC_OUTS_L18 n= 3 rel种类=1 abs种类=3 db=    0 dy= 4 dc= 0
+  INT_L      NW6BEG0          LOGIC_OUTS_L18 n= 3 rel种类=1 abs种类=3 db=    0 dy= 4 dc= 0
+  INT_L      NW6BEG0          NN6END0        n= 2 rel种类=2 abs种类=2 db=    0 dy= 3 dc= 0
+  INT_L      NW6BEG0          NW6END0        n=13 rel种类=7 abs种类=13 db=  264 dy=12 dc= 8
+  INT_L      NW6BEG0          WW4END0        n= 2 rel种类=1 abs种类=2 db=   72 dy= 1 dc= 2
+  INT_L      SE6BEG1          EE4END1        n= 4 rel种类=4 abs种类=4 db=  536 dy= 8 dc=16
+  INT_L      SE6BEG2          EE4END2        n= 4 rel种类=4 abs种类=4 db=  544 dy= 8 dc=16
+  INT_L      SL1BEG1          SE6END1        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      SL1BEG3          SS6END3        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      SR1BEG_S0        SL1END3        n= 2 rel种类=1 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      SS6BEG0          EE4END0        n= 2 rel种类=2 abs种类=2 db=    0 dy= 4 dc= 0
+  INT_L      WW4BEG0          NW6END0        n= 6 rel种类=4 abs种类=6 db=  264 dy= 5 dc= 8
+  INT_L      WW4BEG0          WW4END0        n=13 rel种类=9 abs种类=13 db=  408 dy= 5 dc=12
+  多 tile 组中 rel 只有 1 种的 = 6 / 30
+
+S4 H1「同 tile_type 相对坐标可复用 → 预期相同」
+  Δbase=0 的组 = 18（其中 Δy≠0 = 18）
+  Δbase≠0 的组 = 12（其中 Δcol≠0 = 12）
+  预测 P1a：Δbase≠0 的组内 rel 全等 → 实测 1/12 成立
+  预测 P1b：Δbase≠0 的组内 abs 必不全等 → 实测 12/12 成立
+  逐对统计 (base关系, y关系) → rel相同?, abs相同? :
+    db0_dyn        rel=False abs=False : 34
+    db0_dyn        rel=True  abs=False : 19
+    dbn_dy0        rel=False abs=False : 37
+    dbn_dy0        rel=True  abs=False : 4
+    dbn_dyn        rel=False abs=False : 125
+    dbn_dyn        rel=True  abs=False : 21
+
+S5 H2「归一化抹掉绝对坐标造成假相同」
+  P2a 若假相同成立：不归一化时应大面积相同 → 实测 abs 相同的对 = 0 / 240
+  负对照1：不同 PIP 集合的 tile 数 = 53；distinct rel 集合数 = 53
+  负对照1 结果：PIP 集不同却 rel 相同 的对 = 0（若 >0 说明归一化过度坍缩）
+  负对照2：same_pips 对数 = 46，same_rel 对数 = 46，差值 = 0
+  残差（obs_rel − 已解 PIP 预测，窗口 26 帧 × 2 word 全位）：
+    col 8  tiles=2  有残差 tile=0  残差位=0  
+    col 9  tiles=2  有残差 tile=0  残差位=0  
+    col 10 tiles=3  有残差 tile=0  残差位=0  
+    col 11 tiles=2  有残差 tile=0  残差位=0  
+    col 12 tiles=3  有残差 tile=0  残差位=0  
+    col 14 tiles=3  有残差 tile=0  残差位=0  
+    col 15 tiles=1  有残差 tile=0  残差位=0  
+    col 16 tiles=4  有残差 tile=0  残差位=0  
+    col 18 tiles=4  有残差 tile=0  残差位=0  
+    col 19 tiles=1  有残差 tile=0  残差位=0  
+    col 20 tiles=4  有残差 tile=0  残差位=0  
+    col 22 tiles=4  有残差 tile=0  残差位=0  
+    col 24 tiles=5  有残差 tile=0  残差位=0  
+    col 26 tiles=5  有残差 tile=0  残差位=0  
+    col 28 tiles=7  有残差 tile=0  残差位=0  
+    col 30 tiles=9  有残差 tile=0  残差位=0  
+    col 32 tiles=17 有残差 tile=0  残差位=0  
+  合计残差位 = 0
+  错误/替代归一化下的组内单值率（分母 30 组）：
+    abs(不归一化)                  0/30
+    正确(fo,par,bit)             6/30
+    帧镜像 25-fo                  6/30
+    帧镜像 67-fo                  6/30
+    省略 word 偏移(用绝对 word)       0/30
+    parity 翻转                  6/30
+    bit 镜像 31-b                6/30
+
+S6 H3「同一位被多条 PIP 复用 / 重复计数」
+  P3a law 级：不同 (family,cell) 数 vs 按 (family,src) 展开数
+    distinct(family,cell) = 3204 ; (family,src) 行数 = 17800 ; 复用倍数 = 5.56
+  P3b 同一 tile 内两条已解 PIP 的预测格相交：有相交的 tile = 0 / 76 ; 最大相交格数 = 0
+  P3c 同一 tile 内同一位被 ≥2 条 PIP 声明：格数 = 0 ; 分布 = {}
+
+S7 H4「行/列镜像或位序对称导致成对出现」
+  P4a 若由镜像产生，则组内应只存在少数几对镜像关系，而非全部两两相同
+    rel 全等的组 = 6/30（全等意味着 C(n,2) 对全部相同，不是'某两对'）
+    组大小分布（多 tile 组）= {2: 20, 3: 2, 4: 3, 5: 1, 6: 2, 13: 2}
+    每组对数 = {2: 1, 3: 3, 4: 6, 5: 10, 6: 15, 13: 78}
+  P4b 列镜像(c ↔ 33-c)假设：满足镜像关系的组 = 0 / 30
+  P4c bit 序对称(b ↔ 31-b)：置位格 458，其对偶也置位的 = 72 (15.7%)
+  P4d 位集中在少数 bit：bit 分布 = {0: 28, 1: 38, 2: 28, 3: 34, 4: 8, 5: 8, 6: 21, 7: 9, 8: 18, 9: 21, 10: 14, 11: 13, 12: 8, 13: 2, 14: 6, 15: 10, 16: 3, 17: 9, 18: 8, 19: 10, 20: 10, 21: 32, 22: 11, 23: 3, 24: 16, 25: 22, 26: 17, 27: 11, 28: 9, 29: 9, 30: 12, 31: 10}
+
+S8 T2 §5.2 口径核对（'同 base 两端 frame/word 完全相同 → 同一批绝对位'）
+  Δbase=0 组 = 18
+    INT_L      BYP_ALT0         EE2END0        base=[32568] y=[10, 6] abs种类=2 → 不是同一批绝对位
+    INT_L      EE2BEG0          SS6END0        base=[32496] y=[10, 6] abs种类=2 → 不是同一批绝对位
+    INT_L      EE2BEG2          SE6END2        base=[32496] y=[12, 8] abs种类=2 → 不是同一批绝对位
+    INT_L      EE4BEG1          SE6END1        base=[32096] y=[12, 16] abs种类=2 → 不是同一批绝对位
+    INT_L      EE4BEG2          SE6END2        base=[32024] y=[12, 16] abs种类=2 → 不是同一批绝对位
+    INT_L      FAN_ALT7         EE2END2        base=[32568] y=[12, 8] abs种类=2 → 不是同一批绝对位
+    INT_L      IMUX_L34         BYP_BOUNCE0    base=[32568] y=[10, 6] abs种类=2 → 不是同一批绝对位
+    INT_L      IMUX_L34         FAN_BOUNCE7    base=[32568] y=[12, 8] abs种类=2 → 不是同一批绝对位
+    INT_L      IMUX_L34         SL1END1        base=[32568] y=[11, 7] abs种类=2 → 不是同一批绝对位
+    INT_L      IMUX_L34         SR1BEG_S0      base=[32568] y=[13, 9] abs种类=2 → 不是同一批绝对位
+    INT_L      NL1BEG_N3        WW4END0        base=[31752] y=[19, 20] abs种类=2 → 不是同一批绝对位
+    INT_L      NN6BEG0          LOGIC_OUTS_L18 base=[32568] y=[1, 2, 5] abs种类=3 → 不是同一批绝对位
+    INT_L      NW6BEG0          LOGIC_OUTS_L18 base=[32568] y=[0, 3, 4] abs种类=3 → 不是同一批绝对位
+    INT_L      NW6BEG0          NN6END0        base=[32568] y=[11, 8] abs种类=2 → 不是同一批绝对位
+    INT_L      SL1BEG1          SE6END1        base=[32568] y=[12, 8] abs种类=2 → 不是同一批绝对位
+    INT_L      SL1BEG3          SS6END3        base=[32568] y=[10, 14] abs种类=2 → 不是同一批绝对位
+    INT_L      SR1BEG_S0        SL1END3        base=[32568] y=[13, 9] abs种类=2 → 不是同一批绝对位
+    INT_L      SS6BEG0          EE4END0        base=[32496] y=[12, 16] abs种类=2 → 不是同一批绝对位
+
+S10 逐特征层（family,src）的可复核性：T2「组内 rel 只有 1 种」是不是定义性恒真
+  一个 tile 内同一 family 解出 >1 个 src 的次数 = 0（若 0，则 decode 的 v==obs 唯一匹配成立）
+  逐特征实例 E == (rel ∩ family域) 且 E ⊆ rel : 190 / 190（成立则 T2 的'种类=1'由解码器 v==obs 直接保证）
+
+S11 整窗全等组（不只是单个特征相同，而是两条 tile 的整个窗口归一化后完全相同）
+  整窗全等的组 = 6 / 30
+    INT_L      EE2BEG0          SS6END0        n=2 base=[32496] y=[10, 6] col=[30] abs种类=2
+    INT_L      IMUX_L34         SR1BEG_S0      n=2 base=[32568] y=[13, 9] col=[32] abs种类=2
+    INT_L      NN6BEG0          LOGIC_OUTS_L18 n=3 base=[32568] y=[1, 2, 5] col=[32] abs种类=3
+    INT_L      NW6BEG0          LOGIC_OUTS_L18 n=3 base=[32568] y=[0, 3, 4] col=[32] abs种类=3
+    INT_L      NW6BEG0          WW4END0        n=2 base=[31888, 31960] y=[16, 15] col=[12, 14] abs种类=2
+    INT_L      SR1BEG_S0        SL1END3        n=2 base=[32568] y=[13, 9] col=[32] abs种类=2
+  其中跨列对数 = 10，按列距排序前 6：
+    dcol=2  NW6BEG0.WW4END0  INT_L_X12Y16(col12,y16,base31888) | INT_L_X14Y15(col14,y15,base31960)
+    dcol=0  SR1BEG_S0.SL1END3  INT_L_X32Y13(col32,y13,base32568) | INT_L_X32Y9(col32,y9,base32568)
+    dcol=0  NW6BEG0.LOGIC_OUTS_L18  INT_L_X32Y3(col32,y3,base32568) | INT_L_X32Y4(col32,y4,base32568)
+    dcol=0  NW6BEG0.LOGIC_OUTS_L18  INT_L_X32Y0(col32,y0,base32568) | INT_L_X32Y4(col32,y4,base32568)
+    dcol=0  NW6BEG0.LOGIC_OUTS_L18  INT_L_X32Y0(col32,y0,base32568) | INT_L_X32Y3(col32,y3,base32568)
+    dcol=0  NN6BEG0.LOGIC_OUTS_L18  INT_L_X32Y2(col32,y2,base32568) | INT_L_X32Y5(col32,y5,base32568)
+  签名相同的 tile 对 = 46，其中整窗 rel 相同 = 46
+
+S12 口径侧决定性对照：归一化是否只剥掉实例项、是否过度坍缩
+  C1 53 个不同签名 ↔ 53 个不同整窗 rel：一一对应，坍缩对数 0（归一化保留了全部区分力）
+  C2 错误归一化对照（分母 30 组，只保留单值组）：
+     - 不归一化 0/30；用绝对 word 0/30 → 只有正确剥离 base 与 2*(y%50) 才出现相同
+     - 帧镜像/bit 镜像/parity 翻转 各 6/30：与正确归一化同值，原因是这些变换是逐 tile 的双射，
+       它们保持'组内相等'，因此不能区分真假——镜像类假说在这类数据上不可证伪，只能按同一性映射多余而排除
+
+S13 用户举例 family IMUX_L34 专查（同 family 在两地是否真的'两个一样'）
+  组 IMUX_L34.BYP_BOUNCE0  n=2
+    INT_L_X32Y10 col=32 y=10 base=32568 relbits=6 pips=['BYP_ALT0.EE2END0', 'IMUX_L34.BYP_BOUNCE0', 'SL1BEG3.SS6END3']
+    INT_L_X32Y6 col=32 y=6 base=32568 relbits=4 pips=['BYP_ALT0.EE2END0', 'IMUX_L34.BYP_BOUNCE0']
+    整窗 rel 相同 = False ; abs 相同 = False
+    仅 A 有 [(7, 1, 24), (12, 1, 25)] ; 仅 B 有 []
+    A 独有位来自 PIP ['SL1BEG3.SS6END3'] ; B 独有位来自 PIP []
+  组 IMUX_L34.FAN_BOUNCE7  n=2
+    INT_L_X32Y12 col=32 y=12 base=32568 relbits=8 pips=['FAN_ALT7.EE2END2', 'IMUX_L34.FAN_BOUNCE7', 'SL1BEG1.SE6END1']
+    INT_L_X32Y8 col=32 y=8 base=32568 relbits=10 pips=['FAN_ALT7.EE2END2', 'IMUX_L34.FAN_BOUNCE7', 'NW6BEG0.NN6END0', 'SL1BEG1.SE6END1']
+    整窗 rel 相同 = False ; abs 相同 = False
+    仅 A 有 [] ; 仅 B 有 [(5, 0, 2), (7, 0, 3)]
+    A 独有位来自 PIP [] ; B 独有位来自 PIP ['NW6BEG0.NN6END0']
+  组 IMUX_L34.SL1END1  n=2
+    INT_L_X32Y11 col=32 y=11 base=32568 relbits=6 pips=['IMUX_L34.SL1END1', 'NW6BEG0.NN6END0']
+    INT_L_X32Y7 col=32 y=7 base=32568 relbits=6 pips=['IMUX_L34.SL1END1', 'WW4BEG0.NN6END0']
+    整窗 rel 相同 = False ; abs 相同 = False
+    仅 A 有 [(5, 0, 2), (7, 0, 3)] ; 仅 B 有 [(5, 0, 3), (6, 0, 0)]
+    A 独有位来自 PIP ['NW6BEG0.NN6END0'] ; B 独有位来自 PIP ['WW4BEG0.NN6END0']
+  组 IMUX_L34.SR1BEG_S0  n=2
+    INT_L_X32Y13 col=32 y=13 base=32568 relbits=6 pips=['IMUX_L34.SR1BEG_S0', 'SR1BEG_S0.SL1END3']
+    INT_L_X32Y9 col=32 y=9 base=32568 relbits=6 pips=['IMUX_L34.SR1BEG_S0', 'SR1BEG_S0.SL1END3']
+    整窗 rel 相同 = True ; abs 相同 = False
+  组 IMUX_L34.WR1END1  n=1
+    INT_L_X8Y20 col=8 y=20 base=31752 relbits=188 pips=['BYP_ALT1.WR1END1', 'BYP_ALT3.NL1BEG_N3', 'BYP_ALT4.WW2END0', 'BYP_ALT5.WR1END2', 'EE2BEG1.LOGIC_OUTS_L13', 'EE2BEG2.LOGIC_OUTS_L10', 'EE2BEG3.LOGIC_OUTS_L15', 'EE4BEG0.LOGIC_OUTS_L12', 'EE4BEG1.LOGIC_OUTS_L9', 'EE4BEG2.LOGIC_OUTS_L14', 'EE4BEG3.LOGIC_OUTS_L11', 'IMUX_L0.WR1END0', 'IMUX_L1.WW2END0', 'IMUX_L10.WR1END1', 'IMUX_L11.NL1END2', 'IMUX_L12.NL1END2', 'IMUX_L13.WR1END2', 'IMUX_L14.NL1BEG_N3', 'IMUX_L15.BYP_BOUNCE3', 'IMUX_L16.WR1END0', 'IMUX_L17.WW2END0', 'IMUX_L18.WR1END1', 'IMUX_L19.NL1END2', 'IMUX_L2.WR1END1', 'IMUX_L20.NL1END2', 'IMUX_L21.NW2END3', 'IMUX_L22.BYP_BOUNCE4', 'IMUX_L23.BYP_BOUNCE5', 'IMUX_L24.WR1END0', 'IMUX_L25.WW2END0', 'IMUX_L26.WR1END1', 'IMUX_L27.WR1END2', 'IMUX_L28.NL1END2', 'IMUX_L29.BYP_BOUNCE1', 'IMUX_L3.NL1END2', 'IMUX_L30.NL1BEG_N3', 'IMUX_L31.BYP_BOUNCE3', 'IMUX_L32.WR1END0', 'IMUX_L33.WW2END0', 'IMUX_L34.WR1END1', 'IMUX_L35.WR1END2', 'IMUX_L36.NL1END2', 'IMUX_L37.NW2END3', 'IMUX_L38.BYP_BOUNCE4', 'IMUX_L39.BYP_BOUNCE5', 'IMUX_L4.WR1END2', 'IMUX_L40.WR1END0', 'IMUX_L41.WW2END0', 'IMUX_L42.WR1END1', 'IMUX_L43.NL1END2', 'IMUX_L44.WR1END2', 'IMUX_L45.BYP_BOUNCE1', 'IMUX_L46.NL1BEG_N3', 'IMUX_L47.BYP_BOUNCE3', 'IMUX_L5.WR1END2', 'IMUX_L6.NL1BEG_N3', 'IMUX_L7.BYP_BOUNCE3', 'IMUX_L8.WR1END0', 'IMUX_L9.WW2END0', 'NL1BEG_N3.WW4END0', 'SE6BEG0.LOGIC_OUTS_L8']
+
+S9 结论汇总
+  H1 同 tile_type 相对坐标可复用：整窗全等组 6/30；同一签名的对 46/46 rel 相同；跨 base 对的 rel 相同率 25/187
+  H1 结论限定：T2 的逐特征「种类=1」是解码规则 v==obs 的定义性后果（190/190 实例 E==obs∩域），不能当独立证据；独立证据是 17 列残差 0 与整窗全等组
+  H2 归一化假相同：不归一化时 abs 相同对 = 0/240；不同 PIP 集却 rel 相同 = 0
+  H3 同位复用：同 tile 内两 PIP 相交 tile = 0；同位多次声明格 = 0
+  H4 镜像/对称：列镜像组 0/30；bit 对偶率 15.7%（且镜像类变换逐 tile 双射，不能区分真假）

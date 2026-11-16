@@ -1,0 +1,8 @@
+﻿Traceback (most recent call last):
+  File "diff_cesr.py", line 102, in <module>
+    main()
+  File "diff_cesr.py", line 65, in main
+    ref = parse_bit_frames(ref_path)
+  File "diff_cesr.py", line 44, in parse_bit_frames
+    raise ValueError(f"only {len(words)} words, expected {total}")
+ValueError: only 0 words, expected 5067776

@@ -1,0 +1,9 @@
+{
+  "init": "64'h9E3779B97F4A7C15",
+  "ref_name": "LUT6",
+  "pin_map": "",
+  "site": "SLICE_X8Y11",
+  "bel": "SLICEL.A6LUT",
+  "lut_pins": { "I0": "i_IBUF[0]", "I1": "i_IBUF[1]", "I2": "i_IBUF[2]", "I3": "i_IBUF[3]", "I4": "i_IBUF[4]", "I5": "i_IBUF[5]" },
+  "ff": { "ref": "FDRE", "init": "1'b0", "site": "SLICE_X8Y11", "bel": "SLICEL.AFF" }
+}

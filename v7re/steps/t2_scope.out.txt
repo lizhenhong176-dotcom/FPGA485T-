@@ -1,0 +1,21 @@
+pips_all.txt 解析 1812 行（'->' 站点内部直连=204，'->>' 互连级 PIP=1608）；两种形式都是 左驱动右，DST 在右
+
+== A) 三个名字各自作为 DST / SRC 的 tile 实例数 ==
+   IMUX_L34: DST 15 行 / 15 个 tile；SRC 0 行 / 0 个 tile
+      作 DST 例: INT_L_X32Y156/INT_L.ER1END1->>IMUX_L34（->>）
+      作 DST 的 tile_type=['INT_L']，前 4 个 tile=['INT_L_X32Y0', 'INT_L_X32Y1', 'INT_L_X32Y156', 'INT_L_X32Y157']
+   WW4BEG0: DST 48 行 / 48 个 tile；SRC 0 行 / 0 个 tile
+      作 DST 例: INT_L_X14Y192/INT_L.NW6END0->>WW4BEG0（->>）
+      作 DST 的 tile_type=['INT_L', 'INT_R']，前 4 个 tile=['INT_L_X10Y192', 'INT_L_X128Y2', 'INT_L_X14Y192', 'INT_L_X24Y193']
+   WW4END0: DST 0 行 / 0 个 tile；SRC 48 行 / 46 个 tile
+      作 SRC 例: INT_L_X10Y192/INT_L.WW4END0 -> WW4BEG0
+
+== B) tile_type 命名空间：INT_L 与 INT_R 的 family 名集合关系 ==
+   INT_L family=172  INT_R family=172  交集=116
+   交集样例: ['BYP_ALT0', 'BYP_ALT1', 'BYP_ALT2', 'BYP_ALT3', 'BYP_ALT4', 'BYP_ALT5', 'BYP_ALT6', 'BYP_ALT7', 'EE2BEG0', 'EE2BEG1']
+   仅 INT_L 56 例: ['CLK_L0', 'CLK_L1', 'CTRL_L0', 'CTRL_L1', 'IMUX_L0', 'IMUX_L1']
+   仅 INT_R 56 例: ['CLK0', 'CLK1', 'CTRL0', 'CTRL1', 'IMUX0', 'IMUX1']
+
+== C) 同一 family 名在 segbits 表里有无坐标维度（作用域的结构性证据）==
+   segbits 行格式 = TILE_TYPE.FAMILY.SRC word_bit...，无 col/y 字段
+   → 一条记录描述的是「该 tile 类型内的一次连接」，解码时对每个实例施加同一份表

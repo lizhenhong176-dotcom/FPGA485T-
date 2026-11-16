@@ -1,0 +1,655 @@
+{
+ "family": "MUX_CLK_13",
+ "evidence": {
+  "hclk5/k1": {
+   "src": "MUX_CLK_MMCM2",
+   "n_data_cells": 4,
+   "n_ecc_cells": 4,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 4,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 22,
+     "base": 0,
+     "sample": 1
+    }
+   ]
+  },
+  "hclk5/k2": {
+   "src": "MUX_CLK_MMCM4",
+   "n_data_cells": 6,
+   "n_ecc_cells": 18,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 0,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 1,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 28,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  },
+  "hclk5/k3": {
+   "src": "MUX_CLK_MMCM6",
+   "n_data_cells": 4,
+   "n_ecc_cells": 20,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 0,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 1,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 28,
+     "bit": 22,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  },
+  "hclk5/k4": {
+   "src": "MUX_CLK_MMCM8",
+   "n_data_cells": 6,
+   "n_ecc_cells": 20,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 0,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 4,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 1,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 27,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  },
+  "hclk5/k5": {
+   "src": "MUX_CLK_MMCM9",
+   "n_data_cells": 6,
+   "n_ecc_cells": 10,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 0,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 1,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 4,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 30,
+     "bit": 22,
+     "base": 0,
+     "sample": 1
+    }
+   ]
+  },
+  "hclk5/k6": {
+   "src": "MUX_CLK_MMCM10",
+   "n_data_cells": 6,
+   "n_ecc_cells": 4,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 0,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 2,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 27,
+     "bit": 22,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  },
+  "hclk4/g1": {
+   "src": "MUX_CLK_MMCM2",
+   "n_data_cells": 4,
+   "n_ecc_cells": 4,
+   "cells": [
+    {
+     "band": 6,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 4,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 22,
+     "base": 0,
+     "sample": 1
+    }
+   ]
+  },
+  "hclk4/g2": {
+   "src": "MUX_CLK_MMCM4",
+   "n_data_cells": 6,
+   "n_ecc_cells": 18,
+   "cells": [
+    {
+     "band": 6,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 0,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 1,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 29,
+     "word": 28,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 6,
+     "col": 33,
+     "off": 29,
+     "word": 29,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  },
+  "hclk6/p1": {
+   "src": "MUX_CLK_PLL1",
+   "n_data_cells": 4,
+   "n_ecc_cells": 16,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 6,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 77,
+     "bit": 9,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 77,
+     "bit": 25,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  },
+  "hclk6/p2": {
+   "src": "MUX_CLK_PLL2",
+   "n_data_cells": 4,
+   "n_ecc_cells": 4,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 5,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 77,
+     "bit": 25,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 78,
+     "bit": 25,
+     "base": 0,
+     "sample": 1
+    }
+   ]
+  },
+  "hclk6/p3": {
+   "src": "MUX_CLK_PLL3",
+   "n_data_cells": 4,
+   "n_ecc_cells": 16,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 5,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 77,
+     "bit": 25,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 78,
+     "bit": 9,
+     "base": 0,
+     "sample": 1
+    }
+   ]
+  },
+  "hclk6/p4": {
+   "src": "MUX_CLK_PLL4",
+   "n_data_cells": 4,
+   "n_ecc_cells": 4,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 4,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 77,
+     "bit": 25,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 79,
+     "bit": 25,
+     "base": 0,
+     "sample": 1
+    }
+   ]
+  },
+  "hclk6/p5": {
+   "src": "MUX_CLK_PLL5",
+   "n_data_cells": 4,
+   "n_ecc_cells": 22,
+   "cells": [
+    {
+     "band": 4,
+     "col": 33,
+     "off": 26,
+     "word": 51,
+     "bit": 6,
+     "base": 1,
+     "sample": 0
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 27,
+     "word": 51,
+     "bit": 4,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 76,
+     "bit": 9,
+     "base": 0,
+     "sample": 1
+    },
+    {
+     "band": 4,
+     "col": 33,
+     "off": 28,
+     "word": 77,
+     "bit": 25,
+     "base": 1,
+     "sample": 0
+    }
+   ]
+  }
+ },
+ "by_src": {}
+}

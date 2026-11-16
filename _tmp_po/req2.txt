@@ -1,0 +1,8 @@
+针对 fpga-bitstream-experiment skill 做一次针对性加固升级，保持现有八道门结构与全部既有条款不删减，不新增第九门。具体加固项：
+
+1. 门 4「构建」新增硬规则（远端环境陷阱）：WSL 内直接跑 Vivado 会因 locale 未安装 abort（rc=134，报错 terminate called ... locale::facet::_S_create_c_locale name not valid），每个远端脚本开头必须 export LANG=C.UTF-8; export LC_ALL=C.UTF-8; unset LANGUAGE。
+2. 门 4 新增硬规则（管脚名）：LOCK_PINS 的 BEL 管脚名不按 BEL 命名，SLICEM 四个 6-LUT 的 BEL 管脚一律是 A1..A6；写 I0:B1 会 ERROR: [Vivado 12-2497] invalid device pin 'B1'；换 bel 前必须 get_bel_pins 实测。
+3. 门 4 新增硬规则（批量构建节奏）：多构建必须先在本地生成脚本再一次性远端执行，本地工具显式抬高超时（≥300 s），禁止逐条远端交互。
+4. 门 7「落库」新增硬规则（状态文档编辑）：禁止 read 全文 + write 全文回写 STATUS.md 一类中文长文档（read 有行数上限，回写必然截断，历史上曾把 1773 行截成 811 行）；追加用 Python open(...,'a',encoding='utf-8')，定点改用 edit，写前备份，写完用行数 + 标题数校验。
+5. 在「三、常用入口」表中保留并强调 reference/commands.md 作为「踩坑与硬约束」的唯一外置清单。
+6. 输出要求：返回完整 SKILL.md 正文，保留开头的 YAML frontmatter（name/description 原样不动），正文中文，结构清晰，不要开场白与结尾总结。

@@ -1,0 +1,99 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Validation passes: 2 random values decoded exactly, and unused LUTs decode 0 (no cross-talk).\n\nThis is a strong result. Now:\n1. Write docs (T13) + STATUS.\n2. Report to user.\n\nAlso worth noting: the structural rule — 4 frames × 16 bits per LUT; word 40 = A/B, word 41 = C/D; X0 uses frames base+68..71(?) Let's express relative to block base 31716: 31784-31716 = 68,69,70,71; X1: 31778-31716 = 62,63,64,65.\n\nEarlier ALUT map said INIT[0] at 31786 (=+70). Now with 8 LUTs: A6LUT frames 31784..31787 = +68..+71.\n\nSo: X0 slice LUT INIT frames = base+68..71; X1 = base+62..65.\n\nAlso earlier site_frames said INIT at frame_off 32..35 → wrong, confirmed.\n\nNow, can we generalize to other rows? The mapping is per (block, slice) with word = 2*(y%50)+parity — so for other y, same frame_offs (+68..71 / +62..65) and word changes. Should verify on a second row later.\n\nLet me write the doc and report. Also update site_frames? That's a bigger job (regenerate store 36.8M rows) — mention as next step.\n\nLet me write T13 doc."}, {"type": "tool-call", "id": "call_00_vEY2EzCRjJqCDPElHUtW7063", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+doc = \\"\\"\\"# T13：CLB 全部 8 个 LUT 的 INIT 位映射（逐 BEL 位平面法）
+
+日期：2026-11-05
+方法：每个 BEL 单独做 6 个位平面设计（外加 1 个 `INIT=0x1` 补 index 0，共 7 次），
+8 个 BEL 合计 **57 次综合**。产物 `v7re/steps/clb_init_map_8lut.json`。
+
+## 1. 为什么这次不会错
+
+T11 的教训：一次改多个 LUT 时，「哪个帧属于哪个 LUT」只能猜，猜错就得到自洽但错误的表。
+这次每个构建**只改一个 BEL**，差分里出现的格子必然属于它 —— 归属不需要推断。
+
+index 0 无法由位平面得到（它的所有位平面位都是 0），因此额外做一次 `INIT=0x1`，
+差分里唯一的新格子就是 index 0。
+
+## 2. 结果：结构非常规整
+
+`SLICE_X12Y20`（X0）与 `SLICE_X13Y20`（X1）同属 CLBLM_L_X8Y20，块基址 31716。
+
+| BEL | 帧（绝对） | 相对块基址 | 字 | 位段 |
+|---|---|---|---|---|
+| X0.A6LUT | 31784–31787 | +68…+71 | 40 | 0–15 |
+| X0.B6LUT | 31784–31787 | +68…+71 | 40 | 16–31 |
+| X0.C6LUT | 31784–31787 | +68…+71 | 41 | 0–15 |
+| X0.D6LUT | 31784–31787 | +68…+71 | 41 | 16–31 |
+| X1.A6LUT | 31778–31781 | +62…+65 | 40 | 0–15 |
+| X1.B6LUT | 31778–31781 | +62…+65 | 40 | 16–31 |
+| X1.C6LUT | 31778–31781 | +62…+65 | 41 | 0–15 |
+| X1.D6LUT | 31778–31781 | +62…+65 | 41 | 16–31 |
+
+即：
+
+- **每个 LUT 恰好 4 帧 × 16 位 = 64 位**；
+- 字由 LUT 位置决定：A/B 在 word 40，C/D 在 word 41（同 slice 的两个字 = X0/X1 各占一个 word 段）；
+- 帧由 slice 实例决定：X0 用 +68…+71，X1 用 +62…+65（相差 6 帧）；
+- 位段由 LUT 决定：A/C 用 0–15，B/D 用 16–31。
+
+## 3. 验证
+
+额外造一个设计：`SLICE_X12Y20/D6LUT = 0xDEADBEEFCAFEBABE`、`SLICE_X13Y20/C6LUT = 0x0123456789ABCDEF`，
+其余 LUT 为 0，用上面的表反读：
+
+| BEL | 解出 | 期望 | |
+|---|---|---|---|
+| X0.D6LUT | `0xdeadbeefcafebabe` | `0xDEADBEEFCAFEBABE` | ✅ |
+| X1.C6LUT | `0x0123456789abcdef` | `0x0123456789ABCDEF` | ✅ |
+| X0.A6LUT | `0x0` | `0x0` | ✅ |
+| X1.A6LUT | `0x0` | `0x0` | ✅ |
+
+两个随机值全对，且未使用的 LUT 读出 0 —— 没有串扰。
+
+## 4. 与旧表的差异
+
+`site_frames` 用的 `clb_cells` 说 INIT 在 `frame_off 32..35` —— **错**。
+真实位置是 `frame_off 62..65`（X1）与 `68..71`（X0），且每帧只占 16 位而非 32 位。
+
+## 5. 仍未验证的部分
+
+1. **是否随行/列平移**：目前只验了 y=20、单列；`word = 2*(y%50)+parity` 的行依赖已有大量验证，
+   但 `frame_off` 是否在不同列/行保持 +62/+68 尚需抽查一个远离的例子；
+2. **FF/进位链**：仍未重测（旧表同样可疑）；
+3. **`site_frames` 尚未重生成**（3,679 万行，跑一次约 11 分钟）。
+
+## 6. 踩坑记录
+
+第一次跑 z 系列时用 `sed` 把 tcl 里的 `base8.v` 换成 `z$j.v`，但 tcl 里实际写的是 `b0.v`，
+替换没命中 → 8 个设计全部重跑了基线，差分全为 0。修法是同时替换 `b0.v` 并 `grep` 校验替换成功。
+\\"\\"\\"
+io.open(\\"v7re/steps/T13_CLB_INIT_ALL8.md\\", \\"w\\", encoding=\\"utf-8\\").write(doc)
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 41. T13 —— CLB 全 8 个 LUT 的 INIT 映射（2026-11-05）
+
+逐 BEL 位平面法：每个 BEL 独立 6 个位平面 + 1 个 `INIT=0x1`（补 index 0），8 个 BEL 共 57 次综合。
+产物 `v7re/steps/clb_init_map_8lut.json`（8 × 64 位）。
+
+**结构**（块基址 31716，`SLICE_X12Y20`=X0、`SLICE_X13Y20`=X1）：
+
+| BEL | 相对帧 | 字 | 位段 |
+|---|---|---|---|
+| X0.A/B/C/D6LUT | +68…+71 | 40 (A/B) / 41 (C/D) | A/C:0–15, B/D:16–31 |
+| X1.A/B/C/D6LUT | +62…+65 | 40 (A/B) / 41 (C/D) | 同上 |
+
+每 LUT = **4 帧 × 16 位**；旧表 `clb_cells` 的 `frame_off 32..35` 是错的。
+
+**验证**：造 `X0.D6LUT=0xDEADBEEFCAFEBABE`、`X1.C6LUT=0x0123456789ABCDEF` 的设计反读，
+两个随机值全对，未用 LUT 读 0（无串扰）。
+
+**未验证**：映射是否随行/列平移（只验 y=20 单列）；FF/进位链未重测；`site_frames` 未重生成。
+
+**踩坑**：z 系列首跑用 `sed` 替换 `base8.v`，但 tcl 里是 `b0.v`，未命中 → 8 个设计全跑成基线，差分全 0。
+
+文档：`v7re/steps/T13_CLB_INIT_ALL8.md`。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Write T13 doc and STATUS section", "timeoutMs": 300000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "731e60bb-fbfa-48c0-8f00-7d9ace69d024"}, {"type": "tool-call"}]}}, "id": "3138d1a3-3693-4169-a477-7cbe0aad4781"}

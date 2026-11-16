@@ -1,0 +1,50 @@
+{
+ "generated": "2026-10-28T09:48:03",
+ "source": "§5.6 multi-source V7 measurement (976 variants, 248 family-instances)",
+ "measured_tiles": {
+  "INT_R": "INT_R_X7Y10",
+  "INT_L": "INT_L_X6Y10"
+ },
+ "verdict_counts": {
+  "INT_R": {
+   "EXACT": 396,
+   "SUBSET": 94
+  },
+  "INT_L": {
+   "EXACT": 395,
+   "SUBSET": 91
+  }
+ },
+ "key_findings": [
+  "prjxray-derived all_cells shapes are a SOUND SUPERSET on V7: 0 spurious bits across all 976 variants (no measured PIP bit falls outside the predicted window).",
+  "81% of measured (family,src) match the prjxray shape EXACTLY; the rest are SUBSET explained by differential-measurement blindness (predicted bit already 1 in ref), NOT shape errors.",
+  "4 constant bits at INT_R (word 23, bit 17, frame_off 17/22/24/25) appear in every variant and are a ref-baseline artifact, NOT PIP-select bits -> excluded from decode."
+ ],
+ "exclusions": {
+  "INT_R": [
+   {
+    "frame_off": 17,
+    "word": 23,
+    "bit": 17
+   },
+   {
+    "frame_off": 22,
+    "word": 23,
+    "bit": 17
+   },
+   {
+    "frame_off": 24,
+    "word": 23,
+    "bit": 17
+   },
+   {
+    "frame_off": 25,
+    "word": 23,
+    "bit": 17
+   }
+  ],
+  "INT_L": []
+ },
+ "how_to_use": "For bit->netlist decode: treat all_cells (prjxray) as the candidate bit window; ignore the 4 INT_R constant positions; overlay entries with status EXACT are V7-confirmed; SUBSET entries keep the full predicted shape (do not shrink) because the missing bits are diff-blind, not absent.",
+ "followup": "RESOLVED by §5.6-followup2 (absolute-value probe). 387 SUBSET missing bits: 383 diff-blind (keep), 4 V7 over-prediction (all GFAN0/1 src GCLK_B2_EAST/GCLK_L_B2 word20 bit11/13 sense0). See followup2_absprobe.json. prjxray shapes confirmed bit-exactly as a sound superset on V7."
+}

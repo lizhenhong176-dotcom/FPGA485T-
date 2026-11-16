@@ -1,0 +1,157 @@
+﻿OK e6_y1
+SITEON SLICE_X12Y1 INIT=64'h0000000000000001
+OK e6_y6
+SITEON SLICE_X12Y6 INIT=64'h0000000000000001
+OK e6_y2
+SITEON SLICE_X12Y2 INIT=64'h0000000000000001
+OK e6_y3
+SITEON SLICE_X12Y3 INIT=64'h0000000000000001
+OK e6_b
+OK e6_y0
+SITEON SLICE_X12Y0 INIT=64'h0000000000000001
+OK e6_y4
+SITEON SLICE_X12Y4 INIT=64'h0000000000000001
+OK e6_y5
+SITEON SLICE_X12Y5 INIT=64'h0000000000000001
+OK e6_y8
+SITEON SLICE_X12Y8 INIT=64'h0000000000000001
+OK e6_y9
+SITEON SLICE_X12Y9 INIT=64'h0000000000000001
+OK e6_y10
+SITEON SLICE_X12Y10 INIT=64'h0000000000000001
+OK e6_y13
+SITEON SLICE_X12Y13 INIT=64'h0000000000000001
+OK e6_y14
+SITEON SLICE_X12Y14 INIT=64'h0000000000000001
+OK e6_y7
+SITEON SLICE_X12Y7 INIT=64'h0000000000000001
+OK e6_y11
+SITEON SLICE_X12Y11 INIT=64'h0000000000000001
+OK e6_y12
+SITEON SLICE_X12Y12 INIT=64'h0000000000000001
+OK e6_y15
+SITEON SLICE_X12Y15 INIT=64'h0000000000000001
+OK e6_y16
+SITEON SLICE_X12Y16 INIT=64'h0000000000000001
+OK e6_y19
+SITEON SLICE_X12Y19 INIT=64'h0000000000000001
+OK e6_y17
+SITEON SLICE_X12Y17 INIT=64'h0000000000000001
+OK e6_y21
+SITEON SLICE_X12Y21 INIT=64'h0000000000000001
+OK e6_y18
+SITEON SLICE_X12Y18 INIT=64'h0000000000000001
+OK e6_y22
+SITEON SLICE_X12Y22 INIT=64'h0000000000000001
+OK e6_y20
+SITEON SLICE_X12Y20 INIT=64'h0000000000000001
+OK e6_y23
+SITEON SLICE_X12Y23 INIT=64'h0000000000000001
+OK e6_y24
+SITEON SLICE_X12Y24 INIT=64'h0000000000000001
+OK e6_y25
+SITEON SLICE_X12Y25 INIT=64'h0000000000000001
+OK e6_y26
+SITEON SLICE_X12Y26 INIT=64'h0000000000000001
+OK e6_y30
+SITEON SLICE_X12Y30 INIT=64'h0000000000000001
+OK e6_y28
+SITEON SLICE_X12Y28 INIT=64'h0000000000000001
+OK e6_y29
+SITEON SLICE_X12Y29 INIT=64'h0000000000000001
+OK e6_y27
+SITEON SLICE_X12Y27 INIT=64'h0000000000000001
+OK e6_y32
+SITEON SLICE_X12Y32 INIT=64'h0000000000000001
+OK e6_y31
+SITEON SLICE_X12Y31 INIT=64'h0000000000000001
+OK e6_y33
+SITEON SLICE_X12Y33 INIT=64'h0000000000000001
+OK e6_y34
+SITEON SLICE_X12Y34 INIT=64'h0000000000000001
+OK e6_y37
+SITEON SLICE_X12Y37 INIT=64'h0000000000000001
+OK e6_y36
+SITEON SLICE_X12Y36 INIT=64'h0000000000000001
+OK e6_y35
+SITEON SLICE_X12Y35 INIT=64'h0000000000000001
+OK e6_y38
+SITEON SLICE_X12Y38 INIT=64'h0000000000000001
+OK e6_y40
+SITEON SLICE_X12Y40 INIT=64'h0000000000000001
+OK e6_y39
+SITEON SLICE_X12Y39 INIT=64'h0000000000000001
+OK e6_y44
+SITEON SLICE_X12Y44 INIT=64'h0000000000000001
+OK e6_y46
+SITEON SLICE_X12Y46 INIT=64'h0000000000000001
+OK e6_y42
+SITEON SLICE_X12Y42 INIT=64'h0000000000000001
+OK e6_y41
+SITEON SLICE_X12Y41 INIT=64'h0000000000000001
+OK e6_y43
+SITEON SLICE_X12Y43 INIT=64'h0000000000000001
+OK e6_y45
+SITEON SLICE_X12Y45 INIT=64'h0000000000000001
+OK e6_y47
+SITEON SLICE_X12Y47 INIT=64'h0000000000000001
+OK e6_y48
+SITEON SLICE_X12Y48 INIT=64'h0000000000000001
+OK e6_y49
+SITEON SLICE_X12Y49 INIT=64'h0000000000000001
+ERR_BEGIN
+done e6_y0
+done e6_y1
+done e6_y2
+done e6_y3
+done e6_y4
+done e6_y5
+done e6_y6
+done e6_y7
+done e6_y8
+done e6_y9
+done e6_y10
+done e6_y11
+done e6_y12
+done e6_y13
+done e6_y14
+done e6_y15
+done e6_y16
+done e6_y17
+done e6_y18
+done e6_y19
+done e6_y20
+done e6_y21
+done e6_y22
+done e6_y23
+done e6_y24
+done e6_y25
+done e6_y26
+done e6_y27
+done e6_y28
+done e6_y29
+done e6_y30
+done e6_y31
+done e6_y32
+done e6_y33
+done e6_y34
+done e6_y35
+done e6_y36
+done e6_y37
+done e6_y38
+done e6_y39
+done e6_y40
+done e6_y41
+done e6_y42
+done e6_y43
+done e6_y44
+done e6_y45
+done e6_y46
+done e6_y47
+done e6_y48
+done e6_y49
+ERR_END
+E6JSON_BEGIN
+{"base_words": 5067776, "items": {"e6_y0": {"content": [[31786, 0, 15]], "ecc": {"31786": [0, 815]}}, "e6_y1": {"content": [[31786, 2, 15]], "ecc": {"31786": [0, 4975]}}, "e6_y2": {"content": [[31786, 4, 15]], "ecc": {"31786": [0, 5039]}}, "e6_y3": {"content": [[31786, 6, 15]], "ecc": {"31786": [0, 1007]}}, "e6_y4": {"content": [[31786, 8, 15]], "ecc": {"31786": [0, 5199]}}, "e6_y5": {"content": [[31786, 10, 15]], "ecc": {"31786": [0, 5263]}}, "e6_y6": {"content": [[31786, 12, 15]], "ecc": {"31786": [0, 1231]}}, "e6_y7": {"content": [[31786, 14, 15]], "ecc": {"31786": [0, 5391]}}, "e6_y8": {"content": [[31786, 16, 15]], "ecc": {"31786": [0, 1359]}}, "e6_y9": {"content": [[31786, 18, 15]], "ecc": {"31786": [0, 1423]}}, "e6_y10": {"content": [[31786, 20, 15]], "ecc": {"31786": [0, 5583]}}, "e6_y11": {"content": [[31786, 22, 15]], "ecc": {"31786": [0, 5647]}}, "e6_y12": {"content": [[31786, 24, 15]], "ecc": {"31786": [0, 1615]}}, "e6_y13": {"content": [[31786, 26, 15]], "ecc": {"31786": [0, 1679]}}, "e6_y14": {"content": [[31786, 28, 15]], "ecc": {"31786": [0, 5839]}}, "e6_y15": {"content": [[31786, 30, 15]], "ecc": {"31786": [0, 1807]}}, "e6_y16": {"content": [[31786, 32, 15]], "ecc": {"31786": [0, 5967]}}, "e6_y17": {"content": [[31786, 34, 15]], "ecc": {"31786": [0, 6031]}}, "e6_y18": {"content": [[31786, 36, 15]], "ecc": {"31786": [0, 1999]}}, "e6_y19": {"content": [[31786, 38, 15]], "ecc": {"31786": [0, 6191]}}, "e6_y20": {"content": [[31786, 40, 15]], "ecc": {"31786": [0, 2159]}}, "e6_y21": {"content": [[31786, 42, 15]], "ecc": {"31786": [0, 2223]}}, "e6_y22": {"content": [[31786, 44, 15]], "ecc": {"31786": [0, 6383]}}, "e6_y23": {"content": [[31786, 46, 15]], "ecc": {"31786": [0, 2351]}}, "e6_y24": {"content": [[31786, 48, 15]], "ecc": {"31786": [0, 6511]}}, "e6_y25": {"content": [[31786, 51, 15]], "ecc": {"31786": [0, 6607]}}, "e6_y26": {"content": [[31786, 53, 15]], "ecc": {"31786": [0, 6671]}}, "e6_y27": {"content": [[31786, 55, 15]], "ecc": {"31786": [0, 2639]}}, "e6_y28": {"content": [[31786, 57, 15]], "ecc": {"31786": [0, 2703]}}, "e6_y29": {"content": [[31786, 59, 15]], "ecc": {"31786": [0, 6863]}}, "e6_y30": {"content": [[31786, 61, 15]], "ecc": {"31786": [0, 2831]}}, "e6_y31": {"content": [[31786, 63, 15]], "ecc": {"31786": [0, 6991]}}, "e6_y32": {"content": [[31786, 65, 15]], "ecc": {"31786": [0, 7055]}}, "e6_y33": {"content": [[31786, 67, 15]], "ecc": {"31786": [0, 3023]}}, "e6_y34": {"content": [[31786, 69, 15]], "ecc": {"31786": [0, 7183]}}, "e6_y35": {"content": [[31786, 71, 15]], "ecc": {"31786": [0, 3151]}}, "e6_y36": {"content": [[31786, 73, 15]], "ecc": {"31786": [0, 3215]}}, "e6_y37": {"content": [[31786, 75, 15]], "ecc": {"31786": [0, 7375]}}, "e6_y38": {"content": [[31786, 77, 15]], "ecc": {"31786": [0, 3343]}}, "e6_y39": {"content": [[31786, 79, 15]], "ecc": {"31786": [0, 7503]}}, "e6_y40": {"content": [[31786, 81, 15]], "ecc": {"31786": [0, 7567]}}, "e6_y41": {"content": [[31786, 83, 15]], "ecc": {"31786": [0, 3535]}}, "e6_y42": {"content": [[31786, 85, 15]], "ecc": {"31786": [0, 3599]}}, "e6_y43": {"content": [[31786, 87, 15]], "ecc": {"31786": [0, 7759]}}, "e6_y44": {"content": [[31786, 89, 15]], "ecc": {"31786": [0, 7823]}}, "e6_y45": {"content": [[31786, 91, 15]], "ecc": {"31786": [0, 3791]}}, "e6_y46": {"content": [[31786, 93, 15]], "ecc": {"31786": [0, 7951]}}, "e6_y47": {"content": [[31786, 95, 15]], "ecc": {"31786": [0, 3919]}}, "e6_y48": {"content": [[31786, 97, 15]], "ecc": {"31786": [0, 3983]}}, "e6_y49": {"content": [[31786, 99, 15]], "ecc": {"31786": [0, 8143]}}}}
+E6JSON_END
+E6DONE

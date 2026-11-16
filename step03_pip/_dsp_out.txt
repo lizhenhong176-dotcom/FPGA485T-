@@ -1,0 +1,22 @@
+=== Synth ref ===
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1195.512 ; gain = 115.496 ; free physical = 62118 ; free virtual = 79346
+---------------------------------------------------------------------------------
+synthesize failed
+4 Infos, 1 Warnings, 0 Critical Warnings and 3 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Vivado Synthesis failed
+INFO: [Common 17-206] Exiting Vivado at Fri Oct 30 20:57:15 2026...
+=== Synth var ===
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1195.512 ; gain = 115.496 ; free physical = 62006 ; free virtual = 79234
+---------------------------------------------------------------------------------
+synthesize failed
+4 Infos, 1 Warnings, 0 Critical Warnings and 3 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Vivado Synthesis failed
+INFO: [Common 17-206] Exiting Vivado at Fri Oct 30 20:57:29 2026...
+=== Files ===
+
+--- STDERR ---
+ls: cannot access '*.bit': No such file or directory

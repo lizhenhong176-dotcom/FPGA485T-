@@ -1,0 +1,116 @@
+{
+  "bitstream": "_g1.bit",
+  "setbits": 552,
+  "baseline": {
+    "unexplained": 1,
+    "slot_violations": 0,
+    "active_tiles": 17
+  },
+  "exhaustive": {
+    "tiles_scanned": 17,
+    "cells_per_tile": 1664,
+    "off_mux": {
+      "n": 8,
+      "detected": 8,
+      "rate_pct": 100.0,
+      "missed": 0
+    },
+    "off_other": {
+      "n": 38,
+      "detected": 37,
+      "rate_pct": 97.3684,
+      "missed": 1
+    },
+    "on_mux": {
+      "n": 10872,
+      "detected": 10869,
+      "rate_pct": 99.9724,
+      "missed": 3
+    },
+    "on_other": {
+      "n": 17369,
+      "detected": 17246,
+      "rate_pct": 99.2918,
+      "missed": 123
+    },
+    "off_baseline_skipped": 1,
+    "total": {
+      "n": 28287,
+      "detected": 28160,
+      "rate_pct": 99.551
+    }
+  },
+  "attack_fake_mux": {
+    "attempted": 60,
+    "undetected_with_phantom_pip": 0,
+    "detected": 60,
+    "detect_rate_pct": 100.0,
+    "examples": []
+  },
+  "attack_swap": {
+    "attempted": 31,
+    "detected": 14,
+    "detect_rate_pct": 45.16,
+    "bits_changed_hist": {
+      "2": 12,
+      "4": 19
+    },
+    "detect_by_cost": {
+      "2": {
+        "n": 12,
+        "detected": 5,
+        "rate_pct": 41.7
+      },
+      "4": {
+        "n": 19,
+        "detected": 9,
+        "rate_pct": 47.4
+      }
+    },
+    "exposure_model": {
+      "with_exposure_n": 16,
+      "with_exposure_detected": 14,
+      "with_exposure_rate_pct": 87.5,
+      "no_exposure_n": 15,
+      "no_exposure_detected": 0,
+      "no_exposure_rate_pct": 0.0
+    },
+    "undetected_examples": [
+      {
+        "tile": "INT_L_X14Y20",
+        "family": "WR1BEG1",
+        "from": "WW4END0",
+        "to": "LOGIC_OUTS_L18",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_L_X26Y12",
+        "family": "WW4BEG0",
+        "from": "NW6END0",
+        "to": "LOGIC_OUTS_L18",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_L_X22Y12",
+        "family": "NW6BEG0",
+        "from": "WW4END0",
+        "to": "LOGIC_OUTS_L0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_R_X29Y4",
+        "family": "SE6BEG0",
+        "from": "SE6END0",
+        "to": "LOGIC_OUTS_L0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_R_X15Y16",
+        "family": "SE6BEG0",
+        "from": "SE6END0",
+        "to": "LOGIC_OUTS4",
+        "bits_changed": 4
+      }
+    ]
+  }
+}

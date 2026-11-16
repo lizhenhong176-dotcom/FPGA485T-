@@ -1,0 +1,695 @@
+{
+ "template_pips": 3737,
+ "dst_wires": 216,
+ "multi_dst": 172,
+ "multi_pips": 3693,
+ "single_dst": 44,
+ "single_pips": 44,
+ "vcc_pips": 64,
+ "vcc_families": 64,
+ "vcc_in_law_cells": 0,
+ "vcc_family_law_sources": {
+  "BYP_ALT0": 24,
+  "BYP_ALT1": 24,
+  "BYP_ALT2": 24,
+  "BYP_ALT3": 24,
+  "BYP_ALT4": 24,
+  "BYP_ALT5": 24,
+  "BYP_ALT6": 24,
+  "BYP_ALT7": 24,
+  "FAN_ALT0": 24,
+  "FAN_ALT1": 24,
+  "FAN_ALT2": 24,
+  "FAN_ALT3": 24,
+  "FAN_ALT4": 24,
+  "FAN_ALT5": 24,
+  "FAN_ALT6": 24,
+  "FAN_ALT7": 24,
+  "IMUX_L0": 24,
+  "IMUX_L1": 24,
+  "IMUX_L10": 24,
+  "IMUX_L11": 24,
+  "IMUX_L12": 24,
+  "IMUX_L13": 24,
+  "IMUX_L14": 24,
+  "IMUX_L15": 24,
+  "IMUX_L16": 24,
+  "IMUX_L17": 24,
+  "IMUX_L18": 24,
+  "IMUX_L19": 24,
+  "IMUX_L2": 24,
+  "IMUX_L20": 24,
+  "IMUX_L21": 24,
+  "IMUX_L22": 24,
+  "IMUX_L23": 24,
+  "IMUX_L24": 24,
+  "IMUX_L25": 24,
+  "IMUX_L26": 24,
+  "IMUX_L27": 24,
+  "IMUX_L28": 24,
+  "IMUX_L29": 24,
+  "IMUX_L3": 24,
+  "IMUX_L30": 24,
+  "IMUX_L31": 24,
+  "IMUX_L32": 24,
+  "IMUX_L33": 24,
+  "IMUX_L34": 24,
+  "IMUX_L35": 24,
+  "IMUX_L36": 24,
+  "IMUX_L37": 24,
+  "IMUX_L38": 24,
+  "IMUX_L39": 24,
+  "IMUX_L4": 24,
+  "IMUX_L40": 24,
+  "IMUX_L41": 24,
+  "IMUX_L42": 24,
+  "IMUX_L43": 24,
+  "IMUX_L44": 24,
+  "IMUX_L45": 24,
+  "IMUX_L46": 24,
+  "IMUX_L47": 24,
+  "IMUX_L5": 24,
+  "IMUX_L6": 24,
+  "IMUX_L7": 24,
+  "IMUX_L8": 24,
+  "IMUX_L9": 24
+ },
+ "vcc_family_tpl_fanin_with_vcc": {
+  "BYP_ALT0": 25,
+  "BYP_ALT1": 25,
+  "BYP_ALT2": 25,
+  "BYP_ALT3": 25,
+  "BYP_ALT4": 25,
+  "BYP_ALT5": 25,
+  "BYP_ALT6": 25,
+  "BYP_ALT7": 25,
+  "FAN_ALT0": 25,
+  "FAN_ALT1": 25,
+  "FAN_ALT2": 25,
+  "FAN_ALT3": 25,
+  "FAN_ALT4": 25,
+  "FAN_ALT5": 25,
+  "FAN_ALT6": 25,
+  "FAN_ALT7": 25,
+  "IMUX_L0": 25,
+  "IMUX_L1": 25,
+  "IMUX_L10": 25,
+  "IMUX_L11": 25,
+  "IMUX_L12": 25,
+  "IMUX_L13": 25,
+  "IMUX_L14": 25,
+  "IMUX_L15": 25,
+  "IMUX_L16": 25,
+  "IMUX_L17": 25,
+  "IMUX_L18": 25,
+  "IMUX_L19": 25,
+  "IMUX_L2": 25,
+  "IMUX_L20": 25,
+  "IMUX_L21": 25,
+  "IMUX_L22": 25,
+  "IMUX_L23": 25,
+  "IMUX_L24": 25,
+  "IMUX_L25": 25,
+  "IMUX_L26": 25,
+  "IMUX_L27": 25,
+  "IMUX_L28": 25,
+  "IMUX_L29": 25,
+  "IMUX_L3": 25,
+  "IMUX_L30": 25,
+  "IMUX_L31": 25,
+  "IMUX_L32": 25,
+  "IMUX_L33": 25,
+  "IMUX_L34": 25,
+  "IMUX_L35": 25,
+  "IMUX_L36": 25,
+  "IMUX_L37": 25,
+  "IMUX_L38": 25,
+  "IMUX_L39": 25,
+  "IMUX_L4": 25,
+  "IMUX_L40": 25,
+  "IMUX_L41": 25,
+  "IMUX_L42": 25,
+  "IMUX_L43": 25,
+  "IMUX_L44": 25,
+  "IMUX_L45": 25,
+  "IMUX_L46": 25,
+  "IMUX_L47": 25,
+  "IMUX_L5": 25,
+  "IMUX_L6": 25,
+  "IMUX_L7": 25,
+  "IMUX_L8": 25,
+  "IMUX_L9": 25
+ },
+ "vcc_family_tpl_fanin_without_vcc": {
+  "BYP_ALT0": 24,
+  "BYP_ALT1": 24,
+  "BYP_ALT2": 24,
+  "BYP_ALT3": 24,
+  "BYP_ALT4": 24,
+  "BYP_ALT5": 24,
+  "BYP_ALT6": 24,
+  "BYP_ALT7": 24,
+  "FAN_ALT0": 24,
+  "FAN_ALT1": 24,
+  "FAN_ALT2": 24,
+  "FAN_ALT3": 24,
+  "FAN_ALT4": 24,
+  "FAN_ALT5": 24,
+  "FAN_ALT6": 24,
+  "FAN_ALT7": 24,
+  "IMUX_L0": 24,
+  "IMUX_L1": 24,
+  "IMUX_L10": 24,
+  "IMUX_L11": 24,
+  "IMUX_L12": 24,
+  "IMUX_L13": 24,
+  "IMUX_L14": 24,
+  "IMUX_L15": 24,
+  "IMUX_L16": 24,
+  "IMUX_L17": 24,
+  "IMUX_L18": 24,
+  "IMUX_L19": 24,
+  "IMUX_L2": 24,
+  "IMUX_L20": 24,
+  "IMUX_L21": 24,
+  "IMUX_L22": 24,
+  "IMUX_L23": 24,
+  "IMUX_L24": 24,
+  "IMUX_L25": 24,
+  "IMUX_L26": 24,
+  "IMUX_L27": 24,
+  "IMUX_L28": 24,
+  "IMUX_L29": 24,
+  "IMUX_L3": 24,
+  "IMUX_L30": 24,
+  "IMUX_L31": 24,
+  "IMUX_L32": 24,
+  "IMUX_L33": 24,
+  "IMUX_L34": 24,
+  "IMUX_L35": 24,
+  "IMUX_L36": 24,
+  "IMUX_L37": 24,
+  "IMUX_L38": 24,
+  "IMUX_L39": 24,
+  "IMUX_L4": 24,
+  "IMUX_L40": 24,
+  "IMUX_L41": 24,
+  "IMUX_L42": 24,
+  "IMUX_L43": 24,
+  "IMUX_L44": 24,
+  "IMUX_L45": 24,
+  "IMUX_L46": 24,
+  "IMUX_L47": 24,
+  "IMUX_L5": 24,
+  "IMUX_L6": 24,
+  "IMUX_L7": 24,
+  "IMUX_L8": 24,
+  "IMUX_L9": 24
+ },
+ "vcc_pip_list": [
+  [
+   "VCC_WIRE",
+   "BYP_ALT1"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT5"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT2"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT7"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L10"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L12"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L18"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L2"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L20"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L26"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L28"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L34"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L36"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L4"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L42"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L44"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT2"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT4"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT5"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT6"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L11"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L13"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L19"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L21"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L27"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L29"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L3"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L35"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L37"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L43"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L45"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L5"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT3"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT7"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT1"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L14"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L22"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L30"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L38"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L46"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L6"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT6"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT3"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L15"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L23"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L31"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L39"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L47"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L7"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT0"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L0"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L16"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L24"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L32"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L40"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L8"
+  ],
+  [
+   "VCC_WIRE",
+   "BYP_ALT0"
+  ],
+  [
+   "VCC_WIRE",
+   "FAN_ALT4"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L1"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L17"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L25"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L33"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L41"
+  ],
+  [
+   "VCC_WIRE",
+   "IMUX_L9"
+  ]
+ ],
+ "passthrough_pips": [
+  [
+   "BYP_ALT0",
+   "BYP_BOUNCE0"
+  ],
+  [
+   "BYP_ALT0",
+   "BYP_L0"
+  ],
+  [
+   "BYP_ALT1",
+   "BYP_BOUNCE1"
+  ],
+  [
+   "BYP_ALT1",
+   "BYP_L1"
+  ],
+  [
+   "BYP_ALT2",
+   "BYP_BOUNCE2"
+  ],
+  [
+   "BYP_ALT2",
+   "BYP_L2"
+  ],
+  [
+   "BYP_ALT3",
+   "BYP_BOUNCE3"
+  ],
+  [
+   "BYP_ALT3",
+   "BYP_L3"
+  ],
+  [
+   "BYP_ALT4",
+   "BYP_BOUNCE4"
+  ],
+  [
+   "BYP_ALT4",
+   "BYP_L4"
+  ],
+  [
+   "BYP_ALT5",
+   "BYP_BOUNCE5"
+  ],
+  [
+   "BYP_ALT5",
+   "BYP_L5"
+  ],
+  [
+   "BYP_ALT6",
+   "BYP_BOUNCE6"
+  ],
+  [
+   "BYP_ALT6",
+   "BYP_L6"
+  ],
+  [
+   "BYP_ALT7",
+   "BYP_BOUNCE7"
+  ],
+  [
+   "BYP_ALT7",
+   "BYP_L7"
+  ],
+  [
+   "FAN_ALT0",
+   "FAN_BOUNCE0"
+  ],
+  [
+   "FAN_ALT0",
+   "FAN_L0"
+  ],
+  [
+   "FAN_ALT1",
+   "FAN_BOUNCE1"
+  ],
+  [
+   "FAN_ALT1",
+   "FAN_L1"
+  ],
+  [
+   "FAN_ALT2",
+   "FAN_BOUNCE2"
+  ],
+  [
+   "FAN_ALT2",
+   "FAN_L2"
+  ],
+  [
+   "FAN_ALT3",
+   "FAN_BOUNCE3"
+  ],
+  [
+   "FAN_ALT3",
+   "FAN_L3"
+  ],
+  [
+   "FAN_ALT4",
+   "FAN_BOUNCE4"
+  ],
+  [
+   "FAN_ALT4",
+   "FAN_L4"
+  ],
+  [
+   "FAN_ALT5",
+   "FAN_BOUNCE5"
+  ],
+  [
+   "FAN_ALT5",
+   "FAN_L5"
+  ],
+  [
+   "FAN_ALT6",
+   "FAN_BOUNCE6"
+  ],
+  [
+   "FAN_ALT6",
+   "FAN_L6"
+  ],
+  [
+   "FAN_ALT7",
+   "FAN_BOUNCE7"
+  ],
+  [
+   "FAN_ALT7",
+   "FAN_L7"
+  ],
+  [
+   "GCLK_L_B10",
+   "GCLK_L_B10_EAST"
+  ],
+  [
+   "GCLK_L_B10",
+   "GCLK_L_B10_WEST"
+  ],
+  [
+   "GCLK_L_B11",
+   "GCLK_L_B11_EAST"
+  ],
+  [
+   "GCLK_L_B11",
+   "GCLK_L_B11_WEST"
+  ],
+  [
+   "GCLK_L_B6",
+   "GCLK_L_B6_EAST"
+  ],
+  [
+   "GCLK_L_B6",
+   "GCLK_L_B6_WEST"
+  ],
+  [
+   "GCLK_L_B7",
+   "GCLK_L_B7_EAST"
+  ],
+  [
+   "GCLK_L_B7",
+   "GCLK_L_B7_WEST"
+  ],
+  [
+   "GCLK_L_B8",
+   "GCLK_L_B8_EAST"
+  ],
+  [
+   "GCLK_L_B8",
+   "GCLK_L_B8_WEST"
+  ],
+  [
+   "GCLK_L_B9",
+   "GCLK_L_B9_EAST"
+  ],
+  [
+   "GCLK_L_B9",
+   "GCLK_L_B9_WEST"
+  ]
+ ],
+ "pip_bits_vcc_rows": 48,
+ "pip_bits_rows_touching_special": 3504,
+ "pip_bits_special_sample": [
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L10"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L10"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L12"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L12"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L18"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L18"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L2"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L2"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L20"
+  ],
+  [
+   "BYP_BOUNCE0",
+   "IMUX_L20"
+  ]
+ ],
+ "ref_active_tiles": 982,
+ "pool_cells_ever_set": 448,
+ "pool_cells_always_set": 0,
+ "pool_cells_set_rate_ge_90": 0,
+ "always_set_cells": [],
+ "set_rate_ge_90_cells": []
+}

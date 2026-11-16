@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
-"""decode_law.py —— 全器件 PIP 解码器（P0a，判据修正版）。
+"""decode_law.py —— 全器件 PIP 解码器（判据：族内精确匹配，2026-11-07）。
 
-判定口径（2026-10-27 与用户确认）：
-  只看 sense=1 的位（PIP 启用时应置 1 的格子）：
-    all-ones 且格数 >= --min-cells  → EXACT   （强证据：该 PIP 被使用）
-    all-ones 但格数 <  --min-cells  → WEAK    （2~3 格小掩码，随机命中率不可忽略）
-    否则                            → 不输出（视作未使用）
+判定口径（默认：精确匹配）
+  1. 取该 (tile_type, family) 全部 sense=1 的格，合成「位域」；
+     跨 family 零共享（1,598/1,598 独占）保证位域内只有本族的位。
+  2. 在实际位流里读出位域的 0/1 图案；
+  3. 与每个候选源的 pattern 要求**完全相等**——恰等是充要条件，不存在子集歧义。
+  4. tile 位域全 0 ⇒ 该族未使用，不输出。
 
-可选 --require-zero：额外要求 sense=0 的格子全为 0（更严，先默认关）。
+  实测（full8）：精确率 100%（误判 0），召回 96%；
+  旧判据会把子集源一起判中，full8 上误判 78~92 条。
+
+GCLK 直通
+  tile 的 (frame_off=0, parity=1, bit=16) 是「本 tile 有 GCLK 接入」的使能位，不编码线号；
+  线号由同 tile 的 CLK_L* family 选中源（形如 GCLK_L_B11_WEST）给出，两者合成真实 PIP。
+
+旧判据（仅用于对照）
+  --legacy-allones：all-ones 判据，配合 --min-cells（默认 4）分 EXACT/WEAK。
 
 用法：
   python v7re/export/decode_law.py design.bit --out pips.csv
+  python v7re/export/decode_law.py design.bit --legacy-allones --min-cells 4 --out old.csv
 """
 import argparse
 import json
@@ -32,10 +42,24 @@ BAND_ROWS = 50
 
 def load_cells(db):
     con = sqlite3.connect(db)
-    rows = con.execute(
-        "SELECT tile_type, family, src_wire, frame_off, bit, sense, parity "
-        "FROM law_cells ORDER BY tile_type, family, src_index, frame_off, bit"
-    ).fetchall()
+    # law_cells 是主编码（variant 0）；同族同 src 若在不同列/区块上有
+    # 另一套实测编码，放在 law_cells_var（variant>=1）。两者都参与判定：
+    # 一个 src 只要命中任一 variant 的全部 sense=1 格、且不在其 sense=0 格上
+    # 点火，即判为该 PIP 存在。见 STATUS §206。
+    has_var = con.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='law_cells_var'"
+    ).fetchone()
+    if has_var:
+        rows = con.execute(
+            "SELECT tile_type, family, src_wire, variant, frame_off, bit, "
+            "sense, parity FROM law_cells_all "
+            "ORDER BY tile_type, family, src_wire, variant, frame_off, bit"
+        ).fetchall()
+    else:
+        rows = [r[:3] + (0,) + r[3:] for r in con.execute(
+            "SELECT tile_type, family, src_wire, frame_off, bit, sense, parity "
+            "FROM law_cells ORDER BY tile_type, family, src_index, frame_off, bit"
+        ).fetchall()]
     bands = {}
     for band, col, s in con.execute("SELECT band,col,start_frame FROM far_bands"):
         bands.setdefault(band, {})[col] = s
@@ -139,6 +163,8 @@ def main():
     ap.add_argument("--db", default=r"E:\v7work\model\v7_law.sqlite")
     ap.add_argument("--out", default="pips.csv")
     ap.add_argument("--tiles", help="只解码这些 tile（pips json 里的 tile 字段）")
+    ap.add_argument("--legacy-allones", action="store_true",
+                    help="用旧的 all-ones 判据（会引入子集歧义，仅用于对照）")
     ap.add_argument("--min-cells", type=int, default=4,
                     help="EXACT 要求的 sense=1 格数下限（默认 4）")
     ap.add_argument("--require-zero", action="store_true",
@@ -181,9 +207,9 @@ def main():
             base_cache[tt] = b
 
         groups = {}
-        for (tt, fam, src, off, bit, sense, parity) in cells:
-            groups.setdefault((tt, fam), {}).setdefault(src, []).append(
-                (off, bit, sense, parity))
+        for (tt, fam, src, var, off, bit, sense, parity) in cells:
+            groups.setdefault((tt, fam), {}).setdefault(src, {}).setdefault(
+                var, []).append((off, bit, sense, parity))
 
         out_rows = []
         n_exact = n_weak = 0
@@ -196,38 +222,97 @@ def main():
                 continue
             base_t = base[idx]
             y_t = y_arr[idx]
-            for src, cl in srcs.items():
-                arr = np.array(cl, dtype=np.int64)
-                off, bit, sense, parity = (arr[:, 0], arr[:, 1],
-                                           arr[:, 2], arr[:, 3])
-                m1 = sense > 0
-                if not m1.any():
+            if a.legacy_allones:
+                for src, varmap in srcs.items():
+                    for cl in varmap.values():
+                        arr = np.array(cl, dtype=np.int64)
+                        off, bit, sense, parity = (arr[:, 0], arr[:, 1],
+                                                   arr[:, 2], arr[:, 3])
+                        m1 = sense > 0
+                        if not m1.any():
+                            continue
+                        frames = base_t[:, None] + off[None, m1]
+                        words = word_of(y_t[:, None], parity[None, m1])
+                        f_safe = np.clip(frames, 0, M.shape[0] - 1)
+                        vals = M[f_safe, words, bit[None, m1]] > 0
+                        ok = (frames >= 0) & (frames < M.shape[0])
+                        ones = (vals & ok).all(axis=1)
+                        if a.require_zero:
+                            m0 = ~m1
+                            if m0.any():
+                                f0 = np.clip(base_t[:, None] + off[None, m0],
+                                             0, M.shape[0] - 1)
+                                v0 = M[f0,
+                                       word_of(y_t[:, None], parity[None, m0]),
+                                       bit[None, m0]] > 0
+                                ones &= (~v0).all(axis=1)
+                        n1 = int(m1.sum())
+                        tag = "EXACT" if n1 >= a.min_cells else "WEAK"
+                        sel = np.nonzero(ones)[0]
+                        for t in sel:
+                            out_rows.append((names[idx[t]], fam, src, tag, n1))
+                        if tag == "EXACT":
+                            n_exact += sel.size
+                        else:
+                            n_weak += sel.size
+                continue
+            domain = sorted({(int(o), int(b), int(p))
+                             for varmap in srcs.values()
+                             for cl in varmap.values()
+                             for (o, b, s, p) in cl if s > 0})
+            if not domain:
+                continue
+            d_off = np.array([d[0] for d in domain], dtype=np.int64)
+            d_bit = np.array([d[1] for d in domain], dtype=np.int64)
+            d_par = np.array([d[2] for d in domain], dtype=np.int64)
+            frames_d = base_t[:, None] + d_off[None, :]
+            f_safe_d = np.clip(frames_d, 0, M.shape[0] - 1)
+            obs = (M[f_safe_d, word_of(y_t[:, None], d_par[None, :]),
+                     d_bit[None, :]] > 0) & \
+                  (frames_d >= 0) & (frames_d < M.shape[0])
+            pos = {d: i for i, d in enumerate(domain)}
+            for src, varmap in srcs.items():
+                # 每个 variant 一种模式；src 命中任一 variant 即判存在
+                hit = np.zeros(len(idx), dtype=bool)
+                n1_best = 0
+                for cl in varmap.values():
+                    pat = np.zeros(len(domain), dtype=bool)
+                    n1 = 0
+                    for (o, b, s, pp) in cl:
+                        if s > 0:
+                            pat[pos[(int(o), int(b), int(pp))]] = True
+                            n1 += 1
+                    if n1 == 0:
+                        continue
+                    match = (obs == pat[None, :]).all(axis=1)
+                    hit |= match
+                    n1_best = max(n1_best, n1)
+                if n1_best == 0:
                     continue
-                frames = base_t[:, None] + off[None, m1]
-                words = word_of(y_t[:, None], parity[None, m1])
-                f_safe = np.clip(frames, 0, M.shape[0] - 1)
-                vals = M[f_safe, words, bit[None, m1]] > 0
-                ok = (frames >= 0) & (frames < M.shape[0])
-                ones = (vals & ok).all(axis=1)
-                if a.require_zero:
-                    m0 = ~m1
-                    if m0.any():
-                        f0 = np.clip(base_t[:, None] + off[None, m0],
-                                     0, M.shape[0] - 1)
-                        v0 = M[f0, word_of(y_t[:, None], parity[None, m0]),
-                               bit[None, m0]] > 0
-                        ones &= (~v0).all(axis=1)
-                n1 = int(m1.sum())
-                if n1 >= a.min_cells:
-                    sel = np.nonzero(ones)[0]
-                    for t in sel:
-                        out_rows.append((names[idx[t]], fam, src, "EXACT", n1))
-                    n_exact += sel.size
-                else:
-                    sel = np.nonzero(ones)[0]
-                    for t in sel:
-                        out_rows.append((names[idx[t]], fam, src, "WEAK", n1))
-                    n_weak += sel.size
+                for t in np.nonzero(hit)[0]:
+                    out_rows.append((names[idx[t]], fam, src, "EXACT", n1_best))
+                    n_exact += 1
+
+        # GCLK 直通还原：tile 的 (frame_off=0, parity=1, bit=16) 是「本 tile 有 GCLK 接入」
+        # 的使能位（不编码线号）；线号由同 tile 的 CLK_L* family 选中源给出。两者合成真实 PIP。
+        name_pos = {n: i for i, n in enumerate(names)}
+        clk_src = {}
+        for r in out_rows:
+            if r[1].startswith("CLK_L") and r[2].startswith("GCLK_L_B"):
+                clk_src.setdefault(r[0], set()).add(r[2])
+        have = {(r[0], r[1], r[2]) for r in out_rows}
+        for tile_name, srcs in clk_src.items():
+            i = name_pos[tile_name]
+            if not M[base_cache["INT_L"][i] if tt_arr[i] == "INT_L"
+                     else base_cache["INT_R"][i],
+                      word_of(y_arr[i], 1), 16]:
+                continue
+            for s in srcs:
+                line = s.rsplit("_", 1)[0]          # GCLK_L_B11_WEST -> GCLK_L_B11
+                if (tile_name, s, line) in have:
+                    continue
+                out_rows.append((tile_name, s, line, "EXACT", 1))
+                n_exact += 1
 
         n_clb = 0
         if clb is not None:

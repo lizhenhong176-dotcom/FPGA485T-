@@ -1,0 +1,660 @@
+[
+{
+"tile": "INT_L_X8Y11",
+"fam": "WL1BEG2",
+"src": "SW6END3",
+"base": 31752,
+"w0": 22
+},
+{
+"tile": "INT_L_X8Y11",
+"fam": "WR1BEG2",
+"src": "WW4END1",
+"base": 31752,
+"w0": 22
+},
+{
+"tile": "INT_L_X8Y11",
+"fam": "WW2BEG0",
+"src": "SW6END0",
+"base": 31752,
+"w0": 22
+},
+{
+"tile": "INT_L_X8Y17",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31752,
+"w0": 34
+},
+{
+"tile": "INT_L_X8Y15",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 31752,
+"w0": 30
+},
+{
+"tile": "INT_L_X8Y16",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31752,
+"w0": 32
+},
+{
+"tile": "INT_R_X17Y24",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32060,
+"w0": 48
+},
+{
+"tile": "INT_L_X28Y35",
+"fam": "SW6BEG0",
+"src": "LV_L0",
+"base": 32432,
+"w0": 71
+},
+{
+"tile": "INT_L_X28Y43",
+"fam": "WW4BEG1",
+"src": "SW6END0",
+"base": 32432,
+"w0": 87
+},
+{
+"tile": "INT_L_X28Y40",
+"fam": "WW4BEG1",
+"src": "SW6END0",
+"base": 32432,
+"w0": 81
+},
+{
+"tile": "INT_L_X28Y31",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32432,
+"w0": 63
+},
+{
+"tile": "INT_L_X28Y47",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32432,
+"w0": 95
+},
+{
+"tile": "INT_L_X28Y48",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32432,
+"w0": 97
+},
+{
+"tile": "INT_L_X28Y53",
+"fam": "LV_L18",
+"src": "WW4END0",
+"base": 27186,
+"w0": 6
+},
+{
+"tile": "INT_L_X28Y55",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 27186,
+"w0": 10
+},
+{
+"tile": "INT_L_X28Y51",
+"fam": "SW6BEG0",
+"src": "WW4END1",
+"base": 27186,
+"w0": 2
+},
+{
+"tile": "INT_L_X28Y51",
+"fam": "SW6BEG3",
+"src": "WW4END_S0_0",
+"base": 27186,
+"w0": 2
+},
+{
+"tile": "INT_L_X18Y11",
+"fam": "NE6BEG0",
+"src": "EE4END0",
+"base": 32096,
+"w0": 22
+},
+{
+"tile": "INT_L_X18Y15",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32096,
+"w0": 30
+},
+{
+"tile": "INT_L_X18Y35",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32096,
+"w0": 71
+},
+{
+"tile": "INT_L_X18Y31",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32096,
+"w0": 63
+},
+{
+"tile": "INT_L_X18Y31",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32096,
+"w0": 63
+},
+{
+"tile": "INT_L_X18Y28",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32096,
+"w0": 57
+},
+{
+"tile": "INT_L_X18Y27",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32096,
+"w0": 55
+},
+{
+"tile": "INT_L_X18Y36",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32096,
+"w0": 73
+},
+{
+"tile": "INT_R_X19Y28",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32132,
+"w0": 57
+},
+{
+"tile": "INT_L_X22Y19",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32232,
+"w0": 38
+},
+{
+"tile": "INT_L_X22Y36",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32232,
+"w0": 73
+},
+{
+"tile": "INT_L_X22Y35",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32232,
+"w0": 71
+},
+{
+"tile": "INT_L_X22Y39",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32232,
+"w0": 79
+},
+{
+"tile": "INT_L_X22Y39",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32232,
+"w0": 79
+},
+{
+"tile": "INT_L_X22Y23",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32232,
+"w0": 46
+},
+{
+"tile": "INT_L_X22Y43",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32232,
+"w0": 87
+},
+{
+"tile": "INT_L_X16Y11",
+"fam": "WW4BEG1",
+"src": "SW6END0",
+"base": 32024,
+"w0": 22
+},
+{
+"tile": "INT_L_X16Y31",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32024,
+"w0": 63
+},
+{
+"tile": "INT_L_X16Y32",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32024,
+"w0": 65
+},
+{
+"tile": "INT_L_X16Y27",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32024,
+"w0": 55
+},
+{
+"tile": "INT_L_X16Y27",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32024,
+"w0": 55
+},
+{
+"tile": "INT_L_X16Y24",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32024,
+"w0": 48
+},
+{
+"tile": "INT_L_X16Y23",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32024,
+"w0": 46
+},
+{
+"tile": "INT_R_X7Y11",
+"fam": "WL1BEG0",
+"src": "WR1END2",
+"base": 31716,
+"w0": 22
+},
+{
+"tile": "INT_R_X7Y11",
+"fam": "WL1BEG1",
+"src": "WL1END2",
+"base": 31716,
+"w0": 22
+},
+{
+"tile": "INT_R_X7Y12",
+"fam": "SW2BEG3",
+"src": "WW2END3",
+"base": 31716,
+"w0": 24
+},
+{
+"tile": "INT_R_X25Y40",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32332,
+"w0": 81
+},
+{
+"tile": "INT_R_X31Y51",
+"fam": "NE2BEG0",
+"src": "LOGIC_OUTS8",
+"base": 27286,
+"w0": 2
+},
+{
+"tile": "INT_R_X31Y51",
+"fam": "WW4BEG0",
+"src": "NW2END0",
+"base": 27286,
+"w0": 2
+},
+{
+"tile": "INT_L_X30Y35",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32496,
+"w0": 71
+},
+{
+"tile": "INT_L_X30Y59",
+"fam": "EE2BEG0",
+"src": "NE6END0",
+"base": 27250,
+"w0": 18
+},
+{
+"tile": "INT_L_X30Y52",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 27250,
+"w0": 4
+},
+{
+"tile": "INT_L_X30Y51",
+"fam": "ER1BEG1",
+"src": "SW6END0",
+"base": 27250,
+"w0": 2
+},
+{
+"tile": "INT_L_X30Y51",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 27250,
+"w0": 2
+},
+{
+"tile": "INT_L_X30Y47",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32496,
+"w0": 95
+},
+{
+"tile": "INT_L_X30Y44",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32496,
+"w0": 89
+},
+{
+"tile": "INT_L_X24Y39",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32296,
+"w0": 79
+},
+{
+"tile": "INT_L_X24Y40",
+"fam": "SW6BEG0",
+"src": "WW4END1",
+"base": 32296,
+"w0": 81
+},
+{
+"tile": "INT_L_X24Y40",
+"fam": "WW4BEG1",
+"src": "SW6END0",
+"base": 32296,
+"w0": 81
+},
+{
+"tile": "INT_L_X24Y23",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32296,
+"w0": 46
+},
+{
+"tile": "INT_L_X24Y27",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 32296,
+"w0": 55
+},
+{
+"tile": "INT_L_X24Y25",
+"fam": "LH0",
+"src": "LV_L0",
+"base": 32296,
+"w0": 51
+},
+{
+"tile": "INT_L_X24Y43",
+"fam": "LV_L18",
+"src": "SW6END0",
+"base": 32296,
+"w0": 87
+},
+{
+"tile": "INT_L_X24Y43",
+"fam": "SW6BEG0",
+"src": "WW4END1",
+"base": 32296,
+"w0": 87
+},
+{
+"tile": "INT_L_X24Y43",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32296,
+"w0": 87
+},
+{
+"tile": "INT_L_X24Y47",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 32296,
+"w0": 95
+},
+{
+"tile": "INT_R_X27Y50",
+"fam": "SS6BEG3",
+"src": "WW4END_S0_0",
+"base": 27150,
+"w0": 0
+},
+{
+"tile": "INT_R_X27Y44",
+"fam": "SW6BEG3",
+"src": "SS6END3",
+"base": 32396,
+"w0": 89
+},
+{
+"tile": "INT_L_X10Y12",
+"fam": "WW4BEG1",
+"src": "SW6END0",
+"base": 31824,
+"w0": 24
+},
+{
+"tile": "INT_L_X10Y11",
+"fam": "EE4BEG0",
+"src": "EE4END0",
+"base": 31824,
+"w0": 22
+},
+{
+"tile": "INT_L_X10Y11",
+"fam": "WW4BEG1",
+"src": "SW6END0",
+"base": 31824,
+"w0": 22
+},
+{
+"tile": "INT_L_X10Y15",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31824,
+"w0": 30
+},
+{
+"tile": "INT_L_X10Y15",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 31824,
+"w0": 30
+},
+{
+"tile": "INT_L_X10Y19",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 31824,
+"w0": 38
+},
+{
+"tile": "INT_L_X10Y20",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31824,
+"w0": 40
+},
+{
+"tile": "INT_L_X10Y21",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31824,
+"w0": 42
+},
+{
+"tile": "INT_R_X9Y12",
+"fam": "WW2BEG3",
+"src": "WW2END3",
+"base": 31788,
+"w0": 24
+},
+{
+"tile": "INT_R_X13Y16",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 31924,
+"w0": 32
+},
+{
+"tile": "INT_L_X6Y13",
+"fam": "SR1BEG1",
+"src": "SW6END0",
+"base": 31680,
+"w0": 26
+},
+{
+"tile": "INT_L_X6Y12",
+"fam": "SR1BEG1",
+"src": "WW4END1",
+"base": 31680,
+"w0": 24
+},
+{
+"tile": "INT_L_X6Y12",
+"fam": "SR1BEG2",
+"src": "SR1END1",
+"base": 31680,
+"w0": 24
+},
+{
+"tile": "INT_L_X6Y12",
+"fam": "SW2BEG0",
+"src": "SW6END0",
+"base": 31680,
+"w0": 24
+},
+{
+"tile": "INT_L_X6Y11",
+"fam": "CLK_L1",
+"src": "GCLK_L_B11_WEST",
+"base": 31680,
+"w0": 22
+},
+{
+"tile": "INT_L_X6Y11",
+"fam": "CTRL_L1",
+"src": "SR1END2",
+"base": 31680,
+"w0": 22
+},
+{
+"tile": "INT_L_X6Y11",
+"fam": "EE4BEG0",
+"src": "LOGIC_OUTS_L12",
+"base": 31680,
+"w0": 22
+},
+{
+"tile": "INT_L_X6Y11",
+"fam": "GFAN0",
+"src": "WW4END1",
+"base": 31680,
+"w0": 22
+},
+{
+"tile": "INT_L_X6Y11",
+"fam": "NE6BEG0",
+"src": "LOGIC_OUTS_L4",
+"base": 31680,
+"w0": 22
+},
+{
+"tile": "INT_L_X12Y11",
+"fam": "WW4BEG1",
+"src": "WW4END1",
+"base": 31888,
+"w0": 22
+},
+{
+"tile": "INT_L_X12Y15",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31888,
+"w0": 30
+},
+{
+"tile": "INT_L_X12Y19",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31888,
+"w0": 38
+},
+{
+"tile": "INT_L_X12Y19",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 31888,
+"w0": 38
+},
+{
+"tile": "INT_L_X12Y16",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31888,
+"w0": 32
+},
+{
+"tile": "INT_L_X12Y25",
+"fam": "SW6BEG0",
+"src": "LH12",
+"base": 31888,
+"w0": 51
+},
+{
+"tile": "INT_L_X12Y24",
+"fam": "SW6BEG0",
+"src": "SW6END0",
+"base": 31888,
+"w0": 48
+},
+{
+"tile": "INT_L_X12Y23",
+"fam": "NE6BEG0",
+"src": "NE6END0",
+"base": 31888,
+"w0": 46
+},
+{
+"tile": "INT_R_X15Y20",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 31988,
+"w0": 40
+},
+{
+"tile": "INT_R_X21Y32",
+"fam": "SW6BEG3",
+"src": "SW6END3",
+"base": 32196,
+"w0": 65
+}
+]

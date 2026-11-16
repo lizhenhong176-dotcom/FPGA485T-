@@ -1,0 +1,15 @@
+{
+  "bitstream": "_full8.bit",
+  "setbits": 1122,
+  "baseline": {
+    "unexplained": 0,
+    "slot_violations": 0,
+    "active_tiles": 76
+  },
+  "verify_analytic": {
+    "n": 120,
+    "agree": 120,
+    "agree_pct": 100.0,
+    "mismatch": []
+  }
+}

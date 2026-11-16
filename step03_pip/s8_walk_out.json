@@ -1,0 +1,248 @@
+{
+ "LOGIC_OUTS8": {
+  "seed_pip": "NE2BEG0<-LOGIC_OUTS8",
+  "status": "io",
+  "n_nodes": 2,
+  "chain": [
+   [
+    "INT_R_X31Y51",
+    "NE2BEG0"
+   ],
+   [
+    "LIOB18_X81Y56",
+    "LIOB_NE2A0_0"
+   ]
+  ]
+ },
+ "LOGIC_OUTS18": {
+  "seed_pip": "SS6BEG0<-LOGIC_OUTS18",
+  "status": "deadend",
+  "n_nodes": 1,
+  "chain": [
+   [
+    "INT_R_X33Y50",
+    "SS6BEG0"
+   ]
+  ]
+ },
+ "LOGIC_OUTS21": {
+  "seed_pip": "SS6BEG3<-LOGIC_OUTS21",
+  "status": "deadend",
+  "n_nodes": 1,
+  "chain": [
+   [
+    "INT_R_X33Y50",
+    "SS6BEG3"
+   ]
+  ]
+ },
+ "LOGIC_OUTS_L12": {
+  "seed_pip": "EE4BEG0<-LOGIC_OUTS_L12",
+  "status": "io",
+  "n_nodes": 20,
+  "chain": [
+   [
+    "INT_L_X6Y11",
+    "EE4BEG0"
+   ],
+   [
+    "INT_L_X10Y11",
+    "EE4END0"
+   ],
+   [
+    "INT_L_X10Y11",
+    "EE4BEG0"
+   ],
+   [
+    "INT_L_X14Y11",
+    "EE4END0"
+   ],
+   [
+    "INT_L_X14Y11",
+    "EE4BEG0"
+   ],
+   [
+    "INT_L_X18Y11",
+    "EE4END0"
+   ],
+   [
+    "INT_L_X18Y11",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X20Y15",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X20Y15",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X22Y19",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X22Y19",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X24Y23",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X24Y23",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X26Y27",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X26Y27",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X28Y31",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X28Y31",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X30Y35",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X30Y35",
+    "NE6BEG0"
+   ],
+   [
+    "LIOB18_X81Y41",
+    "LIOB_NE4C0_0"
+   ]
+  ]
+ },
+ "LOGIC_OUTS_L4": {
+  "seed_pip": "NE6BEG0<-LOGIC_OUTS_L4",
+  "status": "io",
+  "n_nodes": 26,
+  "chain": [
+   [
+    "INT_L_X6Y11",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X8Y15",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X8Y15",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X10Y19",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X10Y19",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X12Y23",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X12Y23",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X14Y27",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X14Y27",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X16Y31",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X16Y31",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X18Y35",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X18Y35",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X20Y39",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X20Y39",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X22Y43",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X22Y43",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X24Y47",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X24Y47",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X26Y51",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X26Y51",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X28Y55",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X28Y55",
+    "NE6BEG0"
+   ],
+   [
+    "INT_L_X30Y59",
+    "NE6END0"
+   ],
+   [
+    "INT_L_X30Y59",
+    "EE2BEG0"
+   ],
+   [
+    "LIOB18_X81Y62",
+    "LIOB_EE2A0_0"
+   ]
+  ]
+ },
+ "LOGIC_OUTS_L18": {
+  "seed_pip": "NW2BEG0<-LOGIC_OUTS_L18",
+  "status": "budget",
+  "n_nodes": 1,
+  "chain": [
+   [
+    "INT_L_X32Y50",
+    "NW2BEG0"
+   ]
+  ]
+ }
+}

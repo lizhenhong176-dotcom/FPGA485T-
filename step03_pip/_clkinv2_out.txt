@@ -1,0 +1,47 @@
+﻿=== FILES ===
+total 64
+drwxr-xr-x  3 root root  4096 Oct 28 22:47 .
+drwxr-xr-x 43 root root  4096 Oct 28 22:47 ..
+drwxr-xr-x  3 root root  4096 Oct 28 22:47 .Xil
+-rwxr-xr-x  1 root root   413 Oct 28 22:48 _run.sh
+-rw-r--r--  1 root root  4286 Oct 28 22:48 diff_clkinv.py
+-rw-r--r--  1 root root   476 Oct 28 22:48 stage_inv.tcl
+-rw-r--r--  1 root root   471 Oct 28 22:48 stage_ref.tcl
+-rw-r--r--  1 root root   181 Oct 28 22:48 top_inv.v
+-rw-r--r--  1 root root   159 Oct 28 22:48 top_ref.v
+-rw-r--r--  1 root root   566 Oct 28 22:47 vivado.jou
+-rw-r--r--  1 root root 17714 Oct 28 22:48 vivado.log
+=== RUNNING ===
+=== Building ref (normal clock) ===
+
+Refer to the device configuration user guide for more information.
+WARNING: [DRC CHECK-1] Report disabled checks: The following rules are disabled: PDCN-1568, PDCN-1569
+report_drc (run_mandatory_drcs) completed successfully
+INFO: [Vivado 12-3199] DRC finished with 2 Errors, 2 Warnings
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+ERROR: [Vivado 12-1345] Error(s) found during DRC. Bitgen not run.
+32 Infos, 4 Warnings, 0 Critical Warnings and 3 Errors encountered.
+write_bitstream failed
+ERROR: [Common 17-39] 'write_bitstream' failed due to earlier errors.
+
+    while executing
+"write_bitstream -force ref.bit"
+    (file "stage_ref.tcl" line 12)
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 28 22:49:35 2026...
+=== Building variant (inverted clock) ===
+
+Refer to the device configuration user guide for more information.
+WARNING: [DRC CHECK-1] Report disabled checks: The following rules are disabled: PDCN-1568, PDCN-1569
+report_drc (run_mandatory_drcs) completed successfully
+INFO: [Vivado 12-3199] DRC finished with 2 Errors, 2 Warnings
+INFO: [Vivado 12-3200] Please refer to the DRC report (report_drc) for more information.
+ERROR: [Vivado 12-1345] Error(s) found during DRC. Bitgen not run.
+32 Infos, 4 Warnings, 0 Critical Warnings and 3 Errors encountered.
+write_bitstream failed
+ERROR: [Common 17-39] 'write_bitstream' failed due to earlier errors.
+
+    while executing
+"write_bitstream -force v_clkinv.bit"
+    (file "stage_inv.tcl" line 12)
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 28 22:50:47 2026...
+=== Diff ===

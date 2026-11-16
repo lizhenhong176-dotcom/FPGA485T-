@@ -156,10 +156,16 @@ def build_site_addr(tiles, blocks, device=DEVICE):
     return rows, missing
 
 
-def emit_site_frames(addr_rows, cells, device=DEVICE, sel=None, locked=None):
-    out = []
-    skipped_type = {}
-    n_locked = 0
+def iter_site_frames(addr_rows, cells, device=DEVICE, sel=None, locked=None,
+                     skipped_type=None, counter=None):
+    """逐行生成 site_frames（生成器）。全量 36,799,100 行不能一次进内存：
+    list 版本约需 8 GB，而 2026-11-13 实测本机可用内存不足 1 GB。
+    skipped_type/counter 由调用方传入字典以便生成结束后读取统计。"""
+    if skipped_type is None:
+        skipped_type = {}
+    if counter is None:
+        counter = {}
+    counter["locked_init"] = 0
     group_base = {}
     for (dev, site, tt, gc, inst, y, band, base, w0, src) in addr_rows:
         if sel is not None and site not in sel:
@@ -200,14 +206,22 @@ def emit_site_frames(addr_rows, cells, device=DEVICE, sel=None, locked=None):
                 off = gb + rel
                 bit = bit_plus + bit_in16
                 src_tag = SOURCE_LOCKED
-                n_locked += 1
+                counter["locked_init"] += 1
             frame = base + off
             if frame < 0 or frame > 50175:
                 continue
-            out.append((dev, site, bel, feature, frame,
-                        w0 + parity, bit, src_tag))
+            yield (dev, site, bel, feature, frame, w0 + parity, bit, src_tag)
+
+
+def emit_site_frames(addr_rows, cells, device=DEVICE, sel=None, locked=None):
+    """list 版本（小批量 / 校验用）。全量请用 iter_site_frames + 分块写库。"""
+    skipped_type = {}
+    counter = {}
+    out = list(iter_site_frames(addr_rows, cells, device=device, sel=sel,
+                                locked=locked, skipped_type=skipped_type,
+                                counter=counter))
     if locked is not None:
-        skipped_type.setdefault("_locked_init_rows", n_locked)
+        skipped_type.setdefault("_locked_init_rows", counter["locked_init"])
     return out, skipped_type
 
 
@@ -224,17 +238,40 @@ def write_site_addr(model_db, rows):
         con.close()
 
 
-def write_site_frames(model_db, rows, replace=False):
+INDEX_SITE_FRAMES = ("CREATE INDEX IF NOT EXISTS idx_site_frames_site "
+                     "ON site_frames(device, site, bel)")
+INSERT_SITE_FRAMES = "INSERT OR REPLACE INTO site_frames VALUES (?,?,?,?,?,?,?,?)"
+
+
+def write_site_frames(model_db, rows, replace=False, chunk=200000):
+    """分块写库。rows 可以是 list 或生成器（全量 3,680 万行走生成器）。
+
+    replace=True 时先删二级索引再批量插入、最后重建索引：36.8M 行带 2 个索引
+    写入会把构建时间拉长数倍，且临时占用更大。主键 autoindex 无法单独删除，
+    保留（它是去重语义的一部分）。
+    """
     con = sqlite3.connect(model_db)
     con.isolation_level = None          # 同上：DELETE 后紧跟显式 BEGIN 必须在自动提交模式下
     try:
         if replace:
+            con.execute("DROP INDEX IF EXISTS idx_site_frames_site")
             con.execute("DELETE FROM site_frames")
         con.execute("BEGIN")
-        con.executemany(
-            "INSERT OR REPLACE INTO site_frames VALUES (?,?,?,?,?,?,?,?)",
-            [(d, s, b, f, fr, w, bi, src) for (d, s, b, f, fr, w, bi, src) in rows])
+        buf = []
+        n = 0
+        for row in rows:
+            buf.append(row)
+            if len(buf) >= chunk:
+                con.executemany(INSERT_SITE_FRAMES, buf)
+                n += len(buf)
+                buf = []
+        if buf:
+            con.executemany(INSERT_SITE_FRAMES, buf)
+            n += len(buf)
         con.commit()
+        if replace:
+            con.execute(INDEX_SITE_FRAMES)
+        return n
     finally:
         con.close()
 
@@ -479,17 +516,21 @@ def main():
             rows_in = rows_in[:a.limit]
         if not a.all:
             sel = {r[1] for r in rows_in}
-        sf_rows, skipped = emit_site_frames(addr_rows if not sel else rows_in, cells,
-                                            locked=locked)
-        n_locked = skipped.pop("_locked_init_rows", 0)
-        if skipped:
-            print("  跳过的 (tile_type,inst)：", skipped)
-        print("site_frames 生成 %d 行（slice %d 个，其中锁定 INIT 行 %d）"
-              % (len(sf_rows), len({r[1] for r in sf_rows}), n_locked))
+        skipped, counter = {}, {}
+        gen = iter_site_frames(addr_rows if not sel else rows_in, cells,
+                               locked=locked, skipped_type=skipped, counter=counter)
         if a.dry_run:
+            n_rows, sites = 0, set()
+            for r in gen:
+                n_rows += 1
+                sites.add(r[1])
+            print("site_frames 生成 %d 行（slice %d 个，其中锁定 INIT 行 %d）"
+                  % (n_rows, len(sites), counter["locked_init"]))
             print("  只生成不写库（--dry-run）")
             return 0
-        write_site_frames(a.model_db, sf_rows, replace=a.replace)
+        n_rows = write_site_frames(a.model_db, gen, replace=a.replace)
+        print("site_frames 写入 %d 行（其中锁定 INIT 行 %d；跳过档 %s）"
+              % (n_rows, counter["locked_init"], skipped or "无"))
         print("site_frames 写入完成 (%.1fs, 库 %.1f MB)"
               % (time.time() - t0, os.path.getsize(a.model_db) / 1e6))
     return 0

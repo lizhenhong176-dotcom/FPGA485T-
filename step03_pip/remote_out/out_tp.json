@@ -1,0 +1,6429 @@
+{
+ "summary": {
+  "cache_diff": 0,
+  "cache_none": 0,
+  "cache_same": 864,
+  "items": 36,
+  "mode": "merged",
+  "parsed_bits": 936,
+  "parts": 12,
+  "seconds": 534.8,
+  "verdicts": {
+   "EXACT": 864,
+   "EXTRA": 0,
+   "MIX": 0,
+   "NO_SHAPE": 36,
+   "SUB": 0
+  }
+ },
+ "tags": {
+  "SLICE_X8Y11_A6LUT_A1": {
+   "sink": "IMUX_L7",
+   "sources": {
+    "BYP_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L15": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L21": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END_S0_0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_A6LUT_A2": {
+   "sink": "IMUX_L2",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L19": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L9": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_A6LUT_A3": {
+   "sink": "IMUX_L1",
+   "sources": {
+    "BYP_BOUNCE_N3_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L18": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L8": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_A6LUT_A4": {
+   "sink": "IMUX_L11",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L13": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L23": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_A6LUT_A5": {
+   "sink": "IMUX_L8",
+   "sources": {
+    "BYP_BOUNCE_N3_2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L12": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L22": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END_N1_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_A6LUT_A6": {
+   "sink": "IMUX_L4",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L14": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L20": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_B6LUT_A1": {
+   "sink": "IMUX_L15",
+   "sources": {
+    "BYP_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L15": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L21": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END_S0_0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_B6LUT_A2": {
+   "sink": "IMUX_L18",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L19": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L9": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_B6LUT_A3": {
+   "sink": "IMUX_L17",
+   "sources": {
+    "BYP_BOUNCE_N3_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L18": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L8": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_B6LUT_A4": {
+   "sink": "IMUX_L27",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L13": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L23": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_B6LUT_A5": {
+   "sink": "IMUX_L24",
+   "sources": {
+    "BYP_BOUNCE_N3_2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L12": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L22": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X8Y11_B6LUT_A6": {
+   "sink": "IMUX_L12",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L14": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L20": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_A6LUT_A1": {
+   "sink": "IMUX_L6",
+   "sources": {
+    "BYP_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L11": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L17": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_A6LUT_A2": {
+   "sink": "IMUX_L3",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L13": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L23": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_A6LUT_A3": {
+   "sink": "IMUX_L0",
+   "sources": {
+    "BYP_BOUNCE_N3_2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L12": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L22": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END_N1_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_A6LUT_A4": {
+   "sink": "IMUX_L10",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L19": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L9": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_A6LUT_A5": {
+   "sink": "IMUX_L9",
+   "sources": {
+    "BYP_BOUNCE_N3_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L18": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L8": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_A6LUT_A6": {
+   "sink": "IMUX_L5",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L10": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L16": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_B6LUT_A1": {
+   "sink": "IMUX_L14",
+   "sources": {
+    "BYP_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L11": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L17": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_B6LUT_A2": {
+   "sink": "IMUX_L19",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L13": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L23": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_B6LUT_A3": {
+   "sink": "IMUX_L16",
+   "sources": {
+    "BYP_BOUNCE_N3_2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L12": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L22": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END_N3_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END_N1_3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END_N0_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_B6LUT_A4": {
+   "sink": "IMUX_L26",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L19": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L9": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_B6LUT_A5": {
+   "sink": "IMUX_L25",
+   "sources": {
+    "BYP_BOUNCE_N3_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L18": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L8": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_B6LUT_A6": {
+   "sink": "IMUX_L13",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L10": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L16": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_C6LUT_A1": {
+   "sink": "IMUX_L33",
+   "sources": {
+    "BYP_BOUNCE_N3_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L18": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L8": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_C6LUT_A2": {
+   "sink": "IMUX_L20",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L14": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L20": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_C6LUT_A3": {
+   "sink": "IMUX_L23",
+   "sources": {
+    "BYP_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L15": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L21": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END_S0_0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_C6LUT_A4": {
+   "sink": "IMUX_L21",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L10": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L16": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_C6LUT_A5": {
+   "sink": "IMUX_L30",
+   "sources": {
+    "BYP_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L11": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L17": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_C6LUT_A6": {
+   "sink": "IMUX_L34",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L19": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L9": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_D6LUT_A1": {
+   "sink": "IMUX_L41",
+   "sources": {
+    "BYP_BOUNCE_N3_3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_7": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L18": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L8": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_D6LUT_A2": {
+   "sink": "IMUX_L36",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L14": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L20": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_D6LUT_A3": {
+   "sink": "IMUX_L39",
+   "sources": {
+    "BYP_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L15": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L21": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END_S3_0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END_S2_0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END_S0_0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END_S1_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_D6LUT_A4": {
+   "sink": "IMUX_L37",
+   "sources": {
+    "BYP_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE5": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_4": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L10": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L16": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L6": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_D6LUT_A5": {
+   "sink": "IMUX_L46",
+   "sources": {
+    "BYP_BOUNCE2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE4": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE_S3_2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L11": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L17": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1BEG_N3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1END2": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END3": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END3": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END2": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  },
+  "SLICE_X9Y11_D6LUT_A6": {
+   "sink": "IMUX_L42",
+   "sources": {
+    "BYP_BOUNCE0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "BYP_BOUNCE_N3_6": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "EL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "ER1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "FAN_BOUNCE7": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "GFAN0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L19": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L5": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "LOGIC_OUTS_L9": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NN2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "NR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "NW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SE2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SR1BEG_S0": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "SS2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "SW2END1": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    },
+    "VCC_WIRE": {
+     "obs": 0,
+     "verdict": "NO_SHAPE"
+    },
+    "WL1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WR1END1": {
+     "cache": "same",
+     "ecc_frames": 4,
+     "obs": 4,
+     "pred1": 4,
+     "verdict": "EXACT"
+    },
+    "WW2END0": {
+     "cache": "same",
+     "ecc_frames": 2,
+     "obs": 2,
+     "pred1": 2,
+     "verdict": "EXACT"
+    }
+   },
+   "tile": "INT_L_X6Y11"
+  }
+ }
+}

@@ -1,0 +1,40 @@
+
+****** Vivado v2017.2 (64-bit)
+  **** SW Build 1909853 on Thu Jun 15 18:39:10 MDT 2017
+  **** IP Build 1909766 on Thu Jun 15 19:58:00 MDT 2017
+    ** Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
+
+source s8_build.tcl
+# create_project -in_memory -part xc7vx485t
+# read_verilog /opt/lzh/step03/s8/s8_v0.v
+# read_xdc /opt/lzh/step03/s8/s8_v0.xdc
+# synth_design -top top -part xc7vx485t -flatten_hierarchy none
+Command: synth_design -top top -part xc7vx485t -flatten_hierarchy none
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7vx485t-ffg1157'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7vx485t-ffg1157'
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 45 
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 1154.348 ; gain = 75.996 ; free physical = 62142 ; free virtual = 79372
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'top' [/opt/lzh/step03/s8/s8_v0.v:1]
+INFO: [Synth 8-638] synthesizing module 'LUT6' [/opt/lzh/Xilinx/Vivado/2017.2/scripts/rt/data/unisim_comp.v:20668]
+	Parameter INIT bound to: 64'b1001111000110111011110011011100101111111010010100111110000010101 
+INFO: [Synth 8-256] done synthesizing module 'LUT6' (1#1) [/opt/lzh/Xilinx/Vivado/2017.2/scripts/rt/data/unisim_comp.v:20668]
+INFO: [Synth 8-638] synthesizing module 'FDRE' [/opt/lzh/Xilinx/Vivado/2017.2/scripts/rt/data/unisim_comp.v:3964]
+	Parameter INIT bound to: 1'b0 
+	Parameter IS_C_INVERTED bound to: 1'b0 
+	Parameter IS_D_INVERTED bound to: 1'b0 
+	Parameter IS_R_INVERTED bound to: 1'b0 
+INFO: [Synth 8-256] done synthesizing module 'FDRE' (2#1) [/opt/lzh/Xilinx/Vivado/2017.2/scripts/rt/data/unisim_comp.v:3964]
+ERROR: [Synth 8-685] variable 'o2' should not be used in output port connection [/opt/lzh/step03/s8/s8_v0.v:15]
+ERROR: [Synth 8-285] failed synthesizing module 'top' [/opt/lzh/step03/s8/s8_v0.v:1]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 1193.848 ; gain = 115.496 ; free physical = 62112 ; free virtual = 79344
+---------------------------------------------------------------------------------
+RTL Elaboration failed
+6 Infos, 0 Warnings, 0 Critical Warnings and 3 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 28 21:54:47 2026...

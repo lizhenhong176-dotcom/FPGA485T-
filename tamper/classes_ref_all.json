@@ -1,0 +1,130 @@
+{
+  "bitstream": "ref.bit",
+  "setbits": 13426,
+  "baseline": {
+    "unexplained": 234,
+    "slot_violations": 0,
+    "active_tiles": 945
+  },
+  "classes": [
+    {
+      "class": "pip_disable",
+      "attempted": 834,
+      "detected": 17,
+      "detect_rate_pct": 2.04,
+      "undetected_examples": [
+        {
+          "tile": "INT_L_X108Y283",
+          "family": "SE6BEG0",
+          "source": "SE6END0",
+          "bits_cleared": 2
+        },
+        {
+          "tile": "INT_R_X53Y301",
+          "family": "WW4BEG1",
+          "source": "WW4END1",
+          "bits_cleared": 2
+        },
+        {
+          "tile": "INT_L_X34Y6",
+          "family": "SS6BEG0",
+          "source": "SE6END0",
+          "bits_cleared": 2
+        },
+        {
+          "tile": "INT_R_X47Y205",
+          "family": "SE6BEG0",
+          "source": "SE6END0",
+          "bits_cleared": 2
+        },
+        {
+          "tile": "INT_L_X90Y194",
+          "family": "LV18",
+          "source": "NR1END0",
+          "bits_cleared": 2
+        }
+      ]
+    },
+    {
+      "class": "pip_enable_blank",
+      "attempted": 945,
+      "detected": 0,
+      "detect_rate_pct": 0.0,
+      "undetected_examples": [
+        {
+          "tile": "INT_R_X37Y301",
+          "family": "WL1BEG_N3",
+          "source": "WW4END1",
+          "bits_set": 2
+        },
+        {
+          "tile": "INT_R_X37Y91",
+          "family": "IMUX_L38",
+          "source": "LOGIC_OUTS_L7",
+          "bits_set": 4
+        },
+        {
+          "tile": "INT_L_X34Y160",
+          "family": "SW6BEG2",
+          "source": "LOGIC_OUTS6",
+          "bits_set": 2
+        },
+        {
+          "tile": "INT_L_X110Y197",
+          "family": "IMUX_L18",
+          "source": "NR1END1",
+          "bits_set": 4
+        },
+        {
+          "tile": "INT_R_X51Y161",
+          "family": "WW4BEG1",
+          "source": "SW6END0",
+          "bits_set": 2
+        }
+      ]
+    },
+    {
+      "class": "word50_bit",
+      "attempted": 945,
+      "detected": 0,
+      "detect_rate_pct": 0.0,
+      "undetected_examples": [
+        {
+          "tile": "INT_R_X41Y2",
+          "frame": 32877,
+          "word": 50,
+          "bit": 30,
+          "written": 1
+        },
+        {
+          "tile": "INT_L_X72Y319",
+          "frame": 23451,
+          "word": 50,
+          "bit": 3,
+          "written": 1
+        },
+        {
+          "tile": "INT_R_X57Y2",
+          "frame": 33442,
+          "word": 50,
+          "bit": 21,
+          "written": 1
+        },
+        {
+          "tile": "INT_R_X109Y0",
+          "frame": 35203,
+          "word": 50,
+          "bit": 24,
+          "written": 1
+        },
+        {
+          "tile": "INT_L_X88Y319",
+          "frame": 23993,
+          "word": 50,
+          "bit": 17,
+          "written": 1
+        }
+      ]
+    }
+  ]
+}

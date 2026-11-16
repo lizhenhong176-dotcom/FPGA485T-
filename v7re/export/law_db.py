@@ -3,7 +3,7 @@
 
 表：
   law_cells(tile_type, family, src_wire, frame_off, bit, sense, parity, src_index)
-  far_bands(band, col, start_frame, end_frame)
+  far_bands(band, col, start_frame, end_frame, frames)
   law_tiles(tile_name, tile_type, col, y, clock_region)
   meta(key, value)
 
@@ -53,6 +53,7 @@ CREATE TABLE far_bands (
   col         INTEGER NOT NULL,
   start_frame INTEGER NOT NULL,
   end_frame   INTEGER NOT NULL,
+  frames      INTEGER,              -- 该列帧数（不含每段末尾 2 个 overhead 帧）
   PRIMARY KEY (band, col)
 );
 
@@ -126,11 +127,56 @@ def load_far(path):
             band = row - 1
             if band < 0 or band >= N_BANDS:
                 continue
-            col = (int(r["block_addr"], 16) >> 7) & 0x7F
+            # 2026-11-08 修正：column 是 FAR[16:7] 的 10 位字段（本器件 0..153），
+            # 旧代码 & 0x7F 把它截成 7 位，导致 128..153 共 26 列没有基址。
+            col = (int(r["block_addr"], 16) >> 7) & 0x3FF
             fi = int(r["frame_index"])
             e = by_band.setdefault(band, {}).setdefault(col, [fi, fi])
             e[0] = min(e[0], fi)
             e[1] = max(e[1], fi)
+    return by_band
+
+
+def load_far_from_frame_map(model_db):
+    """首选路径：从 frame_map 的 FAR 直接算 (band,col) 首帧与帧数。
+
+    band = (block type, top/bottom, row) 的帧序；只取 block type 0（逻辑/INT 列）。
+    overhead 帧（far 为 NULL 的那 28 行）不进任何列。
+    """
+    if not os.path.exists(model_db):
+        return None
+    con = sqlite3.connect(model_db)
+    try:
+        rows = con.execute(
+            "SELECT frame_index, far FROM frame_map "
+            "WHERE far IS NOT NULL ORDER BY frame_index").fetchall()
+    finally:
+        con.close()
+    if not rows:
+        return None
+    order, seen = [], set()
+    for fi, far in rows:
+        block = (far >> 23) & 0x7
+        top = (far >> 22) & 0x1
+        row = (far >> 17) & 0x1F
+        key = (block, top, row)
+        if block != 0 or key in seen:
+            continue
+        seen.add(key)
+        order.append(key)
+    by_band = {}
+    for fi, far in rows:
+        if ((far >> 23) & 0x7) != 0:
+            continue
+        key = (0, (far >> 22) & 0x1, (far >> 17) & 0x1F)
+        if key not in order:
+            continue
+        band = order.index(key)
+        col = (far >> 7) & 0x3FF
+        e = by_band.setdefault(band, {}).setdefault(col, [fi, fi, 0])
+        e[0] = min(e[0], fi)
+        e[1] = max(e[1], fi)
+        e[2] += 1
     return by_band
 
 
@@ -246,11 +292,13 @@ def main():
     con = sqlite3.connect(a.db)
     con.executescript(SCHEMA)
 
-    bands = load_far(a.far)
+    bands = load_far_from_frame_map(a.model) or load_far(a.far)
     ncols = 0
     for band, cols in bands.items():
-        for col, (s, e) in cols.items():
-            con.execute("INSERT INTO far_bands VALUES (?,?,?,?)", (band, col, s, e))
+        for col, v in cols.items():
+            s, e = v[0], v[1]
+            n = v[2] if len(v) > 2 else (e - s + 1)
+            con.execute("INSERT INTO far_bands VALUES (?,?,?,?,?)", (band, col, s, e, n))
             ncols += 1
 
     cells = load_cells(a.cells)

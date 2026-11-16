@@ -1,0 +1,803 @@
+{
+ "scanned_at": "2026-11-08 14:57:58",
+ "count": 55,
+ "main": 44,
+ "probe": 11,
+ "scripts": [
+  {
+   "file": "_amb.py",
+   "lines": 18,
+   "bytes": 732,
+   "mtime": "2026-11-04 19:05:19",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_p.py",
+   "lines": 28,
+   "bytes": 1313,
+   "mtime": "2026-11-04 18:57:15",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_pip_introspect.py",
+   "lines": 32,
+   "bytes": 1229,
+   "mtime": "2026-10-24 18:10:58",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_pipcmp.py",
+   "lines": 14,
+   "bytes": 579,
+   "mtime": "2026-11-04 19:00:03",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_pred.py",
+   "lines": 18,
+   "bytes": 584,
+   "mtime": "2026-11-04 19:03:53",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_probe_det.py",
+   "lines": 26,
+   "bytes": 947,
+   "mtime": "2026-11-04 18:59:03",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_q.py",
+   "lines": 7,
+   "bytes": 285,
+   "mtime": "2026-11-04 18:57:54",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_share.py",
+   "lines": 16,
+   "bytes": 595,
+   "mtime": "2026-11-04 19:03:40",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_sw2.py",
+   "lines": 33,
+   "bytes": 1392,
+   "mtime": "2026-11-04 19:00:38",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_swaploc.py",
+   "lines": 33,
+   "bytes": 1470,
+   "mtime": "2026-11-04 19:00:17",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "_swloc2.py",
+   "lines": 33,
+   "bytes": 1526,
+   "mtime": "2026-11-04 19:04:57",
+   "docstring_first_line": "",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": true
+  },
+  {
+   "file": "audit_db.py",
+   "lines": 43,
+   "bytes": 1058,
+   "mtime": "2026-10-20 00:22:22",
+   "docstring_first_line": "Audit imported probe word positions against the site table.",
+   "has_main": true,
+   "argparse_options": [
+    "--db"
+   ],
+   "probe": false
+  },
+  {
+   "file": "audit_far.py",
+   "lines": 46,
+   "bytes": 1415,
+   "mtime": "2026-10-22 19:47:51",
+   "docstring_first_line": "Audit FAR usage in a 7-series bitstream and decode candidate addresses.",
+   "has_main": true,
+   "argparse_options": [
+    "bitstream",
+    "--far"
+   ],
+   "probe": false
+  },
+  {
+   "file": "beg_families.py",
+   "lines": 132,
+   "bytes": 4994,
+   "mtime": "2026-11-07 20:27:41",
+   "docstring_first_line": "beg_families.py —— BEG6/4 家族的二分图结构与可验证预测。",
+   "has_main": true,
+   "argparse_options": [
+    "--law-db",
+    "--tile-type",
+    "--build",
+    "--report",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "bitgen.py",
+   "lines": 138,
+   "bytes": 4733,
+   "mtime": "2026-11-04 19:27:54",
+   "docstring_first_line": "bitgen.py —— 在 .bit 文件里按位改写，并同步重算帧级 ECC。",
+   "has_main": true,
+   "argparse_options": [
+    "--in",
+    "--out",
+    "--set",
+    "--set-file",
+    "--ecc"
+   ],
+   "probe": false
+  },
+  {
+   "file": "bitwriter.py",
+   "lines": 196,
+   "bytes": 7206,
+   "mtime": "2026-11-02 19:48:54",
+   "docstring_first_line": "bitwriter.py —— T5 v1：由 PIP 列表写出配置位（只覆盖 mux 区，帧 16–25）。",
+   "has_main": true,
+   "argparse_options": [
+    "--bit",
+    "--pips",
+    "--law",
+    "--law-db",
+    "--selftest",
+    "--frames",
+    "--with-table"
+   ],
+   "probe": false
+  },
+  {
+   "file": "build_model_db.py",
+   "lines": 43,
+   "bytes": 1135,
+   "mtime": "2026-10-21 21:30:51",
+   "docstring_first_line": "Build ``E:\\v7work\\model\\v7_model.sqlite`` from P0 + probes + routing metadata.",
+   "has_main": true,
+   "argparse_options": [
+    "--out",
+    "--p0-db",
+    "--probe-db",
+    "--routing-db",
+    "--no-hash"
+   ],
+   "probe": false
+  },
+  {
+   "file": "build_site_frames.py",
+   "lines": 500,
+   "bytes": 24409,
+   "mtime": "2026-11-07 18:39:04",
+   "docstring_first_line": "build_site_frames.py —— Phase B 第一步：把 CLB site 绑定到具体 frame/word/bit。",
+   "has_main": true,
+   "argparse_options": [
+    "--law-db",
+    "--model-db",
+    "--site-addr",
+    "--site-frames",
+    "--columns",
+    "--limit",
+    "--all",
+    "--validate",
+    "--replace",
+    "--dry-run",
+    "--locked-init",
+    "--no-locked-init"
+   ],
+   "probe": false
+  },
+  {
+   "file": "clk_mux_bits.py",
+   "lines": 53,
+   "bytes": 1562,
+   "mtime": "2026-11-08 12:41:01",
+   "docstring_first_line": "clk_mux_bits.py -- BUFGCTRL 输入选择位的编解码（T43 实测公式）。",
+   "has_main": false,
+   "argparse_options": [],
+   "probe": false
+  },
+  {
+   "file": "decode_exact.py",
+   "lines": 184,
+   "bytes": 6990,
+   "mtime": "2026-11-07 20:50:00",
+   "docstring_first_line": "decode_exact.py —— 用「族内精确匹配」解码 INT PIP（任务 3）。",
+   "has_main": true,
+   "argparse_options": [
+    "--bit",
+    "--pips",
+    "--law-db",
+    "--no-gclk"
+   ],
+   "probe": false
+  },
+  {
+   "file": "diff_frames.py",
+   "lines": 44,
+   "bytes": 1291,
+   "mtime": "2026-10-18 21:51:41",
+   "docstring_first_line": "Compare two bitstreams or two frames.bin files.",
+   "has_main": true,
+   "argparse_options": [
+    "a",
+    "b",
+    "--bits",
+    "--max"
+   ],
+   "probe": false
+  },
+  {
+   "file": "ecc_model.py",
+   "lines": 143,
+   "bytes": 4197,
+   "mtime": "2026-11-04 19:27:32",
+   "docstring_first_line": "ecc_model.py —— 建 ECC 数据项模型 L：位置 → 13 位签名。",
+   "has_main": true,
+   "argparse_options": [
+    "--bits",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "ecc_solve.py",
+   "lines": 168,
+   "bytes": 5082,
+   "mtime": "2026-11-03 22:13:07",
+   "docstring_first_line": "ecc_solve.py —— 用 GF(2) 线性代数解出帧级 ECC 的每位置签名 S_b。",
+   "has_main": true,
+   "argparse_options": [
+    "--bits",
+    "--holdout",
+    "--out-model"
+   ],
+   "probe": false
+  },
+  {
+   "file": "enumerate_sites.py",
+   "lines": 67,
+   "bytes": 1924,
+   "mtime": "2026-10-19 22:48:39",
+   "docstring_first_line": "Enumerate FPGA sites with Vivado and write a reusable JSON table.",
+   "has_main": true,
+   "argparse_options": [
+    "--part",
+    "--types",
+    "--workdir",
+    "--out",
+    "--timeout"
+   ],
+   "probe": false
+  },
+  {
+   "file": "export_site_topology.py",
+   "lines": 392,
+   "bytes": 13725,
+   "mtime": "2026-10-21 20:59:59",
+   "docstring_first_line": "Export P0 site-level static topology for V485T from RapidWright.",
+   "has_main": true,
+   "argparse_options": [
+    "--topology",
+    "--out",
+    "--part",
+    "--device",
+    "--samples-per-type"
+   ],
+   "probe": false
+  },
+  {
+   "file": "fasm2bit.py",
+   "lines": 467,
+   "bytes": 18297,
+   "mtime": "2026-11-08 12:41:01",
+   "docstring_first_line": "fasm2bit.py —— FASM 行 → 位流（覆盖 mux 区 64 族 + law_cells 表内族）。",
+   "has_main": true,
+   "argparse_options": [
+    "--in",
+    "--out",
+    "--fasm",
+    "--blank",
+    "--ignore-ecc-coverage",
+    "--decode",
+    "--tiles",
+    "--law-db",
+    "--model-db",
+    "--law-json",
+    "--ecc-json"
+   ],
+   "probe": false
+  },
+  {
+   "file": "hclk_survey.py",
+   "lines": 111,
+   "bytes": 4059,
+   "mtime": "2026-11-08 12:56:34",
+   "docstring_first_line": "hclk_survey.py —— HCLK_CMT 的 PIP 结构离线摸底（阶段一，0 个构建）。",
+   "has_main": true,
+   "argparse_options": [],
+   "probe": false
+  },
+  {
+   "file": "import_db.py",
+   "lines": 59,
+   "bytes": 1751,
+   "mtime": "2026-10-19 23:21:10",
+   "docstring_first_line": "Build the SQLite probe database from site table + clean-probe results.",
+   "has_main": true,
+   "argparse_options": [
+    "--db",
+    "--probe-root",
+    "--exclude",
+    "--site-table",
+    "--part",
+    "--skip-sites"
+   ],
+   "probe": false
+  },
+  {
+   "file": "import_frame_map.py",
+   "lines": 1238,
+   "bytes": 56942,
+   "mtime": "2026-10-24 03:03:55",
+   "docstring_first_line": "Import frame_map from the validated Phase A CSV and run full audits.",
+   "has_main": true,
+   "argparse_options": [],
+   "probe": false
+  },
+  {
+   "file": "import_m1.py",
+   "lines": 316,
+   "bytes": 10329,
+   "mtime": "2026-10-21 22:02:25",
+   "docstring_first_line": "Import M1 frame-address anchors into the canonical model DB.",
+   "has_main": true,
+   "argparse_options": [
+    "--db",
+    "--root",
+    "--old-db",
+    "--schema"
+   ],
+   "probe": false
+  },
+  {
+   "file": "import_site_topology.py",
+   "lines": 299,
+   "bytes": 9718,
+   "mtime": "2026-10-21 21:00:10",
+   "docstring_first_line": "Import P0 site-topology exports into a queryable SQLite database.",
+   "has_main": true,
+   "argparse_options": [
+    "--p0",
+    "--db"
+   ],
+   "probe": false
+  },
+  {
+   "file": "init_map_sweep.py",
+   "lines": 86,
+   "bytes": 3054,
+   "mtime": "2026-11-05 16:08:41",
+   "docstring_first_line": "init_map_sweep.py —— 由「每个 LUT 各 6 个位平面」的设计差分，重建 CLB LUT INIT 位映射。",
+   "has_main": true,
+   "argparse_options": [
+    "--dir",
+    "--base",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "lut_codec.py",
+   "lines": 39,
+   "bytes": 1038,
+   "mtime": "2026-10-19 14:45:44",
+   "docstring_first_line": "Encode a LUT6 INIT value into physical (frame, word, bit) positions.",
+   "has_main": true,
+   "argparse_options": [
+    "--bit-map",
+    "--init"
+   ],
+   "probe": false
+  },
+  {
+   "file": "make_manifest.py",
+   "lines": 107,
+   "bytes": 3080,
+   "mtime": "2026-10-19 22:49:19",
+   "docstring_first_line": "Build a spread-out LUT6 probe manifest from a site table.",
+   "has_main": true,
+   "argparse_options": [
+    "--sites",
+    "--count",
+    "--bel",
+    "--init-a",
+    "--init-b",
+    "--types",
+    "--tags",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "parse_bit.py",
+   "lines": 44,
+   "bytes": 1184,
+   "mtime": "2026-10-18 21:51:41",
+   "docstring_first_line": "Parse a 7-series .bit/.bin and optionally dump raw frames.",
+   "has_main": true,
+   "argparse_options": [
+    "bit",
+    "out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "pip_enum.py",
+   "lines": 71,
+   "bytes": 2503,
+   "mtime": "2026-10-24 18:11:29",
+   "docstring_first_line": "Dump the physical PIPs of every net in a routed DCP, grouped by tile.",
+   "has_main": true,
+   "argparse_options": [],
+   "probe": false
+  },
+  {
+   "file": "pip_fuzz.py",
+   "lines": 190,
+   "bytes": 7128,
+   "mtime": "2026-10-24 18:28:54",
+   "docstring_first_line": "Task 2 PIP fuzzer: attribute INT/site PIPs of ONE sink tile to bits.",
+   "has_main": true,
+   "argparse_options": [
+    "--dst",
+    "--src",
+    "--pins"
+   ],
+   "probe": false
+  },
+  {
+   "file": "pip_reuse_law.py",
+   "lines": 256,
+   "bytes": 9773,
+   "mtime": "2026-11-02 18:19:20",
+   "docstring_first_line": "PIP 复用定律（mux 区）——生成式实现与验证。",
+   "has_main": true,
+   "argparse_options": [
+    "--law-db",
+    "--build",
+    "--verify",
+    "--stats",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "probe_bits.py",
+   "lines": 105,
+   "bytes": 3360,
+   "mtime": "2026-10-22 19:10:16",
+   "docstring_first_line": "Sweep every LUT6 INIT bit at one (LOC, BEL) and record physical bit positions.",
+   "has_main": true,
+   "argparse_options": [
+    "--loc",
+    "--bel",
+    "--part",
+    "--workdir",
+    "--count",
+    "--skip-build",
+    "--skip-vivado"
+   ],
+   "probe": false
+  },
+  {
+   "file": "probe_lut.py",
+   "lines": 51,
+   "bytes": 1378,
+   "mtime": "2026-10-18 21:51:41",
+   "docstring_first_line": "Clean probe for one (LOC, BEL): build DCP, write two INIT variants, diff.",
+   "has_main": true,
+   "argparse_options": [
+    "--loc",
+    "--bel",
+    "--init-a",
+    "--init-b",
+    "--part",
+    "--workdir",
+    "--rebuild"
+   ],
+   "probe": false
+  },
+  {
+   "file": "prune_chains.py",
+   "lines": 181,
+   "bytes": 6408,
+   "mtime": "2026-11-03 19:18:07",
+   "docstring_first_line": "prune_chains.py —— 用 net 链连通性消解 2 格 pattern 的歧义（T6c）。",
+   "has_main": true,
+   "argparse_options": [
+    "--bit",
+    "--pips",
+    "--law",
+    "--min-cells",
+    "--rounds"
+   ],
+   "probe": false
+  },
+  {
+   "file": "rebuild_clb_init.py",
+   "lines": 135,
+   "bytes": 5163,
+   "mtime": "2026-11-07 19:22:37",
+   "docstring_first_line": "rebuild_clb_init.py —— 用 LOCK_PINS 实测表重建 site_frames 的 CLB INIT 行。",
+   "has_main": true,
+   "argparse_options": [
+    "--x0",
+    "--x1",
+    "--law-db",
+    "--model-db",
+    "--apply",
+    "--check",
+    "--ref-base"
+   ],
+   "probe": false
+  },
+  {
+   "file": "roundtrip.py",
+   "lines": 214,
+   "bytes": 8196,
+   "mtime": "2026-11-02 22:40:11",
+   "docstring_first_line": "roundtrip.py —— 端到端闭环：位流 → PIP 列表 → 用定律重写 → 逐位比对。",
+   "has_main": true,
+   "argparse_options": [
+    "--bit",
+    "--law",
+    "--law-db",
+    "--min-cells",
+    "--frames",
+    "--max-report"
+   ],
+   "probe": false
+  },
+  {
+   "file": "run_batch.py",
+   "lines": 57,
+   "bytes": 1869,
+   "mtime": "2026-10-19 22:49:15",
+   "docstring_first_line": "Run a manifest of LUT probes with resume support.",
+   "has_main": true,
+   "argparse_options": [
+    "--manifest",
+    "--workdir-root",
+    "--out",
+    "--part",
+    "--force",
+    "--dry-run",
+    "--limit",
+    "--stop-on-error",
+    "--jobs"
+   ],
+   "probe": false
+  },
+  {
+   "file": "rw_coupling_probe.py",
+   "lines": 111,
+   "bytes": 4294,
+   "mtime": "2026-10-24 18:03:07",
+   "docstring_first_line": "Feasibility gate for Task 2: RapidWright 2026.1 read/modify + robust Vivado",
+   "has_main": true,
+   "argparse_options": [],
+   "probe": false
+  },
+  {
+   "file": "step1_topology.py",
+   "lines": 147,
+   "bytes": 5627,
+   "mtime": "2026-10-21 14:45:59",
+   "docstring_first_line": "Step 1 driver: device routing topology -> artifacts -> database.",
+   "has_main": true,
+   "argparse_options": [
+    "--root",
+    "--db",
+    "--part",
+    "--limit",
+    "--samples",
+    "--with-conns",
+    "--skip-conns",
+    "--measure",
+    "--per-type"
+   ],
+   "probe": false
+  },
+  {
+   "file": "step2_tileconn.py",
+   "lines": 109,
+   "bytes": 4194,
+   "mtime": "2026-10-21 18:50:37",
+   "docstring_first_line": "Step 2 CLI: query canonical tile connections offline.",
+   "has_main": true,
+   "argparse_options": [
+    "--rules-db",
+    "--db",
+    "--validation",
+    "--tile",
+    "--wire",
+    "--source",
+    "--rules-db",
+    "--db",
+    "--tiles-gz",
+    "--source",
+    "--rules-db",
+    "--db"
+   ],
+   "probe": false
+  },
+  {
+   "file": "sweep_lut.py",
+   "lines": 86,
+   "bytes": 2651,
+   "mtime": "2026-10-18 21:51:49",
+   "docstring_first_line": "Sweep many LOCs with the clean probe and record results.",
+   "has_main": true,
+   "argparse_options": [
+    "--locs",
+    "--bel",
+    "--init-a",
+    "--init-b",
+    "--part",
+    "--work-root",
+    "--rebuild"
+   ],
+   "probe": false
+  },
+  {
+   "file": "t51_generative_law.py",
+   "lines": 506,
+   "bytes": 20217,
+   "mtime": "2026-11-08 14:30:32",
+   "docstring_first_line": "T51: validate a generative INT PIP law with family hold-out checks.",
+   "has_main": true,
+   "argparse_options": [
+    "--law-db",
+    "--json"
+   ],
+   "probe": false
+  },
+  {
+   "file": "t55_object_check.py",
+   "lines": 151,
+   "bytes": 7056,
+   "mtime": "2026-11-08 14:56:34",
+   "docstring_first_line": "t55_object_check.py —— 判定「跨 tile 验证」的观测对象：CLB INIT 还是 PIP 开关盒。",
+   "has_main": true,
+   "argparse_options": [
+    "--bits-dir",
+    "--locked",
+    "--law-db"
+   ],
+   "probe": false
+  },
+  {
+   "file": "tamper_localize.py",
+   "lines": 786,
+   "bytes": 34769,
+   "mtime": "2026-11-08 12:08:05",
+   "docstring_first_line": "tamper_localize.py —— 无参考位流的篡改检出与定位（威胁模型 TM2：语义自洽性校验）。",
+   "has_main": true,
+   "argparse_options": [
+    "--check",
+    "--exhaustive",
+    "--attack",
+    "--classes",
+    "--delta",
+    "--coverage",
+    "--whitelist",
+    "--fpstats",
+    "--verify",
+    "--n",
+    "--tiles",
+    "--seed",
+    "--json"
+   ],
+   "probe": false
+  },
+  {
+   "file": "validate_m1_holdout.py",
+   "lines": 108,
+   "bytes": 3441,
+   "mtime": "2026-10-21 21:58:05",
+   "docstring_first_line": "Validate blind M1 holdout probes against the measured address model.",
+   "has_main": true,
+   "argparse_options": [
+    "--db",
+    "--root",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "validate_p0_against_routing.py",
+   "lines": 105,
+   "bytes": 3739,
+   "mtime": "2026-10-21 21:02:17",
+   "docstring_first_line": "Cross-check P0 site-pin tile wires against the routing tile templates.",
+   "has_main": true,
+   "argparse_options": [
+    "--p0",
+    "--routing",
+    "--out"
+   ],
+   "probe": false
+  },
+  {
+   "file": "verify_all_pip.py",
+   "lines": 163,
+   "bytes": 6052,
+   "mtime": "2026-11-07 22:40:10",
+   "docstring_first_line": "verify_all_pip.py —— 统一的对账：mux 区（闭式）+ BEG6/4（二分结构）覆盖多少 feature。",
+   "has_main": true,
+   "argparse_options": [
+    "--law-db",
+    "--tile-type",
+    "--normalize"
+   ],
+   "probe": false
+  },
+  {
+   "file": "verify_superposition.py",
+   "lines": 161,
+   "bytes": 5603,
+   "mtime": "2026-11-02 18:44:28",
+   "docstring_first_line": "verify_superposition.py —— T4：多 PIP 同时开启时，用 T3 定律「先预测、再对账」。",
+   "has_main": true,
+   "argparse_options": [
+    "--bit",
+    "--pips",
+    "--law",
+    "--law-db"
+   ],
+   "probe": false
+  }
+ ]
+}

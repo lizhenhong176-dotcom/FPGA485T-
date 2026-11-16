@@ -1,0 +1,20 @@
+﻿-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y4_1.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y4_3.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y4_b.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y5_1.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y5_b.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y6_1.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y6_b.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y7_1.bit
+-rw-r--r-- 1 root root 20273538 Nov 10 23:59 e4_y7_b.bit
+ERR_BEGIN
+done e4_y4_1 content 1 ecc 1
+done e4_y4_3 content 2 ecc 2
+done e4_y5_1 content 1 ecc 1
+done e4_y6_1 content 1 ecc 1
+done e4_y7_1 content 1 ecc 1
+ERR_END
+E4DIFF2_BEGIN
+{"variants": {"e4_y4_1": {"base": "e4_y4_b", "content_positions": [[31786, 8, 15]], "n_content": 1, "ecc": {"31786": [0, 5199]}, "frames_touched": [31786]}, "e4_y4_3": {"base": "e4_y4_b", "content_positions": [[31786, 8, 15], [31787, 8, 15]], "n_content": 2, "ecc": {"31786": [0, 5199], "31787": [0, 5199]}, "frames_touched": [31786, 31787]}, "e4_y5_1": {"base": "e4_y5_b", "content_positions": [[31786, 10, 15]], "n_content": 1, "ecc": {"31786": [0, 5263]}, "frames_touched": [31786]}, "e4_y6_1": {"base": "e4_y6_b", "content_positions": [[31786, 12, 15]], "n_content": 1, "ecc": {"31786": [0, 1231]}, "frames_touched": [31786]}, "e4_y7_1": {"base": "e4_y7_b", "content_positions": [[31786, 14, 15]], "n_content": 1, "ecc": {"31786": [0, 5391]}, "frames_touched": [31786]}}, "file_stats": {"e4_y4_b": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y4_1": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y4_3": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y5_b": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y5_1": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y6_b": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y6_1": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y7_b": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}, "e4_y7_1": {"words": 5067776, "frames": 50176, "rem": 0, "typ1_data_words": 24, "typ2_packets": 1, "typ1_write_pkts": 25}}}
+E4DIFF2_END
+E4FIXDONE

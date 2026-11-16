@@ -1,0 +1,202 @@
+{
+  "bitstream": "_c0.bit",
+  "setbits": 516,
+  "baseline": {
+    "unexplained": 1,
+    "slot_violations": 0,
+    "active_tiles": 21
+  },
+  "exhaustive": {
+    "tiles_scanned": 21,
+    "cells_per_tile": 1664,
+    "off_mux": {
+      "n": 6,
+      "detected": 6,
+      "rate_pct": 100.0,
+      "missed": 0
+    },
+    "off_other": {
+      "n": 44,
+      "detected": 43,
+      "rate_pct": 97.7273,
+      "missed": 1
+    },
+    "on_mux": {
+      "n": 13434,
+      "detected": 13428,
+      "rate_pct": 99.9553,
+      "missed": 6
+    },
+    "on_other": {
+      "n": 21459,
+      "detected": 21315,
+      "rate_pct": 99.329,
+      "missed": 144
+    },
+    "off_baseline_skipped": 1,
+    "total": {
+      "n": 34943,
+      "detected": 34792,
+      "rate_pct": 99.5679
+    }
+  },
+  "attack_fake_mux": {
+    "attempted": 60,
+    "undetected_with_phantom_pip": 60,
+    "detected": 0,
+    "detect_rate_pct": 0.0,
+    "examples": [
+      {
+        "tile": "INT_L_X26Y12",
+        "family": "BYP_ALT0",
+        "src": "SW2END0",
+        "bits": [
+          [
+            16,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_L_X26Y12",
+        "family": "BYP_ALT0",
+        "src": "SS2END0",
+        "bits": [
+          [
+            16,
+            7,
+            0
+          ],
+          [
+            24,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_L_X26Y12",
+        "family": "BYP_ALT0",
+        "src": "NW2END0",
+        "bits": [
+          [
+            17,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_L_X26Y12",
+        "family": "BYP_ALT0",
+        "src": "WW2END_N0_3",
+        "bits": [
+          [
+            17,
+            7,
+            0
+          ],
+          [
+            24,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_L_X26Y12",
+        "family": "BYP_ALT0",
+        "src": "SE2END0",
+        "bits": [
+          [
+            18,
+            6,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      }
+    ]
+  },
+  "attack_swap": {
+    "attempted": 31,
+    "detected": 10,
+    "detect_rate_pct": 32.26,
+    "bits_changed_hist": {
+      "2": 10,
+      "4": 21
+    },
+    "detect_by_cost": {
+      "2": {
+        "n": 10,
+        "detected": 3,
+        "rate_pct": 30.0
+      },
+      "4": {
+        "n": 21,
+        "detected": 7,
+        "rate_pct": 33.3
+      }
+    },
+    "exposure_model": {
+      "with_exposure_n": 10,
+      "with_exposure_detected": 8,
+      "with_exposure_rate_pct": 80.0,
+      "no_exposure_n": 21,
+      "no_exposure_detected": 2,
+      "no_exposure_rate_pct": 9.5
+    },
+    "undetected_examples": [
+      {
+        "tile": "INT_L_X18Y12",
+        "family": "SE6BEG0",
+        "from": "SE6END0",
+        "to": "LOGIC_OUTS_L22",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_L_X24Y16",
+        "family": "NW6BEG0",
+        "from": "NW6END0",
+        "to": "SW2END_N0_3",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X18Y20",
+        "family": "WW4BEG0",
+        "from": "WW4END0",
+        "to": "SW6END_N0_3",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_L_X12Y20",
+        "family": "SE6BEG0",
+        "from": "EE4END0",
+        "to": "LV_L0",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_R_X31Y0",
+        "family": "NE2BEG1",
+        "from": "ER1END1",
+        "to": "SE2END1",
+        "bits_changed": 4
+      }
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "The ECC model predicts exactly 0x1008 for flipping (40,15)^(40,7) — and Vivado's INIT=3 output shows frame 31786 ECC 0x1008. So **the ECC model is validated by an independent Vivado build**.\n\nSo: ECC correct; site_frames INIT bit mapping wrong.\n\nCorrect mapping evidence:\n- INIT[0] → (31786, 40, bit15)\n- INIT[1] → (31786, 40, bit7)  [since i3 = bits 0,1 → 0x8080]\n\nLet me also check with i5: INIT[2] should be somewhere. i5 diff showed frame 31784 0x80008000 — that's a different frame, suggesting the LUT with INIT=5 got mapped differently (maybe to a different BEL because INIT=5 is not a single LUT6? no...).\n\nHmm, wait: maybe i5 changed l0's INIT but Vivado *re-placed* the LUT to a different slice (LOC should prevent). 0x80008000 at word 40 of frame 31784 — bits 31 and 15. Two 16-bit halves in one word is suspicious: could be two different slices' words? No, word 40 = row 20 parity 0 — same row.\n\nAnyway, primary finding stands: INIT[1] maps to bit 7 of the same frame (not a different frame).\n\nGiven the session length and context, let me document and report now. I'll note the mapping bug and the ECC validation.\n\nLet me write docs: update T9 doc with CLB attempt + bug, STATUS §38."}, {"type": "tool-call", "id": "call_00_1NTJSqq1Tl8QMD7JPLuv6743", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+doc = \\"\\"\\"# T10：CLB 写入尝试 —— ECC 正确，但 INIT 位映射有错（Vivado 对照暴露）
+
+日期：2026-11-04
+脚本：`v7re/scripts/fasm2bit.py`（新增 CLB 路径）
+
+## 1. 做了什么
+
+给 FASM 层加 CLB 支持：`SLICE_X12Y20.ALUT.INIT=0x...` 与
+`SITE.BEL.FEATURE[=0/1]`，位映射来自 `site_frames`（3,679 万行）。
+
+## 2. 内部闭环看起来是通的
+
+把 `_full8.bit` 的 `SLICE_X12Y20/ALUT` INIT 从 `0x1` 改成 `0x3`：
+
+```
+写出 _full8_clb.bit：特征 1 条，改动帧 1 个
+_full8.bit      INIT = 0x0000000000000001
+_full8_clb.bit  INIT = 0x0000000000000003
+差异 frame 31787 word 40: 00000000 -> 00008000
+差异 frame 31787 word 50: 00000000 -> 0000086f
+```
+
+用同一套表读回来是 0x3，只有一帧被改，ECC 也重算了 —— **自洽**。
+
+## 3. 拿 Vivado 对照，暴露一个真错误
+
+用同一份 RTL 把 `l0` 的 INIT 改成 `3` 重新综合实现出 `full8_i3.bit`，再与我们的
+`_full8_clb.bit` 比：
+
+```
+frame 31786 word 40: 我方 00008000   Vivado 00008080
+frame 31786 word 50: 我方 0000086f   Vivado 00001008
+frame 31787 word 40: 我方 00008000   Vivado 00000000
+frame 31787 word 50: 我方 0000086f   Vivado 00000000
+```
+
+Vivado 把 INIT[01] 放在 **frame 31786 的 word40 bit7**（同帧），
+而 `site_frames` 的表说 INIT[01] 在 **frame 31787 的 word40 bit15**。
+
+即：**INIT 位映射错了**——成对的两个 INIT 位落在同一帧的不同 bit（15 与 7），
+不是\\"相邻帧同 bit\\"。`site_frames` 的 3,679 万行里，CLB LUT INIT 这一部分需要重做。
+
+## 4. 但 ECC 是对的（顺带被验证）
+
+Vivado 的 INIT=3 输出里，帧 31786 的 ECC 从 `0x086f` 变成 `0x1008`。
+我们的 ECC 模型给出：
+
+```
+L[(40,15)] = 0x86f
+L[(40,7)]  = 0x1867
+L[(40,15)] ^ L[(40,7)] = 0x1008     ← 与 Vivado 完全一致
+```
+
+**ECC 增量模型被一份独立的 Vivado 产物证实**，包括一个此前未参与训练的位 (40,7)。
+
+## 5. 结论与修正方向
+
+* ECC 层：可信（两条独立验证）。
+* FASM/INT 层：可信（幂等 + 换源 + c0→c3 逐字节）。
+* CLB INIT 层：**表错了**，需要重新推导。
+
+修正方法：以 `INIT=2^k` 的单点设计（每个 k 一个设计，64 个）配合空设计基线，
+直接读出每个 INIT 位的 (frame, word, bit)，重建 `site_frames` 的 CLB 部分。
+`build_site_frames.py` 的地址公式（frame=base+off、word=2*(y%50)+parity）可保留，
+错的只是 `clb_cells` 里 INIT 族的 cell 定义。
+\\"\\"\\"
+io.open(\\"v7re/steps/T10_CLB_WRITE.md\\", \\"w\\", encoding=\\"utf-8\\").write(doc)
+
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 38. T10 —— CLB 写入：ECC 对，INIT 位映射错（2026-11-04）
+
+`fasm2bit.py` 增加 CLB 路径（`SITE.BEL.INIT=0x…`），位映射取自 `site_frames`。
+内部闭环自洽：改 `SLICE_X12Y20/ALUT` INIT 0x1→0x3，读回 0x3、只动 1 帧、ECC 已重算。
+
+**但拿 Vivado 对照发现表错**：同一 RTL 把 INIT 改成 3 重新实现（`full8_i3.bit`）后对比：
+
+```
+frame 31786 word40: 我方 0x8000  Vivado 0x8080
+frame 31787 word40: 我方 0x8000  Vivado 0x0000
+```
+
+Vivado 的 INIT[01] 在 **frame 31786 word40 bit7**（与 INIT[00] 同帧），
+而 `site_frames` 说在 frame 31787 word40 bit15。→ **CLB LUT INIT 的 cell 定义错了**
+（成对 INIT 位同帧不同 bit：15 与 7），3,679 万行里 CLB INIT 部分需重做。
+
+**ECC 顺带被独立验证**：Vivado 该帧 ECC 由 0x086f → 0x1008，
+而模型给出 `L[(40,15)]^L[(40,7)] = 0x86f^0x1867 = 0x1008`，完全一致，
+且 (40,7) 从未参与训练。
+
+修正方向：用 `INIT=2^k`（k=0..63）的单点设计 + 空基线直接测出每个 INIT 位的绝对位置，
+重建 `clb_cells` 中 INIT 族；地址公式（frame=base+off、word=2*(y%50)+parity）可保留。
+
+文档：`v7re/steps/T10_CLB_WRITE.md`。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Document CLB mapping bug and ECC validation", "timeoutMs": 180000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "b5f3d3df-5c69-469f-b778-81ebeafe72df"}, {"type": "tool-call"}]}}, "id": "03d8ce6f-11d3-4c5b-8f2c-26aaca121f4c"}

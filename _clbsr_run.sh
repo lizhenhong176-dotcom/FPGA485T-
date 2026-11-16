@@ -1,0 +1,15 @@
+echo 'UEsDBBQAAAAIAGqaa11+84epHQEAAEkCAAAMAAAAc191bnVzZWQudGNslZLBTsJAEIbvfYoJ96IFEa+wtNjY0MSWKiFkU7dDaaxtnd1FiPHdrVINlYPhsIed/b5/MpMljBO+RcryMoXuheS60BKT7taQ+0JteIIySwswVVnB1zGrmBTsxHC7u7oZqPU6tazB0OwbEhWvqKyQ1B7Gtgeja28ewjKt6wLzXILmuVarNuj5DALPZTZ/tHqL3uV//Hew4xxjr5wwPSO24as8FtiMZ1Cp1e+l0kpCh93eHaxW75OcVafdObAj+94NF/D+EFORFenHwUlIcLFB8SxhFoQT01qd7c2Z6594zJmOowAixnxYCk2EhWoG+Uv6M8ed8sj3wtHUhn63fyq8UVbv4SlTUhHGL2CuSxJ4/C/qt2ZBE39m8596x/gEUEsDBBQAAAAIAGqaa12FrItTtgAAAAkBAAAKAAAAc191bnVzZWQudl2QSwuCUBCF9/2Kgy2cKyLaa1NBUYuE0I2txXIq6Zave5H+fT4WQrOZ7wyH4cy881RLhsoLyj6FVkhs3OTLRlUrG7lW3aziB0qxngBk4RgGURyFl8MJWxiq0mzAEmiyiiE7z/kSrTAlxw/8iFYL87n/KyGgY9nuJSckKWw4vktJ3z3yzKvb42zE+YiLEZcD9rkS2STfGjsq8prTB3c3CGR3DB6U2GzR4Rosax50m5Y/6bv/wOQHUEsDBBQAAAAIAGqaa10Jr8RoGwEAAEMCAAAKAAAAc191c2VkLnRjbJWSwU6DQBCG7zzFpHeqtNZ6bbdQiQQSoWjTkA0uU0pEwNkF2zS+u9UStXIwPexhZ7/vn8xkCeOEN0hZXqbQv5C8lpj0G03uCrXhCcosLUBXZQWfR69iUrAV42Z7dTNS63VqGKOxPtQkKl5RWSGpHUxNBybXziKAVXqoC8xzCTXPaxWdgo7HwHdsZvJHY7AcXP7HfwVb1m/slROmZ8S2fJXHAtvxNCpr9X2paiWhx27vjtZJ705O1Dvt7JuheW8HS9g/xFRkRfp+dBISXGxQPEtw/WCmG9HZ3oLZXsdj1nwa+hAy5sFK1ERYqHaQv6TnWvach54TTOYmDPvDrvBG2WEPT5mSijB+AX1dksCfX3F4adcz81yTH6s97QNQSwMEFAAAAAgAapprXbfokZa3AAAACAEAAAgAAABzX3VzZWQudl2QSwuCUBCF9/2Kgy2cGyLaa1NBUYuE0I2tw3Iq6fq+F+nf52MhNJv5ZjgM50yax1oyVF5QkhVaIbLwkB8LVa0s5Fp1u4pfKMVmAtAMp8APb2FwPZ6xg6EqzQZmAk1SMWSnuVzDNaZke74X0nppvg9/JQT0TbZ3yQ5ICgu251DUd5dc8+70OB9xMeJyxNWAva9INtG3xp6KvOb4xV0GgeQJanMIlNju0Kk3YFnzMLdmOYvT/gGTH1BLAQIUABQAAAAIAGqaa11+84epHQEAAEkCAAAMAAAAAAAAAAAAAAAAAAAAAABzX3VudXNlZC50Y2xQSwECFAAUAAAACABqmmtdhayLU7YAAAAJAQAACgAAAAAAAAAAAAAAAABHAQAAc191bnVzZWQudlBLAQIUABQAAAAIAGqaa10Jr8RoGwEAAEMCAAAKAAAAAAAAAAAAAAAAACUCAABzX3VzZWQudGNsUEsBAhQAFAAAAAgAapprXbfokZa3AAAACAEAAAgAAAAAAAAAAAAAAAAAaAMAAHNfdXNlZC52UEsFBgAAAAAEAAQA4AAAAEUEAAAAAA==' | base64 -d > /tmp/clbsr.zip
+rm -rf /tmp/clbsr; mkdir -p /tmp/clbsr
+unzip -oq /tmp/clbsr.zip -d /tmp/clbsr
+tar czf /tmp/clbsr.tgz -C /tmp clbsr
+export LANG=C LC_ALL=C
+D=/opt/lzh/v7re/work/clbsr
+rm -rf $D; mkdir -p $D
+tar xzf /tmp/clbsr.tgz -C $D --strip-components=1
+cd $D
+for t in s_unused s_used; do
+  /opt/lzh/Xilinx/Vivado/2017.2/bin/vivado -mode batch -notrace -source $t.tcl > $t.log 2>&1
+  if grep -q "DONE_$t" $t.log; then echo "OK $t"; grep "^CHK" $t.log || true; else echo "FAIL $t"; tail -n 6 $t.log; fi
+done
+tar czf /tmp/clbsr_out.tgz *.bit 2>/dev/null || true
+echo SRDONE

@@ -1,0 +1,98 @@
+[
+ {
+  "file": "_negctl.json",
+  "size": 2,
+  "moved_to": "_trash_20261113\\_negctl.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_crcsig_meta.json",
+  "size": 19,
+  "moved_to": "_trash_20261113\\_crcsig_meta.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "step03_pip/_z.json",
+  "size": 135,
+  "moved_to": "_trash_20261113\\_z.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "step03_pip/_active.json",
+  "size": 670,
+  "moved_to": "_trash_20261113\\_active.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_sb_map.json",
+  "size": 1358,
+  "moved_to": "_trash_20261113\\_sb_map.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_lk_map.json",
+  "size": 1422,
+  "moved_to": "_trash_20261113\\_lk_map.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_crc_A_bypos.json",
+  "size": 1490,
+  "moved_to": "_trash_20261113\\_crc_A_bypos.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_crc_old_bypos.json",
+  "size": 1502,
+  "moved_to": "_trash_20261113\\_crc_old_bypos.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_t21c_cells.json",
+  "size": 1947,
+  "moved_to": "_trash_20261113\\_t21c_cells.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "step03_pip/_mcp_opt_raw2.json",
+  "size": 2976,
+  "moved_to": "_trash_20261113\\_mcp_opt_raw2.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "step03_pip/_missing_imux_pred.json",
+  "size": 3991,
+  "moved_to": "_trash_20261113\\_missing_imux_pred.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "step03_pip/_manifest_data.json",
+  "size": 7038,
+  "moved_to": "_trash_20261113\\_manifest_data.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_rot_cells.json",
+  "size": 12083,
+  "moved_to": "_trash_20261113\\_rot_cells.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "step03_pip/_alt_payload.json",
+  "size": 35820,
+  "moved_to": "_trash_20261113\\_alt_payload.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_pic_verify.json",
+  "size": 38231,
+  "moved_to": "_trash_20261113\\_pic_verify.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ },
+ {
+  "file": "_crcsig.json",
+  "size": 90690,
+  "moved_to": "_trash_20261113\\_crcsig.json",
+  "reason": "scratch: 0 refs in *.py/*.md"
+ }
+]

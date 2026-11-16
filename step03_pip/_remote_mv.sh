@@ -1,0 +1,1 @@
+cd /opt/lzh/v7re/work/hclk8 && cat -v m.v && echo '--- pips HROW of p_72 ---' && grep -E 'CLK_HROW_(BOT|TOP)_R.*MUX_OUT' out/p_72.pips

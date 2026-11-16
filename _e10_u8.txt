@@ -1,0 +1,9 @@
+OK e10_w41
+OK e10_base
+OK e10_w1
+E10DIFF_BEGIN
+E10JSON_BEGIN
+{"base_words": 5067776, "items": {"e10_w1": {"content": [[31958, 1, 15]], "ecc": {"31958": 847}}, "e10_w41": {"content": [[31958, 41, 15]], "ecc": {"31958": 6287}}}}
+E10JSON_END
+E10DIFF_END
+E10DONE

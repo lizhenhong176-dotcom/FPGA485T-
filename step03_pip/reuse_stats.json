@@ -1,0 +1,141 @@
+{
+ "sides": [
+  {
+   "tile_type": "INT_L",
+   "records": 12168,
+   "cells": 1598,
+   "features": 3636,
+   "families": 172,
+   "cell_exclusive": 1598,
+   "cell_shared": 0,
+   "feat_per_cell_min": 3,
+   "feat_per_cell_max": 18,
+   "feat_per_cell_mean": 5.57,
+   "sense1_records": 8904,
+   "sense1_per_feature": 2.45,
+   "unique_code_families": 172,
+   "domain_hist": {
+    "10": 64,
+    "8": 6,
+    "9": 98,
+    "7": 4
+   },
+   "src_hist": {
+    "24": 64,
+    "16": 6,
+    "20": 96,
+    "12": 4,
+    "18": 2
+   },
+   "zone": {
+    "0": 12,
+    "1": 12,
+    "2": 32,
+    "3": 32,
+    "4": 32,
+    "5": 32,
+    "6": 64,
+    "7": 64,
+    "8": 32,
+    "9": 32,
+    "10": 64,
+    "11": 64,
+    "12": 64,
+    "13": 64,
+    "14": 64,
+    "15": 64,
+    "16": 64,
+    "17": 64,
+    "18": 64,
+    "19": 64,
+    "20": 64,
+    "21": 64,
+    "22": 64,
+    "23": 64,
+    "24": 64,
+    "25": 64
+   },
+   "cell_density": 96.0
+  },
+  {
+   "tile_type": "INT_R",
+   "records": 12168,
+   "cells": 1598,
+   "features": 3636,
+   "families": 172,
+   "cell_exclusive": 1598,
+   "cell_shared": 0,
+   "feat_per_cell_min": 3,
+   "feat_per_cell_max": 18,
+   "feat_per_cell_mean": 5.57,
+   "sense1_records": 8904,
+   "sense1_per_feature": 2.45,
+   "unique_code_families": 172,
+   "domain_hist": {
+    "10": 64,
+    "9": 98,
+    "8": 6,
+    "7": 4
+   },
+   "src_hist": {
+    "24": 64,
+    "20": 96,
+    "16": 6,
+    "12": 4,
+    "18": 2
+   },
+   "zone": {
+    "0": 12,
+    "1": 12,
+    "2": 32,
+    "3": 32,
+    "4": 32,
+    "5": 32,
+    "6": 64,
+    "7": 64,
+    "8": 32,
+    "9": 32,
+    "10": 64,
+    "11": 64,
+    "12": 64,
+    "13": 64,
+    "14": 64,
+    "15": 64,
+    "16": 64,
+    "17": 64,
+    "18": 64,
+    "19": 64,
+    "20": 64,
+    "21": 64,
+    "22": 64,
+    "23": 64,
+    "24": 64,
+    "25": 64
+   },
+   "cell_density": 96.0
+  }
+ ],
+ "coverage": {
+  "observed_features": 2048,
+  "per_side": {
+   "INT_L": [
+    1024,
+    3636,
+    28.2
+   ],
+   "INT_R": [
+    1024,
+    3636,
+    28.2
+   ]
+  },
+  "detail": {
+   "tilepipe.json": 900,
+   "tp3.json": 150,
+   "tp2.json": 900,
+   "tp4b.json": 900,
+   "famdiff.json(matched)": 124,
+   "famdiff_r.json(matched)": 124
+  }
+ }
+}

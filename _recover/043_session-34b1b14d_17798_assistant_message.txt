@@ -1,0 +1,49 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "While this runs (~80 min), write up the two-row finding and report.\n\nFindings from m2:\n- 16 LUTs, 64 builds → each build gave exactly 16 new cells (one per LUT) ✓\n- Position sets identical across words 8/9/16/17 and across rows 4 and 8?! "word8 == word16?" True — same (frame,bit) set for rows 4 and 8! Because same block? Rows 4 and 8 are in the same CLB block (band 0 covers rows 0-49; frames 31778-31787 are within one block). Since both rows map to the same frame group and same bit set, the position set is row-independent in frames, and only the word differs.\n\nThat's a strong result: the INIT cells are at the SAME (frame, bit) positions for all rows in a block; only `word` (which depends on y) changes. Hence the layout permutation across rows is NOT in frames but tied to the word index... but word 8 vs 40 differ only by index, and the bit set is the same. Then why did row3 vs row20 maps differ by permutation?\n\nBecause row 3's map came from word 6 and row 20 from word 40 — same (frame,bit) set, but the minterm→cell assignment differs. Since the bit set is identical, the permutation is purely in how minterms map onto those 64 cells.\n\nHmm, so the difference must come from the *logic* of the LUT address mapping, which depends on y? That seems odd.\n\nWait, maybe the permutation difference is actually between LUTs, not rows: row 3 used SLICE_X2Y3 whose LUT became SLICEM.A6LUT; row 20 used SLICE_X12Y20 → SLICEM.A6LUT as well? T13 says SLICE_X12Y20/A6LUT.\n\nHmm.\n\nAlternatively the difference is because in the row-3 run only ONE LUT existed (no other cells), while T13's map came from 8 LUTs where grouping may have been wrong → T13's per-LUT grouping could be misassigned between LUTs (A vs B), producing a "permutation" artifact!\n\nThat's plausible: T13's map might actually be a mixture of two LUTs' cells, and the resulting set still decoded random values correctly? No — a mixture wouldn't decode 0xDEADBEEF correctly.\n\nUnless the two LUTs' layouts are permutations of each other and the mix happened to be consistent for the tested values... unlikely.\n\nLet me test directly: apply T13's A6LUT map to the row-3 bitstream (s0..s63) and see whether it decodes minterms correctly. If T13's map decodes row-3 minterm builds correctly, then the maps are equivalent and the earlier "8/64 same" comparison was flawed (maybe I normalized frames incorrectly since row3 frames start at base+0 while row20 at base+68).\n\nI normalized by subtracting min frame — that aligns them. Hmm, but if they're equal after normalization, then perm = identity, but we found (0 4)(1 2)(3 5).\n\nSo they genuinely differ. Then how did both decode random values correctly? Because each was validated against designs at its own row. Fine — so layout differs between rows 3 and 20 after all, while rows 4 and 8 show identical position sets (frame,bit) — consistent with row3/row20 having the same position set too (we saw "位置集合是否相同: True"). So the difference is only in the index↔position assignment.\n\nSo the question remains: does the minterm→position assignment depend on y?\n\nNow with the m2 data (rows 4 and 8, 16 LUTs), if I can group LUTs correctly, I can compare row4's A6LUT map vs row3's A6LUT map (but different sites: SLICE_X2Y3 vs SLICE_X12Y4).\n\nThe single-LUT row-4 run (running now) will give a clean A6LUT map at SLICE_X12Y4 to compare with row 3's SLICE_X2Y3 map.\n\nLet me report now and wait for that. Also write doc.\n\nLet me write the T15 update (section on rows 4/8) and report."}, {"type": "tool-call", "id": "call_00_0deE733BVfJyD239L7OB8053", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+p = \\"v7re/steps/T15_SINGLE_MINERM.md\\"
+s = io.open(p, encoding=\\"utf-8\\").read()
+s += \\"\\"\\"
+
+## 9. 两行 16 个 LUT 的合并扫描（row 4 / row 8）
+
+设计：`SLICE_X12Y{4,8}` 与 `SLICE_X13Y{4,8}` 各放 A6/B6/C6/D6 四个 LUT6（共 16 个），
+`INIT = 1<<k` 逐轮替换，65 个构建（1 基线 + 64 最小项）。
+
+结果：
+
+| 检查 | 结果 |
+|---|---|
+| 每次构建新增格数 | **恰好 16 个**（16 个 LUT 各 1 个，64/64 轮都是 16） |
+| 涉及 word | 8 / 9（row 4）、16 / 17（row 8） |
+| 每个 word 的格数 | 256（= 4 个 LUT × 64） |
+| 每个 word 涉及的帧 | 31778…31781 与 31784…31787（8 帧，每帧 32 格） |
+
+**重要发现：四个 word 的 (帧, 位) 位置集合完全相同** ——
+`word8 == word9 == word16 == word17`（32 位/帧 × 8 帧 = 256 格）。
+即同一 block 内，不同行、不同 parity 的 INIT 只改 **word**，不改**帧与位**。
+
+单最小项的样例（word 8，minterm 0）：4 个格分别落在
+`(31778,15) (31778,31) (31786,15) (31786,31)` —— 位总是成对出现（`b` 与 `b+16`）。
+
+仍未解决：这 16 个 LUT 之间的格分配（哪个格属于哪个 LUT）需要额外约束，
+已启动 **单 LUT 对照实验**（`SLICE_X12Y4`/A6LUT 单独，65 个构建）来取得一张无歧义的表，
+再与 row 3（`SLICE_X2Y3`/A6LUT）的表比较置换。
+\\"\\"\\"
+io.open(p, \\"w\\", encoding=\\"utf-8\\").write(s)
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 45. 两行 16 LUT 合并扫描（2026-11-06）
+
+row 4 / row 8 各放 A6/B6/C6/D6（共 16 个 LUT6），`INIT=1<<k` 逐轮替换，65 个构建。
+每次构建恰好新增 **16 格**（每 LUT 一格），涉及 word 8/9（row4）与 16/17（row8），
+每 word 256 格 = 4 LUT × 64，分布于 8 个帧（31778–31781、31784–31787），每帧 32 格。
+
+**关键**：4 个 word 的 `(帧, 位)` 位置集合**完全相同** —— 同行 block 内不同 row/parity
+只改 word、不改帧与位。minterm 样例显示位成对出现（`b` 与 `b+16`）。
+
+LUT 之间的格分配仍需额外约束，已启动 `SLICE_X12Y4`/A6LUT 的单 LUT 对照扫描（65 构建）。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Append two-row findings to doc and STATUS", "timeoutMs": 300000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "5cf59ff1-286c-448d-97e5-369942e4b842"}, {"type": "tool-call"}]}}, "id": "66702e9c-2b22-451c-a759-82e22b61d6a7"}

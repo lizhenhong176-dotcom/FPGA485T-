@@ -1,0 +1,8 @@
+﻿Traceback (most recent call last):
+  File "diff_clkinv.py", line 127, in <module>
+    main()
+  File "diff_clkinv.py", line 66, in main
+    ref = parse_bit_frames(ref_path)
+  File "diff_clkinv.py", line 50, in parse_bit_frames
+    raise ValueError(f"only {len(words)} words, expected {total}")
+ValueError: only 0 words, expected 5067776

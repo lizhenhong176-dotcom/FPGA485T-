@@ -1,0 +1,561 @@
+{
+ "meta": {
+  "bitsize": 20273538,
+  "nframes": 50181,
+  "pip_lines": 190,
+  "tiles": 76
+ },
+ "rows": [
+  {
+   "key": [
+    "INT_L",
+    "BYP_ALT0",
+    "EE2END0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y10",
+    "INT_L_X32Y6"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE2BEG0",
+    "SS6END0"
+   ],
+   "n": 2,
+   "rel_kind": 1,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X30Y10",
+    "INT_L_X30Y6"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE2BEG2",
+    "SE6END2"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X30Y12",
+    "INT_L_X30Y8"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG0",
+    "EE4END0"
+   ],
+   "n": 6,
+   "rel_kind": 4,
+   "abs_kind": 6,
+   "dbase": 408,
+   "dy": 4,
+   "dcol": 12,
+   "tiles": [
+    "INT_L_X14Y16",
+    "INT_L_X18Y16",
+    "INT_L_X22Y12",
+    "INT_L_X22Y16",
+    "INT_L_X26Y12",
+    "INT_L_X26Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG0",
+    "SE6END0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 272,
+   "dy": 4,
+   "dcol": 8,
+   "tiles": [
+    "INT_L_X10Y16",
+    "INT_L_X18Y12"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG1",
+    "EE4END1"
+   ],
+   "n": 5,
+   "rel_kind": 3,
+   "abs_kind": 5,
+   "dbase": 480,
+   "dy": 8,
+   "dcol": 14,
+   "tiles": [
+    "INT_L_X12Y20",
+    "INT_L_X22Y12",
+    "INT_L_X22Y16",
+    "INT_L_X26Y12",
+    "INT_L_X26Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG1",
+    "SE6END1"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X18Y12",
+    "INT_L_X18Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG2",
+    "EE4END2"
+   ],
+   "n": 4,
+   "rel_kind": 3,
+   "abs_kind": 4,
+   "dbase": 128,
+   "dy": 4,
+   "dcol": 4,
+   "tiles": [
+    "INT_L_X20Y12",
+    "INT_L_X20Y16",
+    "INT_L_X24Y12",
+    "INT_L_X24Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG2",
+    "SE6END2"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X16Y12",
+    "INT_L_X16Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "EE4BEG3",
+    "LH0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 72,
+   "dy": 0,
+   "dcol": 2,
+   "tiles": [
+    "INT_L_X24Y20",
+    "INT_L_X26Y20"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "FAN_ALT7",
+    "EE2END2"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y12",
+    "INT_L_X32Y8"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "IMUX_L34",
+    "BYP_BOUNCE0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y10",
+    "INT_L_X32Y6"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "IMUX_L34",
+    "FAN_BOUNCE7"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y12",
+    "INT_L_X32Y8"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "IMUX_L34",
+    "SL1END1"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y11",
+    "INT_L_X32Y7"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "IMUX_L34",
+    "SR1BEG_S0"
+   ],
+   "n": 2,
+   "rel_kind": 1,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y13",
+    "INT_L_X32Y9"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "LH12",
+    "EE4END3"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 72,
+   "dy": 0,
+   "dcol": 2,
+   "tiles": [
+    "INT_L_X12Y20",
+    "INT_L_X14Y20"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "NL1BEG_N3",
+    "WW4END0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 1,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X8Y19",
+    "INT_L_X8Y20"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "NN6BEG0",
+    "LOGIC_OUTS_L18"
+   ],
+   "n": 3,
+   "rel_kind": 1,
+   "abs_kind": 3,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y1",
+    "INT_L_X32Y2",
+    "INT_L_X32Y5"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "NW6BEG0",
+    "LOGIC_OUTS_L18"
+   ],
+   "n": 3,
+   "rel_kind": 1,
+   "abs_kind": 3,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y0",
+    "INT_L_X32Y3",
+    "INT_L_X32Y4"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "NW6BEG0",
+    "NN6END0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 3,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y11",
+    "INT_L_X32Y8"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "NW6BEG0",
+    "NW6END0"
+   ],
+   "n": 13,
+   "rel_kind": 7,
+   "abs_kind": 13,
+   "dbase": 264,
+   "dy": 12,
+   "dcol": 8,
+   "tiles": [
+    "INT_L_X22Y15",
+    "INT_L_X24Y11",
+    "INT_L_X24Y16",
+    "INT_L_X26Y12",
+    "INT_L_X26Y16",
+    "INT_L_X28Y11",
+    "INT_L_X28Y12",
+    "INT_L_X28Y8",
+    "INT_L_X30Y12",
+    "INT_L_X30Y15",
+    "INT_L_X30Y4",
+    "INT_L_X30Y7",
+    "INT_L_X30Y8"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "NW6BEG0",
+    "WW4END0"
+   ],
+   "n": 2,
+   "rel_kind": 1,
+   "abs_kind": 2,
+   "dbase": 72,
+   "dy": 1,
+   "dcol": 2,
+   "tiles": [
+    "INT_L_X12Y16",
+    "INT_L_X14Y15"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "SE6BEG1",
+    "EE4END1"
+   ],
+   "n": 4,
+   "rel_kind": 4,
+   "abs_kind": 4,
+   "dbase": 536,
+   "dy": 8,
+   "dcol": 16,
+   "tiles": [
+    "INT_L_X14Y20",
+    "INT_L_X16Y20",
+    "INT_L_X30Y12",
+    "INT_L_X30Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "SE6BEG2",
+    "EE4END2"
+   ],
+   "n": 4,
+   "rel_kind": 4,
+   "abs_kind": 4,
+   "dbase": 544,
+   "dy": 8,
+   "dcol": 16,
+   "tiles": [
+    "INT_L_X12Y20",
+    "INT_L_X14Y20",
+    "INT_L_X28Y12",
+    "INT_L_X28Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "SL1BEG1",
+    "SE6END1"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y12",
+    "INT_L_X32Y8"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "SL1BEG3",
+    "SS6END3"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y10",
+    "INT_L_X32Y14"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "SR1BEG_S0",
+    "SL1END3"
+   ],
+   "n": 2,
+   "rel_kind": 1,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X32Y13",
+    "INT_L_X32Y9"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "SS6BEG0",
+    "EE4END0"
+   ],
+   "n": 2,
+   "rel_kind": 2,
+   "abs_kind": 2,
+   "dbase": 0,
+   "dy": 4,
+   "dcol": 0,
+   "tiles": [
+    "INT_L_X30Y12",
+    "INT_L_X30Y16"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "WW4BEG0",
+    "NW6END0"
+   ],
+   "n": 6,
+   "rel_kind": 4,
+   "abs_kind": 6,
+   "dbase": 264,
+   "dy": 5,
+   "dcol": 8,
+   "tiles": [
+    "INT_L_X20Y19",
+    "INT_L_X22Y20",
+    "INT_L_X24Y20",
+    "INT_L_X26Y15",
+    "INT_L_X28Y16",
+    "INT_L_X28Y19"
+   ]
+  },
+  {
+   "key": [
+    "INT_L",
+    "WW4BEG0",
+    "WW4END0"
+   ],
+   "n": 13,
+   "rel_kind": 9,
+   "abs_kind": 13,
+   "dbase": 408,
+   "dy": 5,
+   "dcol": 12,
+   "tiles": [
+    "INT_L_X12Y19",
+    "INT_L_X12Y20",
+    "INT_L_X14Y20",
+    "INT_L_X16Y16",
+    "INT_L_X16Y19",
+    "INT_L_X16Y20",
+    "INT_L_X18Y15",
+    "INT_L_X18Y20",
+    "INT_L_X20Y16",
+    "INT_L_X20Y20",
+    "INT_L_X22Y15",
+    "INT_L_X24Y16",
+    "INT_L_X24Y19"
+   ]
+  }
+ ]
+}

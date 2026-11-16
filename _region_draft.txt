@@ -1,0 +1,17 @@
+请解释 Xilinx 7 系列 FPGA 里的 region（时钟区域）到底是什么，用图解说明，并指出项目数据里相关的表与字段。
+
+背景事实（已在本项目实测确认，不得改写）：
+1. 器件 xc7vx485tffg1157-3。tiles 表 clock_region 字段共 15 个取值：X0Y0..X0Y6、X1Y0..X1Y6 共 14 个真实时钟区域，另有一个空串，含 10,436 个 tile（I/O、GT 等特殊 tile）。
+2. 每个真实 region 的 tile 数：X0 各 9,741 个，X1 各 10,251 个；grid_x 范围 X0=0..190、X1=194..394；grid_y 范围每格跨 51（50 个 CLB 行）。
+3. tile 名里的 Y 值范围：X0Y0=0..49、X0Y1=50..103、X0Y2=100..149、X0Y3=150..199、X0Y4=200..249、X0Y5=250..299、X0Y6=300..349。
+4. region_bases 表 14 行，base_frame：X0Y0=31748、X0Y1=26502、X0Y2=272、X0Y3=5518、X0Y4=10764、X0Y5=16010、X0Y6=21256；X1 行与 X0 同基址（标注 X1_alias_of_X0Y?）。
+5. meta.band_by_region = [6,5,0,1,2,3,4]，即 region Y0..Y6 依次对应配置行带 band 6,5,0,1,2,3,4。
+6. 已实测的基址律：base(tile) = band(y) * 5246 + offset(col_addr)，其中 band(y) = 6-(y//50) 若 y//50<2，否则 (y//50)-2；5246 = row_frames；offset 由 frame_blocks_full 表按列唯一确定。该律在列位 0..153、y 0..349 全命名域上 7,100/7,101 命中。
+7. far_bands 表 1,078 行 = 7 band × 154 列，只覆盖 FAR_BLOCK_0（36,708 帧）；FAR_BLOCK_1 另 13,440 帧另有 105 块 × 128 帧（frame_blocks_full 共 1,183 块）。
+
+要求：
+A. 用「一张器件示意图 + 一张换算链图」讲清 region 是什么：它在物理上对应什么、与 CLB 行/列、与配置帧 band 的关系。
+B. 明确区分三套坐标：tile 名里的行列（0..153 / 0..349）、grid_x/grid_y（0..411 / 0..364）、far_band/far_col（0..6 / 0..153），说明谁和谁是 1:1、谁不能混用。
+C. 指出相关数据在哪：tiles.clock_region、region_bases、meta.band_by_region、far_bands、frame_blocks_full 各自装了什么、口径是什么。
+D. 明确说明 X1_alias_of_X0 这件事的含义与风险（X1 行的 base_frame 不能当作独立测量）。
+E. 不许把「region 个数」写成 15（14 个真实 + 1 个空串）。

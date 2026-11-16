@@ -1,0 +1,52 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Now append STATUS.md §50 and update the T20 doc's claim about "40 word-40 差异位" — I earlier said word 40 40 bits in part diff (hist showed "40": 40). Yes 40 bits in word 40.\n\nAppend STATUS §50 via python, preserving CRLF.\n\nContent:\n\n## 50. T20 —— 用 skill 实测 part 对差分：INIT 映射与封装无关，但 part 差分不为零（2026-11-06）\n\n5 构建（/opt/lzh/v7re/work/partpair，5 路并行）。全部 LOCK_PINS + 回读 SITE/BEL/INIT/part 一致。\n负对照 b0_1157 vs b0b_1157 = 0 帧。\n反读自证：INIT=0xDEADBEEFCAFEBABE（不在 T19 训练集）→ 4 帧 31784–31787，word 40 共 46 位，与 T19 闭式公式 46/46 集合相等（missing 0 / extra 0）；word 50 恰 14 位（bit 0..12，ECC 域）。\npart 对（同 netlist/LOC/BEL/LOCK_PINS/INIT，仅 -part 1157-3 vs 1761-2）：133 帧 / 1,210 位差异，帧集合与 INIT 无关；**不触及 31784–31787** → INIT 映射在本域内与封装无关（第一条直接实测，支撑「fabric 层不受影响」）。\n【未测】133 帧差异成因未确认；【推断】未约束端口默认 IOB 分配不同。最小实验：端口加两封装共有 IOB 的 PACKAGE_PIN 后重跑。\n顺带：/opt/lzh/v7re/work/locked/mk.tcl 的 part 写的是 ffg1761-2（与器件修正不符）；两边实测结构一致，故 T19 表未被污染。\n文档：v7re/steps/T20_PART_PAIR.md。\n\nThen verify append.\n\nAlso should I update skill (missing/extra 硬判据)? That's a V3 improvement — the skill's gate 5 could add "集合比对 missing=0 且 extra=0". The user's earlier requirement: prompt changes must go through prompt-optimizer. SKILL.md isn't a prompt file per se, but AGENTS.md hard rule says "任何提示词的写作与修订" — skill MD is instructions ≈ prompt. Safer: run iterate-prompt for the skill text improvement? That's overhead. I'll note it as a proposed V3 and ask user, or do the iterate-prompt on the skill's gate text. Given the discipline, do it properly later if user wants. For now report.\n\nLet me append STATUS."}, {"type": "tool-call", "id": "call_00_WNvh8m8eMIXtGexnnNV48489", "name": "run_code", "arguments": "{"code": "const cwd = (await tools.working_directory({})).cwd;
+const sec = `## 50. T20 —— 用 skill 实测 part 对差分：INIT 映射与封装无关，但 part 差分不为零（2026-11-06）
+
+按 \\\\`.agents/skills/fpga-bitstream-experiment\\\\` 的八道门跑了一遍真实流程（5 个构建，\\\\`/opt/lzh/v7re/work/partpair\\\\`，5 路并行，全部 rc=0，全部 \\\\`LOCK_PINS\\\\`，回读 part/SITE/BEL/INIT/LOCK 一致）。
+
+**负对照**：同 part 同设计重跑的 \\\\`b0_1157\\\\` vs \\\\`b0b_1157\\\\` → 差分帧 **0**。
+
+**反读自证**：\\\\`INIT=0xDEADBEEFCAFEBABE\\\\`（**不在 T19 的 64 个单最小项里**）相对 \\\\`INIT=0\\\\` → 4 帧（31784–31787），word 40 共 **46 位**；T19 闭式公式独立预测 46 位，**集合相等：missing 0 / extra 0**。同帧 word 50 恰变 **14 位**（bit 0..12，ECC 域内）。
+
+**part 对**（同 netlist、同 LOC/BEL/LOCK_PINS、同 INIT，仅 \\\\`-part\\\\` 不同：\\\\`ffg1157-3\\\\` vs \\\\`ffg1761-2\\\\`）：
+
+| 差分对 | 差异帧 | 差异位 |
+|---|---|---|
+| \\\\`b0_1157\\\\` vs \\\\`b0_1761\\\\` | 133 | 1,210 |
+| \\\\`r_1157\\\\` vs \\\\`r_1761\\\\` | 133 | 1,210 |
+
+两对帧集合完全相同（27189…32607），**不含 31784–31787** —— 本 BEL 的 CLB INIT 帧（word 40）两封装下逐字节相同。
+
+【数据事实】T19 的 INIT 映射在本设计域内**与封装无关**；这是 \\\\`STATUS.md\\\\` 附「fabric 层不受影响」的第一条直接实测（此前只有键合 IOB 数 600 vs 700 的间接论据）。
+【未测】那 133 帧 / 1,210 位的成因未确认。
+【推断】最可能来自未约束端口 \\\\`a0..a5/o\\\\` 的默认 IOB 分配（两封装可用引脚不同）；21 帧落在同一 block（base 31716），word 50 占 766 位（内容变 → ECC 重算）。
+最小验证实验：给所有端口加 \\\\`PACKAGE_PIN\\\\` 约束到两封装共有的 IOB 后重跑该对，若差分降为 0 即确认成因。
+
+**顺带发现**：\\\\`/opt/lzh/v7re/work/locked/mk.tcl\\\\` 里写的是 \\\\`-part xc7vx485tffg1761-2\\\\`，与器件修正（实际 part \\\\`ffg1157-3\\\\`）不符。本次两边都跑，结构同为 4 帧 / 46+14 位，故 **T19 表未被 part 污染、仍可用**；但后续构建必须显式声明 part。
+
+文档：\\\\`v7re/steps/T20_PART_PAIR.md\\\\`。
+`;
+const code = `
+import os
+p = r\\"${cwd}\\\\\\\\STATUS.md\\"
+raw = open(p,'rb').read()
+crlf = raw.count(b\\"\\\\\\\\r\\\\\\
+\\") > 0
+txt = raw.decode('utf-8')
+add = ${JSON.stringify(sec)}
+if crlf:
+    add = add.replace(\\"\\\\\\
+\\",\\"\\\\\\\\r\\\\\\
+\\")
+    nl = \\"\\\\\\\\r\\\\\\
+\\"
+else:
+    nl = \\"\\\\\\
+\\"
+if not txt.endswith(nl): txt += nl
+txt += nl + add
+open(p,'wb').write(txt.encode('utf-8'))
+print(\\"crlf\\", crlf, \\"newlen\\", len(txt))
+`;
+const r = await tools.run_python({ code, cwd });
+console.log(r.stdout + r.stderr);
+", "description": "Append T20 section to STATUS.md"}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "68bca2ec-3350-46eb-bc89-eeab8f27fa67"}, {"type": "tool-call"}]}}, "id": "ff45c4c0-7bf5-40d2-b144-f924a7c3191c"}

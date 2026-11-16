@@ -1,0 +1,108 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Excellent. Now:\n- Locked table validated: 6/6 cross-build on independently built designs.\n- Closed-form formula found for ALUT INIT at this site: frame = block_base + 70 + (k&1) - 2*((k>>3)&1), word 40, bit = 15 - 4*(k>>4) - ((k>>1)&3). 64/64.\n\nNote base 31716 → +70 = 31786 ✓.\n\nNow generalize to other BELs (B6/C6/D6, X1 slice): the formula probably generalizes with different base offsets/word. We have the T13 table (8 LUTs, free pins) - not usable for indices. But the *physical cell set* per LUT is known: A/B word40, C/D word41, X0 frames +68..71 (+68..71 → actually +68=31784, +69, +70, +71=31787), X1 frames +62..65.\n\nFrom locked data: ALUT uses +68..+71 (31784..31787) ✓ matches T13's "X0 帧 +68…+71".\n\nSo for other BELs, plan: apply same formula but shift by the known frame offsets and word. But we must verify by building a few designs (e.g., B6LUT with a few k values) and cross-check.\n\nAlso should update the decoder (site_frames) with the corrected map, and note the FF.INIT bit (31783,40,3) — that's frame +67, word 40, bit 3 — outside the INIT frame block, consistent.\n\nNow write doc T19 and report. Also note the correction of my earlier T18 claim: T13's table was derived without LOCK_PINS, but interestingly the physical cell *set* was right; only index assignment differed. And T17's L20 builds actually agree with the locked table (my earlier "4/5 不符" was due to wrong expectation).\n\nWait — careful: earlier in T18 I concluded T13's table fails on LOCK_PINS designs. That test used tab=T13 with L20_* designs and got 0x100000000 etc., comparing against expected `0x2` (wrong expectation). Let me recheck: T13 test printed "L20_k2 期望 0x2 解出 0x100000000". With correct expectation 0x4, T13's table gives 0x100000000 ≠ 0x4 → still fails. Good, T18 conclusion stands.\n\nSo: T13 table (free pins) incompatible with locked designs; locked table works for locked designs; and for real designs (free pins) neither index space is knowable without knowing the permutation... \n\nHmm, important: what does a *real* design's bitstream contain? The physical truth table—always. The question is how to read it into a logical LUT function with named inputs I0..I5. That requires knowing the pin→address mapping, which the design determines (placer). Vivado's routing shows which A-pin each LUT input uses (e.g., A1..A6) — we know that from routing! So decoding: read physical table (locked table gives physical A1..A6 order), then permute according to the routed pin assignment.\n\nSince LOCK_PINS {I0:A1...} means logical I0→physical A1, the locked table's index = combination of physical A1..A6 bits, which *is* the physical truth table. Real designs route to physical A pins; the router's PIP shows which A pin each net drives. So we can reconstruct logical INIT by permuting physical table per the observed pin assignment.\n\nSo locked table is the right basis. \n\nNow report. Should also mention: T13's physical cell set was correct but its index was the free-pin assignment, so it's superseded.\n\nLet me write T19 doc + STATUS, then report with three-color labeling per AGENTS.md (硬件事实/数据事实/推断).\n\nLet me be efficient: write doc + STATUS in one python call."}, {"type": "tool-call", "id": "call_00_WXChVvcy7g6mtR3GO5ye6349", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io, json
+tab = json.load(open(\\"_lk_map.json\\"))
+io.open(\\"v7re/steps/clb_init_locked_x12y20_a6lut.json\\",\\"w\\",encoding=\\"utf-8\\").write(json.dumps(tab, indent=0))
+doc = \\"\\"\\"# T19：LOCK_PINS 版 INIT 映射建成并双路验证通过
+
+日期：2026-11-06
+数据：远端 `/opt/lzh/v7re/work/locked`，65 个构建（全部带 `LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6}`，回读 SITE/BEL）。
+
+## 1. 结果：64 位一一对应
+
+每个 `INIT=1<<k` 的构建相对基线只多出 **1 格**，64 格互不相同、无重复、无缺失：
+
+```
+INIT[ 0] -> (31786, 40, 15)   INIT[ 1] -> (31787, 40, 15)
+INIT[ 2] -> (31786, 40, 14)   INIT[ 3] -> (31787, 40, 14)
+INIT[ 8] -> (31784, 40, 15)   INIT[16] -> (31786, 40, 11)
+INIT[32] -> (31786, 40,  7)   INIT[63] -> (31785, 40,  0)
+```
+
+整表见 `v7re/steps/clb_init_locked_x12y20_a6lut.json`。
+
+## 2. 闭式公式（64/64 全对）
+
+令块基址 `B = 31716`（本例 B = 块起点），则
+
+```
+frame = B + 70 + (k & 1) - 2 * ((k >> 3) & 1)
+word  = 40
+bit   = 15 - 4 * (k >> 4) - ((k >> 1) & 3)
+```
+
+64 个 `k` 全部吻合，零例外。
+
+## 3. 双路验证
+
+**(a) 自洽**：用该表解 64 个自己的构建，**64/64 精确**。
+
+**(b) 跨构建**（关键）：用 T17 那批**独立脚本、独立设计**造出来、同样 `LOCK_PINS` 的 `L20_k*`：
+
+| 设计 | 设计里的 INIT | 解出 | 结果 |
+|---|---|---|---|
+| `L20_k1` | `0x2` | `0x2` | ✅ |
+| `L20_k2` | `0x4` | `0x4` | ✅ |
+| `L20_k4` | `0x10` | `0x10` | ✅ |
+| `L20_k8` | `0x100` | `0x100` | ✅ |
+| `L20_k16` | `0x10000` | `0x10000` | ✅ |
+| `L20_k32` | `0x100000000` | `0x100000000` | ✅ |
+
+**6/6 全对**。这一步才是真正的验证——表是从 A 批构建学的，B 批构建是独立生成的。
+
+## 4. 与 T13 那张表的关系（收回一句错话）
+
+T18 里我用错期望值（把 `L20_k2` 的 INIT 当成 `0x2`，实际是 `0x4`）描述过跨构建结果，这里更正：
+
+- **T13 表（无 `LOCK_PINS`）**：用它解 `LOCK_PINS` 设计，`L20_k2` 解出 `0x100000000`、`L20_k4` 解出 `0x100` —— 确实不符，T18 的核心结论**仍然成立**；
+- **物理格集合**：两张表完全相同（都是 64 个格，帧 +68…+71、word 40），**只有索引对应不同**；
+- 结论：**索引空间必须锁引脚才能确定**，T13 表作废，以本表为准。
+
+## 5. 对解码真实设计的意义
+
+真实设计里，LUT 输入由 placer 分配到 `A1..A6` 的某一个。本表给的是**物理真值表**（索引位 = `A1..A6` 的组合）。
+所以要得到逻辑函数，还需结合布线信息（哪条 net 进了哪个 `A` 脚）做一次置换：
+
+```
+逻辑 INIT[i] = 物理表[j]，其中 j 由 (I0..I5) → (A1..A6) 的实际分配决定
+```
+
+布线信息在 `v7_model.sqlite` 的 `site_pins` / PIP 里已有，所以解码链可以正确闭合。
+
+## 6. 尚未做
+
+- B6/C6/D6 与 X1 slice 的锁引脚表（预期同公式、不同帧偏移，需实测确认）；
+- FF.INIT 已得单比特 `(31783, 40, 3)`，但 CE/SR/置位仍未测；
+- `site_frames` 尚未按新表重生成。
+\\"\\"\\"
+io.open(\\"v7re/steps/T19_LOCKED_INIT_MAP.md\\",\\"w\\",encoding=\\"utf-8\\").write(doc)
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 49. T19 —— LOCK_PINS 版 INIT 映射建成并双路验证通过（2026-11-06）
+
+65 个构建（`/opt/lzh/v7re/work/locked`，全部带 `LOCK_PINS {I0:A1 … I5:A6}`，回读 SITE/BEL）。
+每个 `INIT=1<<k` 相对基线只多 1 格，64 格互不相同、无缺失。
+
+**闭式公式（64/64 全对）**，`B` = 块基址（本例 31716）：
+
+```
+frame = B + 70 + (k & 1) - 2 * ((k >> 3) & 1)
+word  = 40
+bit   = 15 - 4 * (k >> 4) - ((k >> 1) & 3)
+```
+
+**验证**：自洽 64/64；跨构建（T17 独立脚本造的 `L20_k1/2/4/8/16/32`）**6/6 精确**。
+表存 `v7re/steps/clb_init_locked_x12y20_a6lut.json`。
+
+**对 T18 的更正**：T18 里我把 `L20_k2` 的期望值写成了 `0x2`（实际 INIT 是 `0x4`），
+这不影响 T18 的核心结论——T13 表（无 LOCK_PINS）解 `LOCK_PINS` 设计仍不符；
+两张表的**物理格集合完全相同**，差别只在索引空间。
+
+**解码真实设计的含义**：本表给的是物理真值表（索引位 = `A1..A6` 组合），
+要得到逻辑函数还需按实际引脚分配做一次置换（布线信息在 `site_pins`/PIP 里已有）。
+
+文档：`v7re/steps/T19_LOCKED_INIT_MAP.md`。
+\\"\\"\\"
+io.open(\\"STATUS.md\\",\\"w\\",encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Write T19 doc and STATUS section", "timeoutMs": 300000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "c796a4cd-eb59-4c9d-990a-34ef023ae64a"}, {"type": "tool-call"}]}}, "id": "9003ab82-8c8c-4900-bf2c-3c068708d879"}

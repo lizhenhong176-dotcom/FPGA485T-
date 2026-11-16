@@ -1,0 +1,12 @@
+﻿ERR_BEGIN
+{"base_frames": 50176, "base_words": 5067776}
+done e3_a content 2 eccframes 1
+done e3_b content 4 eccframes 0
+done e3_c content 2 eccframes 2
+done e3_d content 2 eccframes 1
+done e3_e content 16 eccframes 0
+ERR_END
+E3DIFF_JSON_BEGIN
+{"frame_words": 101, "frames": 50176, "variants": {"e3_a": {"content_positions": [[31786, 40, 14], [31786, 40, 15]], "n_content": 2, "ecc": {"31786": [0, 4097]}, "frames_touched": [31786]}, "e3_b": {"content_positions": [[31786, 40, 12], [31786, 40, 13], [31786, 40, 14], [31786, 40, 15]], "n_content": 4, "ecc": {}, "frames_touched": [31786]}, "e3_c": {"content_positions": [[31786, 40, 15], [31787, 40, 15]], "n_content": 2, "ecc": {"31786": [0, 2159], "31787": [0, 2159]}, "frames_touched": [31786, 31787]}, "e3_d": {"content_positions": [[31786, 40, 13], [31786, 40, 14]], "n_content": 2, "ecc": {"31786": [0, 3]}, "frames_touched": [31786]}, "e3_e": {"content_positions": [[31786, 40, 0], [31786, 40, 1], [31786, 40, 2], [31786, 40, 3], [31786, 40, 4], [31786, 40, 5], [31786, 40, 6], [31786, 40, 7], [31786, 40, 8], [31786, 40, 9], [31786, 40, 10], [31786, 40, 11], [31786, 40, 12], [31786, 40, 13], [31786, 40, 14], [31786, 40, 15]], "n_content": 16, "ecc": {}, "frames_touched": [31786]}}}
+E3DIFF_JSON_END
+E3DONE

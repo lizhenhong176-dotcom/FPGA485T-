@@ -1,0 +1,45 @@
+// P1 补强第二轮：d9_wide -- 32 LUT6 全 6 输入
+`timescale 1ns/1ps
+module top(input wire clk, input wire [7:0] din, output wire [7:0] dout);
+  wire [31:0] n;
+  LUT6 #(.INIT(64'hD1B54A32D192ED03)) u0 (.O(n[0]), .I0(din[0]), .I1(din[1]), .I2(din[2]), .I3(din[3]), .I4(din[4]), .I5(din[5]));
+  LUT6 #(.INIT(64'h4F82338BAED89116)) u1 (.O(n[1]), .I0(din[1]), .I1(din[2]), .I2(din[3]), .I3(din[4]), .I4(din[5]), .I5(din[6]));
+  LUT6 #(.INIT(64'hEDDBB9402F061529)) u2 (.O(n[2]), .I0(din[2]), .I1(din[3]), .I2(din[4]), .I3(din[5]), .I4(din[6]), .I5(din[7]));
+  LUT6 #(.INIT(64'h0B13271EAC4D993C)) u3 (.O(n[3]), .I0(din[3]), .I1(din[4]), .I2(din[5]), .I3(din[6]), .I4(din[7]), .I5(din[0]));
+  LUT6 #(.INIT(64'hA968ACD72CBB1D57)) u4 (.O(n[4]), .I0(din[4]), .I1(din[5]), .I2(din[6]), .I3(din[7]), .I4(din[0]), .I5(din[1]));
+  LUT6 #(.INIT(64'hC6A02AADADE6816A)) u5 (.O(n[5]), .I0(din[5]), .I1(din[6]), .I2(din[7]), .I3(din[0]), .I4(din[1]), .I5(din[2]));
+  LUT6 #(.INIT(64'h64F9906A2A2C057D)) u6 (.O(n[6]), .I0(din[6]), .I1(din[7]), .I2(din[0]), .I3(din[1]), .I4(din[2]), .I5(din[3]));
+  LUT6 #(.INIT(64'h82311E20AA9B8990)) u7 (.O(n[7]), .I0(din[7]), .I1(din[0]), .I2(din[1]), .I3(din[2]), .I4(din[3]), .I5(din[4]));
+  LUT6 #(.INIT(64'h200E87F92BC10DAB)) u8 (.O(n[8]), .I0(din[0]), .I1(din[1]), .I2(din[2]), .I3(din[3]), .I4(din[4]), .I5(din[5]));
+  LUT6 #(.INIT(64'h5E460DB7A80CB1BE)) u9 (.O(n[9]), .I0(din[1]), .I1(din[2]), .I2(din[3]), .I3(din[4]), .I4(din[5]), .I5(din[6]));
+  LUT6 #(.INIT(64'hFF9F8B0C297A35D1)) u10 (.O(n[10]), .I0(din[2]), .I1(din[3]), .I2(din[4]), .I3(din[5]), .I4(din[6]), .I5(din[7]));
+  LUT6 #(.INIT(64'h1DD770CAA9A1B9E4)) u11 (.O(n[11]), .I0(din[3]), .I1(din[4]), .I2(din[5]), .I3(din[6]), .I4(din[7]), .I5(din[0]));
+  LUT6 #(.INIT(64'hBB2CFE8326EF3DFF)) u12 (.O(n[12]), .I0(din[4]), .I1(din[5]), .I2(din[6]), .I3(din[7]), .I4(din[0]), .I5(din[1]));
+  LUT6 #(.INIT(64'hD9646459A75AA012)) u13 (.O(n[13]), .I0(din[5]), .I1(din[6]), .I2(din[7]), .I3(din[0]), .I4(din[1]), .I5(din[2]));
+  LUT6 #(.INIT(64'h76BDE21627802425)) u14 (.O(n[14]), .I0(din[6]), .I1(din[7]), .I2(din[0]), .I3(din[1]), .I4(din[2]), .I5(din[3]));
+  LUT6 #(.INIT(64'h94F56BECA4CFA838)) u15 (.O(n[15]), .I0(din[7]), .I1(din[0]), .I2(din[1]), .I3(din[2]), .I4(din[3]), .I5(din[4]));
+  LUT6 #(.INIT(64'h32C2D1A525352C53)) u16 (.O(n[16]), .I0(din[0]), .I1(din[1]), .I2(din[2]), .I3(din[3]), .I4(din[4]), .I5(din[5]));
+  LUT6 #(.INIT(64'h501A5F63A260D066)) u17 (.O(n[17]), .I0(din[1]), .I1(din[2]), .I2(din[3]), .I3(din[4]), .I4(din[5]), .I5(din[6]));
+  LUT6 #(.INIT(64'hCE53C53822AE5479)) u18 (.O(n[18]), .I0(din[2]), .I1(din[3]), .I2(din[4]), .I3(din[5]), .I4(din[6]), .I5(din[7]));
+  LUT6 #(.INIT(64'h6FAB42F6A315D88C)) u19 (.O(n[19]), .I0(din[3]), .I1(din[4]), .I2(din[5]), .I3(din[6]), .I4(din[7]), .I5(din[0]));
+  LUT6 #(.INIT(64'h8DE0C84F20435CA7)) u20 (.O(n[20]), .I0(din[4]), .I1(din[5]), .I2(din[6]), .I3(din[7]), .I4(din[0]), .I5(din[1]));
+  LUT6 #(.INIT(64'h2B39B605A08EC0BA)) u21 (.O(n[21]), .I0(din[5]), .I1(din[6]), .I2(din[7]), .I3(din[0]), .I4(din[1]), .I5(din[2]));
+  LUT6 #(.INIT(64'h49713FC221F444CD)) u22 (.O(n[22]), .I0(din[6]), .I1(din[7]), .I2(din[0]), .I3(din[1]), .I4(din[2]), .I5(din[3]));
+  LUT6 #(.INIT(64'hE74EA598BE23C8E0)) u23 (.O(n[23]), .I0(din[7]), .I1(din[0]), .I2(din[1]), .I3(din[2]), .I4(din[3]), .I5(din[4]));
+  LUT6 #(.INIT(64'h048623513F694CFB)) u24 (.O(n[24]), .I0(din[0]), .I1(din[1]), .I2(din[2]), .I3(din[3]), .I4(din[4]), .I5(din[5]));
+  LUT6 #(.INIT(64'hA2DFA92FBFD4F30E)) u25 (.O(n[25]), .I0(din[1]), .I1(din[2]), .I2(din[3]), .I3(din[4]), .I4(din[5]), .I5(din[6]));
+  LUT6 #(.INIT(64'hC01716E43C027721)) u26 (.O(n[26]), .I0(din[2]), .I1(din[3]), .I2(din[4]), .I3(din[5]), .I4(din[6]), .I5(din[7]));
+  LUT6 #(.INIT(64'h7E6C9CA2BD49FB34)) u27 (.O(n[27]), .I0(din[3]), .I1(din[4]), .I2(din[5]), .I3(din[6]), .I4(din[7]), .I5(din[0]));
+  LUT6 #(.INIT(64'h9FA41A7B3DB77F4F)) u28 (.O(n[28]), .I0(din[4]), .I1(din[5]), .I2(din[6]), .I3(din[7]), .I4(din[0]), .I5(din[1]));
+  LUT6 #(.INIT(64'h3DFD8031BAE2E362)) u29 (.O(n[29]), .I0(din[5]), .I1(din[6]), .I2(din[7]), .I3(din[0]), .I4(din[1]), .I5(din[2]));
+  LUT6 #(.INIT(64'h5B35098E3B286775)) u30 (.O(n[30]), .I0(din[6]), .I1(din[7]), .I2(din[0]), .I3(din[1]), .I4(din[2]), .I5(din[3]));
+  LUT6 #(.INIT(64'hF902F744BB97EB88)) u31 (.O(n[31]), .I0(din[7]), .I1(din[0]), .I2(din[1]), .I3(din[2]), .I4(din[3]), .I5(din[4]));
+  assign dout[0] = n[0];
+  assign dout[1] = n[7];
+  assign dout[2] = n[13];
+  assign dout[3] = n[19];
+  assign dout[4] = n[25];
+  assign dout[5] = n[29];
+  assign dout[6] = n[30];
+  assign dout[7] = n[31];
+endmodule

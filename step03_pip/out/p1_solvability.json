@@ -1,0 +1,69 @@
+{
+  "ref.bit": {
+    "tiles": 982,
+    "hist": {
+      "empty": 114,
+      "1": 868
+    },
+    "multi": 0,
+    "zero": 0,
+    "examples": [],
+    "zero_examples": [],
+    "ambiguous_families": []
+  },
+  "_full8.bit": {
+    "tiles": 76,
+    "hist": {
+      "1": 76
+    },
+    "multi": 0,
+    "zero": 0,
+    "examples": [],
+    "zero_examples": [],
+    "ambiguous_families": []
+  },
+  "_b1.bit": {
+    "tiles": 57,
+    "hist": {
+      "1": 57
+    },
+    "multi": 0,
+    "zero": 0,
+    "examples": [],
+    "zero_examples": [],
+    "ambiguous_families": []
+  },
+  "_d2.bit": {
+    "tiles": 27,
+    "hist": {
+      "1": 27
+    },
+    "multi": 0,
+    "zero": 0,
+    "examples": [],
+    "zero_examples": [],
+    "ambiguous_families": []
+  },
+  "_c0.bit": {
+    "tiles": 21,
+    "hist": {
+      "1": 21
+    },
+    "multi": 0,
+    "zero": 0,
+    "examples": [],
+    "zero_examples": [],
+    "ambiguous_families": []
+  },
+  "_g1.bit": {
+    "tiles": 17,
+    "hist": {
+      "1": 17
+    },
+    "multi": 0,
+    "zero": 0,
+    "examples": [],
+    "zero_examples": [],
+    "ambiguous_families": []
+  }
+}

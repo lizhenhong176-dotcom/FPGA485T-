@@ -68,13 +68,30 @@ class TileMap:
         self._build_blocks()
 
     def _load_measured(self) -> None:
+        """实测/修正后的块基址表。
+
+        `tile_blocks_fixed` 是 §201 的基址律修正结果（53,102 行，覆盖全部
+        INT_L/INT_R tile）；`tile_blocks` 是旧派生口径，已知 28.5% 的基址
+        偏了一个邻居块。frame_count 仍从旧表取（两表行一一对应）。
+        """
         self.measured: dict[str, tuple[int, int]] = {}
+        self.measured_info: dict[str, tuple[int, int]] = {}   # tile -> (band, col_addr)
         try:
             for n, b, c in self.db.execute(
-                    "select tile_name, base_frame, frame_count from tile_blocks"):
+                    "select f.tile_name, f.base_frame, t.frame_count "
+                    "from tile_blocks_fixed f join tile_blocks t using(tile_name)"):
                 self.measured[n] = (b, c)
+            for n, band, ca in self.db.execute(
+                    "select tile_name, band, col_addr from tile_blocks_fixed"):
+                self.measured_info[n] = (band, ca)
         except sqlite3.Error:
-            pass
+            self.measured, self.measured_info = {}, {}
+            try:
+                for n, b, c in self.db.execute(
+                        "select tile_name, base_frame, frame_count from tile_blocks"):
+                    self.measured[n] = (b, c)
+            except sqlite3.Error:
+                pass
 
     # ---------- 列序列 ----------
     _SKIP = ("NULL", "VBRK", "T_TERM_INT", "BRKH_INT", "BRKH_CLB", "BRKH_BRAM",
@@ -160,14 +177,19 @@ class TileMap:
         return b if frame < b.base_frame + b.frame_count else None
 
     def tile_block(self, name: str) -> Block | None:
-        # MEASURED 优先：tile_blocks 表里是解码实测过的 (tile -> 块基址)
+        # MEASURED 优先：tile_blocks_fixed 是 §201 基址律的修正结果，
+        # 旧 tile_blocks 有 28.5% 的 tile 偏了一个邻居块。实测对比
+        # _hb3_out/h00 的 82 个 PIP-cells：旧表 17 命中，新表 72。
         if name in self.measured:
             base, cnt = self.measured[name]
-            gx, gy, tt, ny = self.tiles.get(
-                name, (None, None, None, None))
-            return Block(base, cnt, (ny // ROWS_PER_BAND) if ny is not None else -1,
-                         gx if gx is not None else -1,
-                         source="measured")
+            info = self.measured_info.get(name)
+            if info:
+                band, col_addr = info
+            else:
+                ny = self.tiles.get(name, (None, None, None, None))[3]
+                band = (ny // ROWS_PER_BAND) if ny is not None else -1
+                col_addr = -1
+            return Block(base, cnt, band, col_addr, source="measured")
         if name not in self.tiles:
             return None
         gx, gy, tt, ny = self.tiles[name]

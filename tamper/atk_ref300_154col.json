@@ -1,0 +1,89 @@
+{
+  "bitstream": "ref.bit",
+  "setbits": 13426,
+  "baseline": {
+    "unexplained": 240,
+    "slot_violations": 0,
+    "active_tiles": 982
+  },
+  "attack_fake_mux": {
+    "attempted": 300,
+    "undetected_with_phantom_pip": 0,
+    "detected": 300,
+    "no_phantom_no_anomaly": 0,
+    "detect_rate_pct": 100.0,
+    "examples": []
+  },
+  "attack_swap": {
+    "attempted": 300,
+    "detected": 18,
+    "detect_rate_pct": 6.0,
+    "bits_changed_hist": {
+      "0": 3,
+      "2": 90,
+      "4": 207
+    },
+    "detect_by_cost": {
+      "0": {
+        "n": 3,
+        "detected": 0,
+        "rate_pct": 0.0
+      },
+      "2": {
+        "n": 90,
+        "detected": 4,
+        "rate_pct": 4.4
+      },
+      "4": {
+        "n": 207,
+        "detected": 14,
+        "rate_pct": 6.8
+      }
+    },
+    "exposure_model": {
+      "with_exposure_n": 112,
+      "with_exposure_detected": 17,
+      "with_exposure_rate_pct": 15.2,
+      "no_exposure_n": 188,
+      "no_exposure_detected": 1,
+      "no_exposure_rate_pct": 0.5
+    },
+    "undetected_examples": [
+      {
+        "tile": "INT_L_X16Y0",
+        "family": "ER1BEG1",
+        "from": "WW4END1",
+        "to": "SS2END0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X16Y0",
+        "family": "WW4BEG1",
+        "from": "WW4END1",
+        "to": "NW2END1",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_L_X108Y203",
+        "family": "SS6BEG0",
+        "from": "LV_L0",
+        "to": "SE6END0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X108Y203",
+        "family": "SS6BEG0",
+        "from": "LV0",
+        "to": "LOGIC_OUTS_L4",
+        "bits_changed": 2
+      },
+      {
+        "tile": "INT_R_X121Y151",
+        "family": "IMUX_L34",
+        "from": "SE2END1",
+        "to": "ER1END1",
+        "bits_changed": 4
+      }
+    ]
+  }
+}

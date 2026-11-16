@@ -1,0 +1,23 @@
+{
+  "bitstream": "ref.bit",
+  "setbits": 13426,
+  "baseline": {
+    "unexplained": 234,
+    "slot_violations": 0,
+    "active_tiles": 945
+  },
+  "delta": {
+    "delta_bits": 1092,
+    "delta_in_modeled_region": 0,
+    "delta_pct_modeled": 0.0,
+    "delta_by_tile_top": [],
+    "scan_a": {
+      "unexplained": 234,
+      "violations": 0
+    },
+    "scan_b": {
+      "unexplained": 234,
+      "violations": 0
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Results:\n- F1 (FF INIT=1): exactly 1 cell cleared → FF INIT bit = (31783, 40, 3) in the "0" state; setting INIT=1 clears it. Clean single-bit for FF INIT.\n- F2/F3/F4/F5: many changes — because routing/netlist differs (CE/R/S signals come from ports, changing routing), so diffs are polluted by routing changes. Not clean.\n\nSo only FF INIT is cleanly measured (1 bit). For CE/SR we'd need a different design (e.g., keep the same routing by tying CE to a constant vs. using a driven pin changes I/O).\n\nGiven effort, report:\n1. LOCK_PINS confirmation: PASS — identical maps across rows (5/5 minterms identical).\n2. FF INIT bit found: (frame base+67, word 40, bit 3) for AFF at row 20 — a single-bit, verified by toggle.\n3. FF CE/SR not isolatable with this design (routing changes dominate) — needs design where only the FF attribute changes while netlist/routing stays identical (e.g., use INIT only; or compare FDRE vs FDCE with same pins? CE tied high vs CE pin → routing changes).\n\nActually there's a trick: compare FDRE (CE=1) vs FDCE with CE=1 — same behavior but different primitive → changes the CE mux config without changing routing. Similarly FDRE with R vs FDRE with S (different primitive → same pins?). FDRE has R, FDSE has S — different pin names → routing changes.\n\nSimplest: FDRE vs FDCE both with CE tied to 1 and R/S tied appropriately... FDCE has CLR, FDRE has RST — different pins.\n\nAlternative: keep D/C only and compare FDRE (sync reset) vs FDSE (sync set) with the S/R pins both tied to constant 0 → same routing (both tie-offs), only the primitive's config bits differ. That isolates the "S vs R" config bit!\n\nThat's a clean next test: FDRE with R=0 vs FDSE with S=0, everything else identical.\n\nGiven time, do this quick test? It's 2 builds (~3 min). Worth it.\n\nAlso CE: FDRE with CE=1 vs FDCE with CE=1 (CLR=0) — different pin names again; instead use FDRE with CE pin driven by constant from... hmm.\n\nLet me do: \nG0: FDRE (.CE(1'b1), .R(1'b0)) — same as F0\nG1: FDSE (.CE(1'b1), .S(1'b0)) → S tied 0 → same routing? S pin tied to constant like R tied constant. Pin differs (R vs S) but both constants → routing = tie-off, likely identical nets.\n\nThen diff G1-G0 = the single "sync reset vs set" config bit.\n\nAnd for INIT polarity we already have it.\n\nLet me run G0/G1 plus maybe:\nG2: FDRE with INIT=1 (already F1).\n\nI'll run 2 builds.\n\nGiven effort budget (already long), maybe skip further experiments and report. The user asked a question that I echoed; they replied with my question text. I should just report results and next steps.\n\nLet me write docs and report. I'll include the LOCK_PINS confirmation + FF INIT result + explain why CE/SR need a cleaner design, and propose the FDRE-vs-FDSE-tied design.\n\nLet me write doc + STATUS quickly, then report."}, {"type": "tool-call", "id": "call_00_sdl3cO3UyyqpX8AKWhsN5370", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io, json
+cmp = json.load(open(\\"_lockff_cmp.json\\")) if False else None
+doc = \\"\\"\\"# T17：LOCK_PINS 确认通过 + FF.INIT 位定位
+
+日期：2026-11-06
+两次实验共 18 个构建（每构建回读 SITE/BEL/INIT），远端 `/opt/lzh/v7re/work/lockff`。
+
+## 1. LOCK_PINS 确认：布局确实全局统一
+
+两个不同行、同一 BEL（A6LUT），都加 `set_property LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6}`，
+各造 `INIT=1<<k`（k=1,2,4,8,16,32）：
+
+| k | `SLICE_X12Y4` 归一化格 | `SLICE_X12Y20` 归一化格 | 相同 |
+|---|---|---|---|
+| 2 | (帧+2, 位14) | (帧+2, 位14) | ✅ |
+| 4 | (帧+2, 位13) | (帧+2, 位13) | ✅ |
+| 8 | (帧+0, 位15) | (帧+0, 位15) | ✅ |
+| 16 | (帧+2, 位11) | (帧+2, 位11) | ✅ |
+| 32 | (帧+2, 位7) | (帧+2, 位7) | ✅ |
+
+**5/5 逐项相同，位置集合完全相同**（差异只在 word：row4 用 word 8、row20 用 word 40，符合 `2*(y%50)+parity`）。
+
+结论：**T16 的判断成立 —— 物理布局与行/列无关，之前的差异全部来自未锁引脚导致的输入置换。**
+
+## 2. FF.INIT 位：单比特，干净
+
+基线 `F0`（`SLICE_X12Y20`：A6LUT INIT=1 + AFF `FDRE(CE=1b1, R=1b0)`），
+对照 `F1`（同一设计，仅 `FDRE #(.INIT(1'b1))`）：
+
+```
+新增 0 格，消失 1 格：frame 31783 word 40 bit 3
+```
+
+即 **AFF 的 INIT 位 = (块基址+67, word 40, bit 3)**，`INIT=0` 时该位为 1，`INIT=1` 时清零。
+单比特、可逆、无副作用 —— 这是 CLB 里 FF 的第一条可靠映射。
+
+## 3. FF 的 CE / 同步复位 / 置位：本轮没测出来
+
+`F2`（CE 接 `ce` 引脚）、`F3`（R 接 `rst`）、`F4`（FDSE）、`F5`（FDPE）与基线的差异都是
+**47–49 新增 / 15–18 消失**，且大量落在 INT tile 的布线上（帧 32371/32373/32500 等）。
+
+原因很清楚：把 CE/R/S 从常量改成真实引脚，**网表与布线都变了**，差分里混进了布线位，
+无法把 FF 的配置位单独分离出来。
+
+## 4. 干净的做法（下一步）
+
+保持引脚与布线完全相同，只换原语类型：
+
+```
+G0: FDRE  (.CE(1'b1), .R(1'b0))     ← 同步复位，复位脚接常量
+G1: FDSE  (.CE(1'b1), .S(1'b0))     ← 同步置位，置位脚接常量
+```
+
+两者都只有「CE=常量 + R/S=常量」的 tie-off 连线，布线应当完全一致，
+差分就只剩「同步复位 vs 同步置位」的那一两位。CE 位同理可用
+`FDRE` 的 `CE` 接常量 vs 接另一个常量源来试（或比较 `FDRE` 与 `FDRSE` 的默认态）。
+
+## 5. 状态小结
+
+| 项目 | 状态 |
+|---|---|
+| CLB INIT（8 BEL × 64 位） | ✅ 表已建、随机值验证、跨行跨列一致 |
+| FF.INIT | ✅ 单比特已定位 |
+| FF CE / SR / 置位极性 | ❌ 需要「只换原语、不动布线」的对照设计 |
+| 进位链 | ❌ 未开始 |
+| 输入脚置换 | ✅ 已确认由 `LOCK_PINS` 消除 |
+\\"\\"\\"
+io.open(\\"v7re/steps/T17_LOCKFF.md\\", \\"w\\", encoding=\\"utf-8\\").write(doc)
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 47. T17 —— LOCK_PINS 确认通过 + FF.INIT 定位（2026-11-06）
+
+18 个构建（`/opt/lzh/v7re/work/lockff`），每构建回读 SITE/BEL/INIT。
+
+**LOCK_PINS 确认**：两行（`SLICE_X12Y4` / `SLICE_X12Y20`）同 BEL 加 `LOCK_PINS {I0:A1 … I5:A6}`，
+k=1,2,4,8,16,32 的归一化位置 **5/5 逐项相同**（差异只在 word：8 vs 40，符合 `2*(y%50)+parity`）。
+→ T16 结论成立：物理布局全局统一，之前差异全部来自未锁引脚。
+
+**FF.INIT**：`FDRE` 的 `INIT=1` 相对基线 **只清掉 1 格** —— `(帧+67, word 40, bit 3)`。
+这是 FF 的第一条可靠映射，单比特、可逆。
+
+**FF CE/SR 未测出**：CE/R/S 改接真实引脚会同时改变布线，差分混入 47–49 个 INT 布线位，
+无法分离。下一步用「只换原语、不动布线」的对照（`FDRE(.CE(1),.R(0))` vs `FDSE(.CE(1),.S(0))`）。
+
+文档：`v7re/steps/T17_LOCKFF.md`。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Write T17 doc and STATUS section", "timeoutMs": 300000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "0aaccfd4-42cc-42b4-bac0-ab049442a984"}, {"type": "tool-call"}]}}, "id": "03bdf944-6c1f-4d6f-ade8-cb1571dfa81b"}

@@ -1,0 +1,43 @@
+{
+  "bitstream": "_full8.bit",
+  "setbits": 1122,
+  "baseline": {
+    "unexplained": 0,
+    "slot_violations": 0,
+    "active_tiles": 76
+  },
+  "exhaustive": {
+    "tiles_scanned": 76,
+    "cells_per_tile": 1664,
+    "off_mux": {
+      "n": 206,
+      "detected": 206,
+      "rate_pct": 100.0,
+      "missed": 0
+    },
+    "off_other": {
+      "n": 252,
+      "detected": 252,
+      "rate_pct": 100.0,
+      "missed": 0
+    },
+    "on_mux": {
+      "n": 48434,
+      "detected": 48332,
+      "rate_pct": 99.7894,
+      "missed": 102
+    },
+    "on_other": {
+      "n": 77572,
+      "detected": 76694,
+      "rate_pct": 98.8681,
+      "missed": 878
+    },
+    "off_baseline_skipped": 0,
+    "total": {
+      "n": 126464,
+      "detected": 125484,
+      "rate_pct": 99.2251
+    }
+  }
+}

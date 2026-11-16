@@ -1,0 +1,9 @@
+# -*- coding: utf-8 -*-
+import base64, gzip, os, subprocess
+R = "/opt/lzh/step03/tilepipe"
+open(os.path.join(R, "dump_ecc.py"), "w", newline="\n").write(
+    gzip.decompress(base64.b64decode("H4sIAFn03WoC/51VzW7bRhC+8ymmDFSQFkVRthzXVG2gSKEilxRIChgFpQhLcSmxopfE7sqUfeutQREkpxyKAu256L19oNrP0ZklZf0ZPZSwRe7M7Dcz387MPoPOUQemRZKJWQhLnXa+IImVXZeF1DC7y0oPCuWB0nI51fi+VZb19cvXcAF2tyh1N7+bd5XmZXDS1VnOy6zktvXm+1cv0CK2RyvGRqvz89Hq9HS0ev7ctoZXqOgFPctKeAqpZNdcOSXTcze0AJ+EaYYWRcmFEXtgy9h2fclZ4rjGpCwUWpChn2YicchbrYmL5LZRRWTVhn44NhqB4hwhycKFbhf6RlwVMiGwPFPaqXP0l6Jk04VjX7aSlza0QHgGNwoFHEF/7DZBsNu8YIkHGW6Pxh4ENeAcSUDZl8abgW8So2eOtkYWZeMBWrWRikelviWu8Z8lifRgKjRaO3O4vITjcxc+hzNvvTyj5cl62TuhZbA6GQ6HHvqg77Ph8BE4SwkbLi7geBMKPQt08GhOz2Cdls9XmiO1TbBh1l6M3SbixQALRuhMLPm+i88wnxBiPKvFtqowzoPwyX21ErfVdDwNTpQYjFWwlwMqDVOEv6MwlB4/QfjA5I2qrcR3dvJc8UMs2oSeduT/ly1SrLEk10spIGqwosXR8Cp0Fu2eix9jSAuJrjMBkokZd3LTFsbS7XaHV+64bqQ408qpmlIrltoU5VZFVpuEYuIEk+9UA7L0WVlS8LGPGBPEn+m543Z6mEAFb7GJt6NEe8vSbEY9o3BC8MRJRdQPO/060lRQqIXyqaGSTDo4Klw6o1T4SjOpVZUhvC15OrFdYCIhDbpv5BSDjR32DO4/fLp/9x56x/DP338AuoT7H395+Pm3+48/Pfz+18Ovf67DoFeEXV4nTRPLN8MDg6D54f9QZILCwEHCp9OJYtdlztWE5bk/VTf+7M52UVWhW4uGRGBRHuQPEyHsmjhZ0lA6hKREWsqEjaMC7d2GrhTtm+kmy1q4Iaihbo+nrUGBjIlCg7NH283ExplGwbXB/i8Cd8v3oACVnFJ4IqJy2qC6+OrRWT4a3jC5yeMw/VQ003Cd3l6lIg37sTDPFCBqogVOTXSA7/2OZlEQngZj6uq4/jzsx4OkNldDtAtIgVWbwE4D9xDNOK3GNMFifB8arIGQX4Iy/WZ2vDUb3Kd3NDGte8xuJWEroUpxKo8wtuhrGtevZKY5WiqP/pL1bzISZh8ek0fn55kLBrGpegd2fSj1kkXEHU23nrkR4p31nktRX0LkeZoXiuMdW8pMaMf+7qtv3ti1G+oD8vP62ysSCdf6F6n0MMs5CAAA")).decode())
+p = subprocess.run(["/usr/bin/python3", os.path.join(R, "dump_ecc.py")], capture_output=True, text=True)
+print(p.stdout[-1500:]); print("ERR", p.stderr[-1000:])
+import base64 as b64
+print("GZ_B64", b64.b64encode(open(os.path.join(R, "ecc_samples_all.csv.gz"), "rb").read()).decode())

@@ -1,0 +1,31 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "There's already a §7 尚未做. I'll append a §8 to T20 doc recording the manifest + validator + T21 pointer. Keep short.\n\nThen git status summary and final answer.\n\nWait — T20 doc says "part_zero 那 40 个 word 40 差异位" — new info: part diff had 40 word-40 bits. Fine.\n\nLet me append §8."}, {"type": "tool-call", "id": "call_00_JUkz2AUj6TRbbfrdKAtq5757", "name": "run_code", "arguments": "{"code": "const cwd = (await tools.working_directory({})).cwd;
+const add = `
+## 8. 本次实验的 manifest 机检
+
+落库按 skill V2 门 7 的硬规则执行，产出两份 manifest 并用 \\\\`step03_pip/check_manifest.py\\\\` 校验：
+
+| 文件 | 结论等级 | 校验结果 |
+|---|---|---|
+| \\\\`v7re/steps/t20_manifest.json\\\\`（INIT 映射，含 4 个构建的回读） | \\\\`verified\\\\` | PASS（15 ok / 0 warn / 0 fail） |
+| \\\\`v7re/steps/t20_manifest_partpair.json\\\\`（封装对拍，133 帧差异走 \\\\`coverage_exclusion\\\\`） | \\\\`unverified\\\\` | PASS（14 ok / 1 warn / 0 fail） |
+
+封装对拍必须声明 \\\\`parts_allowed\\\\`，否则校验器会把 \\\\`ffg1761-2\\\\` 判成「part 与 part_declared 不一致」——这个字段是校验器第一次跑时逼出来的。
+
+下一步（T21，约 8 个构建）：B6LUT / C6LUT / D6LUT 各自的 \\\\`INIT=0\\\\` vs \\\\`0xDEADBEEFCAFEBABE\\\\`，加 \\\\`SLICE_X12Y21\\\\` A6LUT 一对，验 bel 与位置不变性；通过后才能把 T19 锁引脚表替换进 \\\\`build_site_frames.py\\\\`。详见 \\\\`STATUS.md\\\\` §51.3。
+`;
+const r = await tools.run_python({ cwd, code: `
+p = \\"v7re/steps/T20_PART_PAIR.md\\"
+t = open(p, encoding=\\"utf-8\\").read()
+if not t.endswith(\\"\\\\\\
+\\"): t += \\"\\\\\\
+\\"
+t += ${JSON.stringify(add)}
+open(p, \\"w\\", encoding=\\"utf-8\\", newline=\\"\\\\\\
+\\").write(t)
+print(\\"lines\\", t.count(\\"\\\\\\
+\\")+1)
+` });
+console.log(r.stdout, r.stderr);
+const git = await tools.pwsh({ description: \\"Show git status short\\", command: \\"git status --porcelain | Select-Object -First 40; git status --porcelain | Measure-Object -Line\\", workdir: cwd });
+console.log(git.kind === \\"foreground\\" ? git.stdout.text : JSON.stringify(git));
+", "description": "Append T20 doc manifest section and check git status"}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "65112d7a-dd3b-4ae1-86fd-df78831b0fe7"}, {"type": "tool-call"}]}}, "id": "a8893e6e-5c69-43db-b2f0-028895741bd6"}

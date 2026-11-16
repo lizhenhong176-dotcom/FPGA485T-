@@ -1,0 +1,148 @@
+{
+  "bitstream": "ref.bit",
+  "setbits": 13426,
+  "baseline": {
+    "unexplained": 234,
+    "slot_violations": 0,
+    "active_tiles": 945
+  },
+  "attack_fake_mux": {
+    "attempted": 60,
+    "undetected_with_phantom_pip": 60,
+    "detected": 0,
+    "detect_rate_pct": 0.0,
+    "examples": [
+      {
+        "tile": "INT_R_X51Y161",
+        "family": "BYP_ALT0",
+        "src": "SW2END0",
+        "bits": [
+          [
+            16,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X51Y161",
+        "family": "BYP_ALT0",
+        "src": "SS2END0",
+        "bits": [
+          [
+            16,
+            7,
+            0
+          ],
+          [
+            24,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X51Y161",
+        "family": "BYP_ALT0",
+        "src": "NW2END0",
+        "bits": [
+          [
+            17,
+            7,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X51Y161",
+        "family": "BYP_ALT0",
+        "src": "WW2END_N0_3",
+        "bits": [
+          [
+            17,
+            7,
+            0
+          ],
+          [
+            24,
+            7,
+            0
+          ]
+        ]
+      },
+      {
+        "tile": "INT_R_X51Y161",
+        "family": "BYP_ALT0",
+        "src": "SE2END0",
+        "bits": [
+          [
+            18,
+            6,
+            0
+          ],
+          [
+            25,
+            7,
+            0
+          ]
+        ]
+      }
+    ]
+  },
+  "attack_swap": {
+    "attempted": 60,
+    "detected": 23,
+    "detect_rate_pct": 38.33,
+    "bits_changed_hist": {
+      "2": 9,
+      "4": 51
+    },
+    "undetected_examples": [
+      {
+        "tile": "INT_R_X17Y193",
+        "family": "IMUX_L1",
+        "from": "NE2END0",
+        "to": "SL1END0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X62Y318",
+        "family": "EE4BEG2",
+        "from": "EE4END2",
+        "to": "LOGIC_OUTS6",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X62Y318",
+        "family": "EE4BEG3",
+        "from": "EE4END3",
+        "to": "LOGIC_OUTS_L15",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X108Y168",
+        "family": "LV_L18",
+        "from": "LV_L0",
+        "to": "NW6END0",
+        "bits_changed": 4
+      },
+      {
+        "tile": "INT_L_X108Y168",
+        "family": "LV18",
+        "from": "LV0",
+        "to": "NR1END0",
+        "bits_changed": 4
+      }
+    ]
+  }
+}

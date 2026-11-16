@@ -1,0 +1,30 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Both formulas fit the 20 determinable words and are indistinguishable on observed data (they only differ at w where (w+26)%32 crosses — e.g., w=6: f1=26, f2=26; w=38: f1=27, f2=27).\n\nThey differ for w=70..? Let's compute where: f1 increments at 6 and 34; f2 increments when (w+26) crosses 32 (w=6) and 64 (w=38). So f1 has second increment at 34, f2 at 38. But w=38 observed g=65: f1 = 38+25+1+1 = 65 ✓; f2 = 38+25+(64//32=2) = 65 ✓. Both agree at 38. At w=34: f1 = 34+25+1+1 = 61; f2 = 34+25+(60//32=1) = 60. So they differ at w=34,35,36,37! Observed: w=33→59 (both 59), w=38→65.\n\nSo if we can measure w=34..37, we discriminate. w=2r+inst: w=34 → r=17, inst=0; w=36 → r=18.\n\nHmm but our sweep designs don't isolate bits. However, existing data may have single-bit samples at those words — the observed set lacks 34-37.\n\nAlternative: use the multi-bit frames containing those words with XOR solving: E(frame) = XOR S(bits). If a frame has 2 bits in word 34 for example. Complex.\n\nLet me instead check frames with bits in words 34..37 and see if we can solve. Or simpler: derive g(35) etc. from a frame containing exactly one bit at word 35 — not available.\n\nGiven the effort, I'll report the state and propose the discriminating experiment (a design at row 17 with INIT single-bit and same routing as a paired control, giving a 2-bit diff, and using the known S of one of them).\n\nAlternatively use the fact that word 34..37 come from rows 17,18 — a design at SLICE_X8Y17 with a single INIT bit and minimal routing: the INIT frame would then have exactly that one bit changed vs the empty baseline IF routing bits fall in other frames/words. Earlier designs at row 10 (a.bit) did produce single-bit words, so a design at row 17 could too — but our sweep showed many diffs at the same word because the LUT output routed through the slice's own IMUX etc.\n\nWait — in the sweep, diffs at word w include frames 31680, 31681, 31683... Those are frames of the same CLB block but for different feature groups (IMUX, FF, etc.) — all at the same word (row). So a single design changes ~10-30 bits in that word across frames. But a.bit (the 2020 probe) had exactly one bit at word 20 in frame 31750 — because that design was just a LUT with inputs from IBUFs, ending at an output pin, and apparently the IMUX selections landed in *different* words (other rows)?\n\nHmm, IMUX select for A6LUT inputs is in the CLB tile at the same row/word... In a.bit, the diff was 10 bits total: 1 at word 20 and 9 at word 50 (spurious). So its routing didn't touch the CLB word 20.\n\nIn my sweep, routing goes LUT→o (output pin) — this creates CLB-tile changes at the same word (e.g., the O6/A6 output mux). Possibly because the LUT drives directly to IOB via CLB output mux, changing several CLB feature bits at that row.\n\nFix: route LUT output through a *different* slice (like a.bit did: LUT a → LUT b in another slice → output). Then the source slice's word sees only its own INIT/IMUX bits... but IMUX still.\n\nBetter: replicate a.bit's structure exactly at each row: two LUTs, first with single INIT bit, second consuming. Then the first LUT's diff should be single-bit in INIT frame (as observed earlier).\n\nGiven time constraints, I'll report and propose this as the next experiment rather than running another 50-design sweep now (that'd be another hour+).\n\nLet me write STATUS §30 update and report."}, {"type": "tool-call", "id": "call_00_aTPXutblZKfTR80l5IxC0950", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 30. T7b —— y 扫描（设计缺陷→已停）与 g(w) 双候选（2026-11-03）
+
+**y=0..49 扫描（已中途中止）**：远端 `/opt/lzh/v7re/work/ysweep/`，零逻辑基线 `base/top.bit`
++ 每个 (inst,row) 一个单 LUT 设计（`LOC SLICE_X{8+inst}Y{r}`，`BEL A6LUT`，INIT=…01）。
+inst=0 的 49 个已完成。**但该设计不能隔离单 bit**：每个设计在自己 row 的字上有
+9–29 处差异（帧 31680/31681/31683/31684/31686/31691/31692…，都是同一 CLB 块的不同特征组），
+因为 LUT 直连输出脚会连带改动该行的 IMUX/输出 MUX 等位。故中止，不能用于补 g(w)。
+
+**g(w) 双候选（现有 20 个可确定 word 全部符合，且互相不可区分）**：
+
+| 公式 | 表达式 | 在 w=34–37 的取值 |
+|---|---|---|
+| 公式1 | `g = w + 25 + (w>=6) + (w>=34)` | 61,62,63,64 |
+| 公式2 | `g = w + 25 + floor((w+26)/32)` | 60,61,62,63 |
+
+两者只在 **w=34,35,36,37** 上分歧（其余全同），已观测 word 不含这 4 个 → 未决。
+
+**判别实验（下一步）**：照搬 2020 探针 `a.bit` 的结构（源 LUT → 中间 LUT → 输出），
+在 `SLICE_X8Y17`（w=34）与 `Y18`（w=36）各做一个「单 INIT 位」设计；
+该结构已证明能产生单 bit 帧（`a.bit` 的 word20 只差 1 位），
+测出 g(34)/g(36) 即可定式。约 4 个 bitgen，10 分钟。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Record sweep failure and g(w) ambiguity in STATUS", "timeoutMs": 120000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "1774584a-cea3-4ffb-abb9-66186ccf4333"}, {"type": "tool-call"}]}}, "id": "c4cda294-c5dc-4e4f-b6e9-08676c0f081b"}

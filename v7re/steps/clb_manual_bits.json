@@ -1,0 +1,27 @@
+{
+  "_note": "T82–T87 从受控差分实验直接测得的 CLB 站点级配置位。这些位不在 v7_law.sqlite:clb_cells 里（该表只收录 INIT 表与部分结构位），故单列此文件，由 make_fig_data.py 合并进 fig5。",
+  "_coordinate": "frame_off 是块内偏移；真实帧号 = clb_blocks.base_frame + frame_off（SLICE_X12Y20 的 base = 31752）。word 不是 tile_type 级常量：word = 2*(y%50) + (1 if y%50>=25 else 0) + parity，随站点 y 变化，故本表不设 word 列。",
+  "_source": "T82_CLB_SITE_CLASSES.md / T83_AFFMUX.md / T84_AOUTMUX.md / T85_CLB_REMAINING_BITS.md / T86_PRECYINIT.md / T87_CLB_CORNERS.md",
+  "rows": [
+    {"frame_off": 1, "parity": 1, "bit": 19, "family": "CLKINV", "src_wire": "CLKINV/NOCLKINV", "meaning": "FF 时钟沿取反：1=negedge, 0=posedge", "confidence": "confirmed"},
+    {"frame_off": 0, "parity": 1, "bit": 16, "family": "FFSYNC", "src_wire": "FFSYNC", "meaning": "FF 复位类型：1=同步(FDRE), 0=异步(FDCE)", "confidence": "confirmed"},
+    {"frame_off": 30, "parity": 1, "bit": 0, "family": "LATCH", "src_wire": "LATCH", "meaning": "1=LDCE 锁存器, 0=触发器", "confidence": "confirmed"},
+    {"frame_off": 30, "parity": 0, "bit": 0, "family": "AFFMUX", "src_wire": "FF.D <- O5/O6", "meaning": "1=O5, 0=O6（4 位字段编码 6 源，O5/O6 只差此位）", "confidence": "confirmed"},
+    {"frame_off": 3, "parity": 0, "bit": 8, "family": "AOUTMUX", "src_wire": "LUT.O <- O5", "meaning": "AOUTMUX=O5 编码（与下一组互为互斥码）", "confidence": "confirmed"},
+    {"frame_off": 4, "parity": 0, "bit": 10, "family": "AOUTMUX", "src_wire": "LUT.O <- O5", "meaning": "AOUTMUX=O5 编码", "confidence": "confirmed"},
+    {"frame_off": 6, "parity": 1, "bit": 4, "family": "AOUTMUX", "src_wire": "LUT.O <- O5", "meaning": "AOUTMUX=O5 编码", "confidence": "confirmed"},
+    {"frame_off": 7, "parity": 1, "bit": 5, "family": "AOUTMUX", "src_wire": "LUT.O <- O5", "meaning": "AOUTMUX=O5 编码", "confidence": "confirmed"},
+    {"frame_off": 3, "parity": 0, "bit": 4, "family": "AOUTMUX", "src_wire": "LUT.O <- O6", "meaning": "AOUTMUX=O6 编码", "confidence": "confirmed"},
+    {"frame_off": 4, "parity": 1, "bit": 10, "family": "AOUTMUX", "src_wire": "LUT.O <- O6", "meaning": "AOUTMUX=O6 编码", "confidence": "confirmed"},
+    {"frame_off": 6, "parity": 1, "bit": 8, "family": "AOUTMUX", "src_wire": "LUT.O <- O6", "meaning": "AOUTMUX=O6 编码", "confidence": "confirmed"},
+    {"frame_off": 7, "parity": 0, "bit": 5, "family": "AOUTMUX", "src_wire": "LUT.O <- O6", "meaning": "AOUTMUX=O6 编码", "confidence": "confirmed"},
+    {"frame_off": 1, "parity": 1, "bit": 2, "family": "SRUSEDMUX", "src_wire": "SR 使用标志", "meaning": "SR 被使用（三位之一）", "confidence": "confirmed"},
+    {"frame_off": 1, "parity": 1, "bit": 3, "family": "SRUSEDMUX", "src_wire": "SR 使用标志", "meaning": "SR 被使用（三位之一）", "confidence": "confirmed"},
+    {"frame_off": 1, "parity": 1, "bit": 9, "family": "SRUSEDMUX", "src_wire": "SR 使用标志", "meaning": "SR 被使用（三位之一）", "confidence": "confirmed"},
+    {"frame_off": 1, "parity": 1, "bit": 7, "family": "CEUSEDMUX", "src_wire": "CE 使用标志", "meaning": "CE 被使用；与 CE 源无关（换 LUT 驱动仍为 1）", "confidence": "strong-candidate"},
+    {"frame_off": 23, "parity": 1, "bit": 0, "family": "CE_TARGET", "src_wire": "BFF 的 CE 目标", "meaning": "4 个 FF 的 CE 目标选择（3 位之一）", "confidence": "candidate"},
+    {"frame_off": 24, "parity": 1, "bit": 0, "family": "CE_TARGET", "src_wire": "BFF 的 CE 目标", "meaning": "4 个 FF 的 CE 目标选择（3 位之一）", "confidence": "candidate"},
+    {"frame_off": 25, "parity": 1, "bit": 0, "family": "CE_TARGET", "src_wire": "BFF 的 CE 目标", "meaning": "4 个 FF 的 CE 目标选择（3 位之一）", "confidence": "candidate"},
+    {"frame_off": 0, "parity": 0, "bit": 12, "family": "PRECYINIT", "src_wire": "CYINIT 常量 1", "meaning": "CYINIT=1'b1 档（prjxray 该字段共 3 位，另两档未定形）", "confidence": "confirmed"}
+  ]
+}

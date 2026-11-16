@@ -1,0 +1,8 @@
+﻿Traceback (most recent call last):
+  File "diff_clkinv.py", line 127, in <module>
+    main()
+  File "diff_clkinv.py", line 66, in main
+    ref = parse_bit_frames(ref_path)
+  File "diff_clkinv.py", line 9, in parse_bit_frames
+    data = open(path, "rb").read()
+FileNotFoundError: [Errno 2] No such file or directory: 'ref.bit'

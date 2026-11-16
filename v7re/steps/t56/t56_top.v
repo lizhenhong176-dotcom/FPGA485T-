@@ -1,0 +1,18 @@
+// T56 minimal PIP switchbox experiment — design top.
+// 与 T1（step03_pip/top.v）逐字一致；唯一差异在 XDC 里的 LOC（SLICE_X8Y60/61）。
+module top(
+  input  a,
+  output b
+);
+  (* DONT_TOUCH = "true" *) wire n1;
+
+  (* DONT_TOUCH = "true" *)
+  LUT6 #(.INIT(64'hFFFFFFFFFFFFFFFE)) lut_a (
+    .O(n1), .I0(a), .I1(1'b0), .I2(1'b0), .I3(1'b0), .I4(1'b0), .I5(1'b0)
+  );
+
+  (* DONT_TOUCH = "true" *)
+  LUT6 #(.INIT(64'hFFFFFFFFFFFFFFFE)) lut_b (
+    .O(b), .I0(n1), .I1(1'b0), .I2(1'b0), .I3(1'b0), .I4(1'b0), .I5(1'b0)
+  );
+endmodule

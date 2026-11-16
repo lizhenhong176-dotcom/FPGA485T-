@@ -62,7 +62,10 @@ def load_prefix(csv_path=FAR_CSV):
             band = row - 1
             if band < 0 or band >= N_BANDS:
                 continue
-            col = (int(r["block_addr"], 16) >> 7) & 0x7F
+            ba = int(r["block_addr"], 16)
+            # col = 半（block_type LSB=0 左/1 右）× 128 + 列内序号(0..127)
+            # 不 mask 0x7F 会把右半 cols 128..153 折叠到 0..25 与左半碰撞。
+            col = (((ba >> 14) & 1) << 7) | ((ba >> 7) & 0x7F)
             fi = int(r["frame_index"])
             e = by_band[band].setdefault(col, [fi, fi])
             e[0] = min(e[0], fi)

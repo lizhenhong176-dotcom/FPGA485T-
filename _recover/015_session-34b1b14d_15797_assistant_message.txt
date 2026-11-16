@@ -1,0 +1,27 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Interesting! Many single-bit diffs at word 34 with ECC values. These are across many frames (different tiles along the column? no — many frames with word 34 = row 17).\n\nWait: word 34 = 2*17+0 → row 17, parity 0. The diffs appear in many frames (31832, 31836, 31891, ...) — these are different CLB blocks along the column? No, frames with the same word differ by feature group (frame_off). So each frame is a different feature group of the SAME tile — but then each should have at most one bit if only INIT changed... but we see ~23 frames each with 1 bit at word 34.\n\nHmm, these are likely *different tiles* in the column (each tile = its own 36-frame block? no: blocks are per (grid_col, band), 36 frames each). The frames listed span 31832..32374 — that's ~540 frames apart, suggesting different blocks (36 frames each → 15 blocks). So each block is a different grid_col (column), all at row 17 — i.e., the design's LUT/buffers/IOB routing touched many columns? Not likely.\n\nAlternatively the huge span is because these are different rows? No, word 34 fixed.\n\nWhatever — the key data: single-bit diffs at word 34 with ECC values:\n\ndiff 0x00000002 (bit1) → ecc 0x1749\ndiff 0x00000002 → 0x781\nHmm same diff bit → different ECC (0x1749 vs 0x781). So ECC depends on the frame, not just the bit!\n\n0x1749 vs 0x781: difference = 0x1C8? 0x1749 ^ 0x781 = 0x1C8? Let me compute: 0x1749 = 0001 0111 0100 1001; 0x0781 = 0000 0111 1000 0001; XOR = 0001 0000 1100 1000 = 0x10C8. Hmm that's not a small delta.\n\nBut note: 0x1749 and 0x781 differ by 0x1000 (bit12) plus 0x4C8... Let me: 0x1749 - 0x781 = 0x0FC8 = 4040. Not equal.\n\nWait, maybe those frames are in different tiles whose base frames differ, and the ECC includes... no, ECC is per frame content.\n\nUnless the frame's data differs elsewhere beyond word 34 — we only printed word 34/35 diffs, ignoring other words. Each frame may have other changed words (the LUT's other features). So ECC ≠ signature of that one bit alone.\n\nSo this design also doesn't isolate. Ugh.\n\nGiven the long session, time to stop and report honestly: ECC full closure requires designs where a frame changes by exactly one bit — and constructing those requires knowing the mapping (circular). The practical path: linear algebra over many frames (solve S_b for all 3,200 positions from hundreds of frames with known data patterns and ECC). That's a well-defined next step: collect N designs, build the GF(2) system, solve by Gaussian elimination, verify on held-out frames.\n\nThat's a good, concrete plan and honest report. Let me write it to STATUS and answer the user.\n\nLet me be efficient: update STATUS §30 to reflect this finding and the linear-algebra plan, then report."}, {"type": "tool-call", "id": "call_00_xTq1bMt4rsz8oZMiV5ok1681", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 31. T7c —— 单 bit 隔离实验失败：ECC 模型改走线性代数（2026-11-03）
+
+在 `SLICE_X8Y17/A6LUT`(INIT=…01) + `SLICE_X9Y17/A6LUT`(反相) 上做「a.bit 同构」设计，
+与零逻辑基线 `ysweep/base/top.bit` 差分：word 34（row 17, parity 0）上出现 **23 处单 bit 差异**，
+但同一 bit 位对应多个不同 ECC（例：diff=0x00000002 → ECC 0x1749 与 0x781 并存）。
+
+原因：这些帧**并非只有该一位改变**，同一帧内还有其它特征（IMUX/FF/输出 MUX）同时变化，
+ECC 是整帧数据位的异或，因此拿不到「单 bit 签名」。结论：**靠设计变换隔离单 bit 不可行**
+（要构造只改一位的帧，先得知道位映射，循环依赖）。
+
+**改走线性代数（下一步的正式方案）**：
+ECC 已证线性，故对每一帧有 `XOR_{b∈data(frame)} S_b = ECC(frame)`，`S_b` 是 3,200 个未知 13 位向量。
+只要收集足够多「数据位集合已知、ECC 已知」的帧（现有 13 个 bitstream 已有 739 个非零帧，
+再做 ~30 个随机 INIT/随机布局设计可到数千帧），就能用 GF(2) 高斯消元直接解出全部 `S_b`，
+再用留出帧验证。**不需要**猜 g(w) 或 bit12 的生成函数。
+
+已作废的中间结论：`g(w)` 双候选（分段 25+(w>=6)+(w>=34) 与 25+floor((w+26)/32)）
+在已观测 20 个 word 上等价，仅在 w=34–37 分歧；既然改走线性代数，该分歧不再阻塞。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Record ECC pivot to linear algebra in STATUS", "timeoutMs": 120000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "d92ba186-10a2-4234-9303-8a9256a4c57e"}, {"type": "tool-call"}]}}, "id": "f4af93a0-321b-4d78-ac0b-751d6472c64e"}

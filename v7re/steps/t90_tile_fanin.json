@@ -1,0 +1,168 @@
+{
+ "dir": "_tif",
+ "tiles": [
+  {
+   "file": "LIOI.json",
+   "tile_type": "LIOI",
+   "pips": 467,
+   "dsts": 239,
+   "fanin_hist": {
+    "1": 209,
+    "2": 14,
+    "11": 4,
+    "12": 4,
+    "16": 2,
+    "17": 2,
+    "18": 4
+   },
+   "multi_dsts": {
+    "2": 14,
+    "18": 4,
+    "16": 2,
+    "17": 2,
+    "12": 4,
+    "11": 4
+   },
+   "max_fanin": 18,
+   "passthru_dsts": 209,
+   "bits_if_onehot": 258,
+   "bits_if_binary": 84
+  },
+  {
+   "file": "CLK_BUFG_BOT_R.json",
+   "tile_type": "CLK_BUFG_BOT_R",
+   "pips": 304,
+   "dsts": 176,
+   "fanin_hist": {
+    "1": 144,
+    "5": 32
+   },
+   "multi_dsts": {
+    "5": 32
+   },
+   "max_fanin": 5,
+   "passthru_dsts": 144,
+   "bits_if_onehot": 160,
+   "bits_if_binary": 96
+  },
+  {
+   "file": "CMT_FIFO_L.json",
+   "tile_type": "CMT_FIFO_L",
+   "pips": 278,
+   "dsts": 274,
+   "fanin_hist": {
+    "1": 270,
+    "2": 4
+   },
+   "multi_dsts": {
+    "2": 4
+   },
+   "max_fanin": 2,
+   "passthru_dsts": 270,
+   "bits_if_onehot": 8,
+   "bits_if_binary": 4
+  },
+  {
+   "file": "HCLK_L.json",
+   "tile_type": "HCLK_L",
+   "pips": 200,
+   "dsts": 20,
+   "fanin_hist": {
+    "1": 8,
+    "16": 12
+   },
+   "multi_dsts": {
+    "16": 12
+   },
+   "max_fanin": 16,
+   "passthru_dsts": 8,
+   "bits_if_onehot": 192,
+   "bits_if_binary": 48
+  },
+  {
+   "file": "GTX_INT_INTERFACE.json",
+   "tile_type": "GTX_INT_INTERFACE",
+   "pips": 168,
+   "dsts": 120,
+   "fanin_hist": {
+    "1": 72,
+    "2": 48
+   },
+   "multi_dsts": {
+    "2": 48
+   },
+   "max_fanin": 2,
+   "passthru_dsts": 72,
+   "bits_if_onehot": 96,
+   "bits_if_binary": 48
+  },
+  {
+   "file": "BRAM_INT_INTERFACE_L.json",
+   "tile_type": "BRAM_INT_INTERFACE_L",
+   "pips": 24,
+   "dsts": 24,
+   "fanin_hist": {
+    "1": 24
+   },
+   "multi_dsts": {},
+   "max_fanin": 1,
+   "passthru_dsts": 24,
+   "bits_if_onehot": 0,
+   "bits_if_binary": 0
+  },
+  {
+   "file": "INT_INTERFACE_L.json",
+   "tile_type": "INT_INTERFACE_L",
+   "pips": 24,
+   "dsts": 24,
+   "fanin_hist": {
+    "1": 24
+   },
+   "multi_dsts": {},
+   "max_fanin": 1,
+   "passthru_dsts": 24,
+   "bits_if_onehot": 0,
+   "bits_if_binary": 0
+  },
+  {
+   "file": "INT_INTERFACE_R.json",
+   "tile_type": "INT_INTERFACE_R",
+   "pips": 24,
+   "dsts": 24,
+   "fanin_hist": {
+    "1": 24
+   },
+   "multi_dsts": {},
+   "max_fanin": 1,
+   "passthru_dsts": 24,
+   "bits_if_onehot": 0,
+   "bits_if_binary": 0
+  },
+  {
+   "file": "IO_INT_INTERFACE_L.json",
+   "tile_type": "IO_INT_INTERFACE_L",
+   "pips": 24,
+   "dsts": 24,
+   "fanin_hist": {
+    "1": 24
+   },
+   "multi_dsts": {},
+   "max_fanin": 1,
+   "passthru_dsts": 24,
+   "bits_if_onehot": 0,
+   "bits_if_binary": 0
+  },
+  {
+   "file": "HCLK_INT_INTERFACE.json",
+   "tile_type": "HCLK_INT_INTERFACE",
+   "pips": 0,
+   "dsts": 0,
+   "fanin_hist": {},
+   "multi_dsts": {},
+   "max_fanin": 0,
+   "passthru_dsts": 0,
+   "bits_if_onehot": 0,
+   "bits_if_binary": 0
+  }
+ ]
+}

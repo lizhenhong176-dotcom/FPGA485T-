@@ -1,0 +1,38 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "Interesting: all FAR bits got the same value 0x1019b4 — meaning the solver couldn't separate them (rank deficiency) and lumped them.\n\nStill contradictory.\n\nLet me step back and consider that the model may be "ECC = Hamming over data bits only, but for frames of DIFFERENT content lengths"? No.\n\nAlternative: maybe my extraction of "data bits" is wrong for the frames in question — e.g., some frames' ECC covers only part of the frame because they belong to a different block type (BRAM content frames have 1 word?).\n\nLet me test the linearity assumption directly within compatible frames: find two frames f1,f2 whose data XOR equals f3's data, and check ECC(f1)^ECC(f2)^ECC(f3) == 0. We effectively do that in the solver.\n\nThe problem might be that MOST frames have A=0 but a subset (those special offsets) have A≠0. The 35 wide-ECC frames are at offsets 0,2,8,21.\n\nWhat if those frames are simply frames whose word-50 field has EXTRA marker bits (not ECC), and the low-13 bits are still pure L(data)? But 31754 low13 = 0x11dd vs 31759 = 0x869 → different. And data identical. So no.\n\nUnless the data isn't identical in a way my comparison missed: 31754 vs 31759 comparison showed only word 50 differs. Both are in _c0. So identical data → different ECC. Definitive.\n\nHmm, unless the ECC covers a *different range* per frame type: e.g., frames at offset 2 include the neighboring frame's data? No.\n\nLet me look at this from a completely different angle: maybe word 50 is NOT ECC but rather "spare bits written by Vivado for its own bookkeeping" — e.g., the "frame markers" that Vivado writes to record the original block/row for readback verification. In that case there's no simple function; Vivado writes the far/low bits there.\n\nTest: is word 50's value correlated with the frame's FAR? For the 35 wide frames, ECC 0x1011dd for far 0x4203A6... Let me check if low bits of ECC relate to far: 0x4203A6 & 0xFFF = 0x3A6; ECC low 13 = 0x11DD. Hmm 0x11DD vs 0x3A6 — no.\n\nI've spent a lot. Time to stop and report the state: model unresolved; we have decisive evidence ECC depends on address; several linear models tried and falsified (block offset, FAR bits). Next: gather controlled paired data.\n\nActually, wait. One more idea that's cheap and could crack it: maybe the "address term" is actually a RECIPROCAL of the data being *all-zero*: e.g., Vivado writes a different value when the frame is "empty" (unused). Check: for frames with identical data at different addresses — 31754 has 1 data bit; 31759 has identical 1 data bit. Different ECC. So no.\n\nHmm, but are they really both used? Yes.\n\nAnother idea: maybe those 35 frames are frames that Vivado writes TWICE (the bitstream contains repeated writes to the same frame, and the last write wins). When a frame is written twice with different content, the final content is the second write. But our parse assumes sequential fill... Also, if a frame is written twice, the "ECC" we see corresponds to whichever write was last.\n\nAh — that could explain a lot: the frame's ECC might belong to a *different* data set if the frame was rewritten. But we'd see the data of the last write, and ECC of the same write.\n\nOK, time to stop. Let me report the findings honestly: three linear models falsified; decisive negative; the anomaly concentrates in 35 frames at offsets {0,2,8,21} of row 7, all in the same CLB blocks.\n\nLet me update STATUS and report."}, {"type": "tool-call", "id": "call_00_5zw4GSJL4eSdgnlBNFVD8068", "name": "pwsh", "arguments": "{"command": "cd \\"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\"; @'
+import io
+t = io.open(\\"STATUS.md\\", encoding=\\"utf-8\\").read()
+t += \\"\\"\\"
+
+## 33. T7e —— 三个线性模型全部证伪（2026-11-03）
+
+在 §32 的「ECC = L(data) ⊕ A(addr)」框架下依次试了三种地址项，都被数据否掉：
+
+| 模型 | 方程 | 秩 | 矛盾 | 训练一致 | 留出一致 |
+|---|---|---|---|---|---|
+| A ≡ 0（纯数据） | 615 | 143 | **是** | 492/615 | 43/45 |
+| A = 块内偏移 o（36 项） | 615 | 178 | **是** | 497/615 | 42/124 |
+| A = FAR 各位线性（32 项） | 615 | 158 | **是** | 400/615 | 29/124 |
+
+（FAR 模型里所有 far 位都被解成同一个值 `0x1019b4`，说明秩不足、无法分离。）
+
+**异常帧的分布很集中**：739 个有数据帧中，只有 35 个的 ECC 超出 13 位；它们全部位于
+row 7，且块内偏移只取 **{0, 2, 8, 21}** 四个值（例：`_c0` 帧 31752/31754/32637/34064）。
+偏移 2 的解算结果恰好是 `0x1019b4`（= §32 里 31754 与 31759 的 ECC 差），说明「偏移项」
+确实捕捉到了这一部分，但不足以解释全部矛盾。
+
+**当前状态判定**：`ECC = L(data) ⊕ A(addr)` 这一模型族（A 取常值/块内偏移/FAR 线性）
+**均不成立**。需要新的假设，而不是继续在这族里调参。
+
+可能的方向（未验证）：
+1. 这 35 个帧可能是**被 Vivado 重写过两次**的帧（同一 FAR 写入多次），
+   我们读到的是最后一次数据 + 该次的 ECC，需按写入次数重新解析；
+2. 帧级 ECC 的覆盖范围可能**不是整帧 100 个数据字**（例如按 32 字分组各自校验）；
+3. word50 超出 13 位的部分本就不是 ECC，而是 Vivado 写入的**帧标记**，
+   低 13 位才是 ECC——但 31754/31759 的对比显示低 13 位也不一致，故此项也被削弱。
+
+下一步应先用「同一 FAR 在 bitstream 中被写了几次」这条线索做解析层检查，
+这比继续拟合更快给出判定。
+\\"\\"\\"
+io.open(\\"STATUS.md\\", \\"w\\", encoding=\\"utf-8\\").write(t)
+print(\\"ok\\")
+'@ | python", "description": "Record falsified ECC models in STATUS", "timeoutMs": 120000}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "204f7d69-bde6-4842-8c86-79f976dd519b"}, {"type": "tool-call"}]}}, "id": "ae430f08-cac5-4446-ba1d-d00baa5dbb4c"}

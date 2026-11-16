@@ -1,0 +1,90 @@
+{
+ "families": 172,
+ "mux_24": {
+  "families": 64,
+  "pure_law": 64,
+  "need_table": 0,
+  "examples": []
+ },
+ "beg_20": {
+  "families": 96,
+  "pure_law": 96,
+  "need_table": 0,
+  "variant_rule": {
+   "tried": 32,
+   "ok": 32,
+   "bad": []
+  },
+  "examples": [
+   [
+    "EE4BEG0",
+    "列",
+    ""
+   ],
+   [
+    "EE4BEG1",
+    "列",
+    ""
+   ],
+   [
+    "EE4BEG2",
+    "列",
+    ""
+   ],
+   [
+    "EE4BEG3",
+    "列",
+    ""
+   ],
+   [
+    "NE6BEG0",
+    "列",
+    ""
+   ]
+  ]
+ },
+ "other": {
+  "families": 12,
+  "detail": {
+   "CLK_L0": "16 源",
+   "CLK_L1": "16 源",
+   "CTRL_L0": "16 源",
+   "CTRL_L1": "16 源",
+   "GFAN0": "16 源",
+   "GFAN1": "16 源",
+   "LH0": "12 源",
+   "LH12": "12 源"
+  }
+ },
+ "composite": {
+  "families": 6,
+  "sources_ok": 96,
+  "sources_total": 96,
+  "features": 96
+ },
+ "no_formula": {
+  "families": 6,
+  "features": 82,
+  "names": [
+   "LH0",
+   "LH12",
+   "LVB_L0",
+   "LVB_L12",
+   "LV_L0",
+   "LV_L18"
+  ]
+ },
+ "coverage": {
+  "law_features": 3456,
+  "composite_features": 96,
+  "total_features": 3634,
+  "covered": 3552,
+  "pct": 97.74
+ },
+ "rules": {
+  "mux_col": "线类 → 码（4 类：axis/diag/rline/longL）",
+  "mux_row": "方向令牌 → 行（每族置换，16 种配置）",
+  "beg_col": "几何类别 → 列（line 与 logic 共列）",
+  "beg_row": "方向令牌 → 组（96/96）"
+ }
+}

@@ -1,0 +1,982 @@
+[{"type": "text", "text": "Exit code: 0 (185ms)\n--- stdout ---\n52 read {'limit': 200} reslen 11102\r\n99 grep {'pattern': '^#{1,3} '} reslen 3878\r\n105 read {'offset': 1400, 'limit': 270} reslen 10584\r\n131 mcp__prompt-optimizer__optimize-user-prompt {'prompt': '你是一名 FPGA 比特流逆向工程师，在项目 E:\\\\DEEPSEEK\\\\FPGA比特流逆向 中工作（XC7VX485T，Vivado 2017.2，远端 WSL + Vivado，本地 Python 分析）。
+
+请按下面的通用流程完成一次「位级差分实验」，从假设到落库：
+
+1. 入场：读 STATUS.md 的最新章节、REMOTE.md 的连接姿势、以及相关 step 文档；确认器件 part、坐标（tile/col/y）、帧带。
+2. 立假设：把问题写成可证伪命题，给出「若假设成立应观察到什么」与「若失败如何判定」，禁止模糊表述。
+3. 设计实验：单变量；基线 vs 变体配对；固定 LOC/BEL 且加 LOCK_PINS；同 DCP 生成变体；预先写明预期差分数量与位置范围。
+4. 执行：远端 Vivado 用脚本走 stdin 管道，脚本 LF 换行，不要用 scp；每个构建记录 SITE/BEL/属性回读。
+5. 自校验门：只采纳 SITE/BEL/回读全部一致的构建；必须有负对照（无改动构建差分=0）；差分非零才进入判读。
+6. 判读：区分 PURE/XOR/FAM 三种差分语义，检查 parity、默认源、位池归属；结论按【硬件事实】/【数据事实】/【推断】三色标注；不做无复测的跨位置推广。
+7. 落库：更新 STATUS.md（新增 § 编号，写数字、写被证伪的假设、写未测边界）、写 step 文档、同步本地与远端库。
+8. 交付：一句话结论 + 可复现命令 + 未测清单。
+
+约束：中文正文、术语保留英文；任何数字必须有出处；未测就写「未测」并给验证办法；进度以 STATUS.md 为准，不臆造。', 'template': 'user-prompt-planning'} reslen 1365\r\n139 mcp__prompt-optimizer__iterate-prompt {'prompt': '# 任务：FPGA 比特流位级差分实验的全流程规划与执行
+
+## 1. 角色与目标
+你将扮演一位严谨的 FPGA 比特流逆向工程师，你的核心目标是：在项目 `E:\\\\DEEPSEEK\\\\FPGA比特流逆向`（器件 XC7VX485T，工具链 Vivado 2017.2，远端 WSL + Vivado，本地 Python 分析）中，针对一个明确的可证伪假设，完成一次可复现的「位级差分实验」，并产出从假设到落库的完整、可审计、可交付的结论与文档。
+
+## 2. 背景与上下文
+该项目通过对比不同 DCP 构建产生的比特流差异，逆向分析比特与硬件资源（tile/col/y、帧带、SITE/BEL、属性）的映射关系。实验必须以单变量对照为原则，所有结论必须有数据出处，禁止跨位置无复测推广。器件 part、坐标与帧带信息需从项目现有文档中确认，进度以 STATUS.md 为准，不得臆造。
+
+## 3. 关键步骤
+1. **入场准备**：读取 STATUS.md 的最新章节、REMOTE.md 的连接姿势，以及相关 step 文档；确认本次实验涉及的器件 part、坐标（tile/col/y）、帧带。
+2. **建立可证伪假设**：将问题写成可证伪命题，明确写出「若假设成立应观察到什么」与「若失败如何判定」。
+3. **设计单变量实验**：确保单变量控制；设计基线 vs 变体配对；固定 LOC/BEL 并加 LOCK_PINS；由同一 DCP 生成变体；预先写明预期差分数量与位置范围。
+4. **执行构建**：远端 Vivado 通过脚本经 stdin 管道执行，脚本使用 LF 换行，不使用 scp；每个构建记录 SITE/BEL/属性回读。
+5. **自校验门**：只采纳 SITE/BEL/回读全部一致的构建；必须设置负对照（无改动构建差分=0）；仅当差分非零才进入判读环节。
+6. **差分判读**：区分 PURE/XOR/FAM 三种差分语义，检查 parity、默认源、位池归属；结论按【硬件事实】/【数据事实】/【推断】三色标注；不做无复测的跨位置推广。
+7. **落库与同步**：更新 STATUS.md（新增 § 编号，写数字、写被证伪的假设、写未测边界），编写 step 文档，同步本地与远端库。
+8. **交付总结**：产出一句话结论、可复现命令与未测清单。
+
+## 4. 输出要求
+- **格式**: 采用结构化文档形式输出，包含「一句话结论」「可复现命令」「未测清单」「STATUS.md 更新内容」「step 文档」五个部分。
+- **风格**: 中文正文、术语保留英文；专业、严谨、可审计。
+- **约束**: 任何数字必须有出处；未测内容必须写「未测」并给验证办法；进度以 STATUS.md 为准；不做无复测的跨位置推广；结论必须带三色标注。', 'requirements': '针对本项目近三周真实翻车记录做加固，逐条落到流程里（每条都要能执行、能判定，不许只写口号）：
+
+1. 引脚下标陷阱：T13/T15 的表在未加 LOCK_PINS 的构建上产生「自洽但错」的索引置换（T16/T18）。流程必须把「LOCK_PINS 是否施加」作为判读前的强制检查项，并写明表的适用条件必须包含引脚分配方式。
+2. 构建可信门：T14 曾出现三次测量得到三张不同表、自校验失败仍被采纳。流程必须规定：每张表/每条结论在落库前必须用「同一构建族的随机值反读」自证，自证失败即整批作废，不许挑选性采纳。
+3. 位全 0 的语义：0 不等于未选中，可能是默认源。判读时必须显式区分「默认源 / 互斥族外 / 未覆盖位」三种 0。
+4. parity 与 frame_off 必须成三元组 (frame_off, parity, bit)，禁止只用 (frame_off, bit) 统计复用，否则会出现假共享。
+5. 差分语义必须先在实验设计里声明（PURE / XOR / FAM），判读时按声明核对；语义不明的差分一律不定论。
+6. 失败也要落库：被证伪的假设必须写进 STATUS.md 新 §，记录证伪证据与触发条件，避免后人重跑。
+7. 字节级 vs 帧级对账要分开报告：帧级 0 差异不等于字节级 0 差异（头部时间戳、尾部 CRC 是已知噪声），报告必须分别给出。
+8. 远端执行的三条硬约束（脚本 LF、stdin 管道、不用 scp）要写成检查清单，而不是背景说明。
+9. 交付里必须给出「本次结论的适用域」（器件 part、行/列范围、构建条件），域外一律标未测。
+10. 每条结论必须给出可证伪它的最小实验（下一步），没有下一步实验的结论视为未完成。', 'template': 'iterate'} reslen 2312\r\n149 write {'content': '# 位级差分实验通用流程（BITSTREAM_EXPERIMENT_FLOW V1）
+
+> 生成方式：`prompt-optimizer` MCP，`optimize-user-prompt`（template = `user-prompt-planning`）→ 落盘 V1。
+> 遵循 `AGENTS.md` 的提示词纪律：正文保持工具返回的结构化版本，不做口头化改写。
+> 用途：本项目任何「改一个变量 → 重跑 Vivado → 逐位 diff → 判读位语义」的实验，都按本流程走。
+> 对应 skill：`.agents/skills/fpga-bitstream-experiment/SKILL.md`。
+
+---
+
+# 任务：FPGA 比特流位级差分实验的全流程规划与执行
+
+## 1. 角色与目标
+你将扮演一位严谨的 FPGA 比特流逆向工程师，你的核心目标是：在项目 `E:\\\\DEEPSEEK\\\\FPGA比特流逆向`（器件 XC7VX485T，工具链 Vivado 2017.2，远端 WSL + Vivado，本地 Python 分析）中，针对一个明确的可证伪假设，完成一次可复现的「位级差分实验」，并产出从假设到落库的完整、可审计、可交付的结论与文档。
+
+## 2. 背景与上下文
+该项目通过对比不同 DCP 构建产生的比特流差异，逆向分析比特与硬件资源（tile/col/y、帧带、SITE/BEL、属性）的映射关系。实验必须以单变量对照为原则，所有结论必须有数据出处，禁止跨位置无复测推广。器件 part、坐标与帧带信息需从项目现有文档中确认，进度以 STATUS.md 为准，不得臆造。
+
+## 3. 关键步骤
+在你的分析与执行过程中，请遵循以下内部步骤来推进实验：
+
+1. **入场准备**：读取 STATUS.md 的最新章节、REMOTE.md 的连接姿势，以及相关 step 文档；确认本次实验涉及的器件 part、坐标（tile/col/y）、帧带。
+2. **建立可证伪假设**：将问题写成可证伪命题，明确写出「若假设成立应观察到什么」与「若失败如何判定」，禁止模糊表述。
+3. **设计单变量实验**：确保单变量控制；设计基线 vs 变体配对；固定 LOC/BEL 并加 LOCK_PINS；由同一 DCP 生成变体；预先写明预期差分数量与位置范围。
+4. **执行构建**：远端 Vivado 通过脚本经 stdin 管道执行，脚本使用 LF 换行，不使用 scp；每个构建记录 SITE/BEL/属性回读。
+5. **自校验门**：只采纳 SITE/BEL/回读全部一致的构建；必须设置负对照（无改动构建差分=0）；仅当差分非零才进入判读环节。
+6. **差分判读**：区分 PURE/XOR/FAM 三种差分语义，检查 parity、默认源、位池归属；结论按【硬件事实】/【数据事实】/【推断】三色标注；不做无复测的跨位置推广。
+7. **落库与同步**：更新 STATUS.md（新增 § 编号，写数字、写被证伪的假设、写未测边界），编写 step 文档，同步本地与远端库。
+8. **交付总结**：产出一句话结论、可复现命令与未测清单。
+
+## 4. 输出要求
+- **格式**: 采用结构化文档形式输出，包含「一句话结论」「可复现命令」「未测清单」「STATUS.md 更新内容」「step 文档」五个部分，可用 Markdown 标题与列表组织。
+- **风格**: 中文正文、术语保留英文；专业、严谨、可审计。
+- **约束**:
+    - 任何数字必须有出处（指向具体构建、回读或文档）。
+    - 未测内容必须写「未测」并给出验证办法。
+    - 进度以 STATUS.md 为准，不臆造。
+    - 不做无复测的跨位置推广；结论必须带【硬件事实】/【数据事实】/【推断】三色标注。
+    - **最终输出**: 你的最终回复应仅包含最终成果本身，不得包含任何步骤说明、分析或其他无关内容。
+'} reslen 118\r\n151 write {'content': "# 位级差分实验通用流程（BITSTREAM_EXPERIMENT_FLOW V2）
+
+> 生成方式：`prompt-optimizer` MCP，`optimize-user-prompt`（template = `user-prompt-planning`）→ `iterate-prompt`（template = `iterate`）→ 落盘 V2。
+> 遵循 `AGENTS.md` 的提示词纪律：正文保持工具返回的结构化版本，不做口头化改写。
+> 用途：本项目任何「改一个变量 → 重跑 Vivado → 逐位 diff → 判读位语义」的实验，都按本流程走。
+> 对应 skill：`.agents/skills/fpga-bitstream-experiment/SKILL.md`。
+
+---
+
+# 任务：FPGA 比特流位级差分实验的全流程规划与执行
+
+## 1. 角色与目标
+你将扮演一位严谨的 FPGA 比特流逆向工程师，你的核心目标是：在项目 `E:\\\\DEEPSEEK\\\\FPGA比特流逆向`（器件 XC7VX485T，工具链 Vivado 2017.2，远端 WSL + Vivado，本地 Python 分析）中，针对一个明确的可证伪假设，完成一次可复现的「位级差分实验」，并产出从假设到落库的完整、可审计、可交付的结论与文档。本流程针对项目近三周真实翻车记录做了加固，下述各条为强制约束，每条都必须可执行、可判定，禁止只写口号。
+
+## 2. 背景与上下文
+该项目通过对比不同 DCP 构建产生的比特流差异，逆向分析比特与硬件资源（tile/col/y、帧带、SITE/BEL、属性）的映射关系。实验必须以单变量对照为原则，所有结论必须有数据出处，禁止跨位置无复测推广。器件 part、坐标与帧带信息需从项目现有文档中确认，进度以 STATUS.md 为准，不得臆造。
+
+## 3. 关键步骤
+1. **入场准备**：读取 STATUS.md 的最新章节、REMOTE.md 的连接姿势，以及相关 step 文档；确认本次实验涉及的器件 part、坐标（tile/col/y）、帧带。
+2. **建立可证伪假设**：将问题写成可证伪命题，明确写出「若假设成立应观察到什么」与「若失败如何判定」。
+3. **设计单变量实验**：确保单变量控制；设计基线 vs 变体配对；固定 LOC/BEL 并加 LOCK_PINS；由同一 DCP 生成变体；预先写明预期差分数量与位置范围。
+   - **差分语义声明（强制）**：实验设计阶段必须显式声明本次差分的语义（PURE / XOR / FAM）；判读阶段按声明核对，语义不明的差分一律不定论。
+   - **表适用条件（强制）**：任何表/索引结论的适用条件中必须写明引脚分配方式（是否施加 LOCK_PINS）；未加 LOCK_PINS 的构建不得用于生成引脚索引表。
+4. **执行构建**：远端 Vivado 通过脚本经 stdin 管道执行，脚本使用 LF 换行，不使用 scp；每个构建记录 SITE/BEL/属性回读。
+   - **远端执行硬约束检查清单（逐项打勾，不得作为背景说明）**：
+     - [ ] 脚本为 LF 换行
+     - [ ] 通过 stdin 管道送入 Vivado
+     - [ ] 全程不使用 scp
+5. **自校验门（构建可信门）**：只采纳 SITE/BEL/回读全部一致的构建；必须设置负对照（无改动构建差分=0）；仅当差分非零才进入判读环节。
+   - **LOCK_PINS 检查门（强制，判读前）**：判读前必须确认所有参与比对表的构建「LOCK_PINS 是否施加」并记录；出现 T13/T15 类引脚索引表时，未施加 LOCK_PINS 的构建产生的表一律标记为「自洽但可能错」，禁止直接采纳。
+   - **反读自证（强制）**：每张表/每条结论在落库前，必须用「同一构建族的随机值反读」进行自证；自证失败即整批作废，禁止挑选性采纳（针对 T14 三次测量三张表仍被采纳的教训）。
+6. **差分判读**：区分 PURE/XOR/FAM 三种差分语义，按第 3 步的声明核对；检查 parity、默认源、位池归属；结论按【硬件事实】/【数据事实】/【推断】三色标注；不做无复测的跨位置推广。
+   - **零值三态区分（强制）**：位全 0 不等于未选中，必须显式区分「默认源 / 互斥族外 / 未覆盖位」三种 0，不得混为一谈。
+   - **三元组统计（强制）**：parity 与 frame_off 必须成三元组 (frame_off, parity, bit) 统计，禁止只用 (frame_off, bit) 统计复用，否则会出现假共享。
+   - **字节级 vs 帧级分报（强制）**：帧级 0 差异不等于字节级 0 差异（头部时间戳、尾部 CRC 为已知噪声），报告必须分别给出字节级与帧级对账结果。
+7. **落库与同步**：更新 STATUS.md（新增 § 编号，写数字、写被证伪的假设、写未测边界），编写 step 文档，同步本地与远端库。
+   - **失败也要落库（强制）**：被证伪的假设必须写入 STATUS.md 新 §，记录证伪证据与触发条件，避免后人重跑。
+8. **交付总结**：产出一句话结论、可复现命令与未测清单。
+   - **适用域声明（强制）**：交付中必须给出「本次结论的适用域」（器件 part、行/列范围、构建条件），域外一律标未测。
+   - **下一步实验（强制）**：每条结论必须给出「可证伪它的最小实验」作为下一步；没有下一步实验的结论视为未完成。
+
+## 4. 输出要求
+- **格式**: 采用结构化文档形式输出，包含「一句话结论」「可复现命令」「未测清单」「STATUS.md 更新内容」「step 文档」五个部分；并额外包含「本次结论适用域」与「每条结论对应的下一步最小实验」。
+- **风格**: 中文正文、术语保留英文；专业、严谨、可审计。
+- **约束**: 任何数字必须有出处；未测内容必须写「未测」并给验证办法；进度以 STATUS.md 为准；不做无复测的跨位置推广；结论必须带三色标注；被证伪假设必须落库；字节级与帧级对账分开报告；域的结论必须标注适用域，域外标未测；无下一步最小实验的结论视为未完成。
+
+---
+
+## V1 → V2 改动清单
+
+| # | 加固项 | 落点（V2 章节） | 触发它的项目事实 |
+|---|---|---|---|
+| 1 | 差分语义必须在设计阶段声明 | §3.3 差分语义声明 | 把 XOR 语义当 PURE 解读，曾得出「形状随 CLB 类型变」的假结论（`REUSE_RULES.md` §2） |
+| 2 | LOCK_PINS 作为判读前强制检查门，表必须写明引脚分配方式 | §3.3 表适用条件、§3.5 LOCK_PINS 检查门 | T13/T15 的表未加 `LOCK_PINS`，Vivado 自由分配 I0..I5 造成索引置换；T18 证明 T13 表不能用于真实设计 |
+| 3 | 反读自证 + 自证失败整批作废 | §3.5 反读自证 | T14 三次测量得到三张不同表、自校验失败仍被采纳，随后更正 |
+| 4 | 零值三态（默认源 / 族外 / 未覆盖位） | §3.6 零值三态区分 | 「位全 0 ≠ 未选中」是 `CHEATSHEET.md` §7 第 2 条常见坑 |
+| 5 | 统计必须带 parity 三元组 | §3.6 三元组统计 | 只用 `(frame_off, bit)` 统计会看到「IMUX_L0 与 IMUX_L4 域相同」的假共享 |
+| 6 | 字节级与帧级对账分开报告 | §3.6 字节级 vs 帧级分报 | T11 帧级 0 差异、字节级 11 处差异（7 处头部时间戳 + 4 处尾部 CRC） |
+| 7 | 远端执行三条硬约束写成检查清单 | §3.4 检查清单 | CRLF 导致 `$'\\\\r'`、scp 挂死、PowerShell 管道被 cmd 抢走（`STATUS.md` §2 坑） |
+| 8 | 被证伪假设强制落 STATUS.md | §3.7 失败也要落库 | T7d/T7e/T7f 连续证伪 ECC 线性模型，需防止后人重跑 |
+| 9 | 交付必须给「结论适用域」 | §3.8 适用域声明 | 器件实际 part 是 `ffg1157-3` 而非长期假定的 `ffg1761-2`，引脚结论受封装限制 |
+| 10 | 每条结论必须配「可证伪它的最小实验」 | §3.8 下一步实验 | 防止「自洽即正确」的结论堆积 |
+"} reslen 118\r\n167 write {'content': '---
+name: fpga-bitstream-experiment
+description: Use when planning, running, or judging a Xilinx 7-series bitstream differential experiment in this repository — changing one attribute/PIP/LUT INIT on a fixed LOC/BEL, rebuilding with Vivado, diffing .bit files at frame/word/bit level, and deciding what a cell means. Covers LOCK_PINS, the three diff semantics, zero-value states, the self-check gate, and STATUS.md bookkeeping.
+---
+
+# 位级差分实验流程（本仓库通用）
+
+目标器件：**xc7vx485tffg1157-3**（本项目全部探针 DCP / bitstream 实测 part；VC707 的 `ffg1761-2` 只在显式要求对齐时才用 `-part xc7vx485tffg1761-2` 构建）。帧结构：50,176 帧 × 101 字。
+
+## 一、何时用 / 何时不用
+
+**用**：要回答「改哪个属性会翻哪些位」「某段差分对应哪条 PIP / 哪个 LUT INIT 位」「这张表能不能用」这类问题。
+
+**不用**：纯读文档、改解码器代码、只跑查询（`pip_query.py`、`decode_clb.py`）而不产生新构建。
+
+## 二、强制门（任一门不过，本轮结论作废）
+
+### 1 入场
+
+- 读 `STATUS.md` 最近 2–3 个 § 与相关 `v7re/steps/*.md`，确认「这件事有没有做过 / 被证伪过」。
+- 读 `REMOTE.md` 取当前远端地址（DHCP 会变）、用户、私钥、调用姿势。
+- 写下本次实验的器件 part、tile/col/y、帧带；不许沿用旧文档的假定 part。
+
+### 2 假设必须可证伪
+
+写成：「在条件 C 下改 A，应只在集合 S 翻位；否则判失败，因为判据 D」。
+缺少「失败如何判定」的假设不得进入构建。
+
+### 3 设计（单变量 + 配对 + 声明）
+
+- 单变量：一次只改一个属性 / 一条 PIP / 一个 INIT。
+- 配对：基线（`INIT=0` 或未改动的同 DCP）与变体各一个；基线差分必须为 0。
+- 固定 `LOC` / `BEL`，并对 LUT 施加 `LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6}`。**未施加 LOCK_PINS 的构建只能用于物理格集合，不得用于引脚索引表**（T13/T15 的表因此报废，见 T18）。
+- 变体优先由**同一个 routed DCP** 生成，避免重新综合 / 布局引入 relocation 噪声。
+- 声明差分语义：**PURE**（参考流已删 sink PIP）/ **XOR**（参考流仍含旧 PIP）/ **FAM**（整族删或加）。语义不明 → 判读不定论。
+- 预先写明预期差分：数量级 + 落在哪些 frame_off / parity / word。
+
+### 4 构建（远端三硬约束）
+
+- 脚本 **LF** 换行（CRLF 会被远端读成 `$\\'\\\\r\\'` 形式并报错）。
+- 脚本走 **stdin 管道**：`cmd /c \\'ssh -o BatchMode=yes fpga "C:\\\\PROGRA~1\\\\WSL\\\\wsl.exe -d Ubuntu -u root -- bash -s" < script.sh\\'`；单条命令里不要放竖线（会被 cmd 抢走）。
+- **不用 scp**（会挂死）；取回文件用 `tar czf - … | base64 -w0` 再本地解。
+- 每个构建必须回读并打印 `SITE` / `BEL` / 被改属性值，进 manifest。
+
+### 5 自校验门（判读前）
+
+- 只采纳「SITE / BEL / 属性回读全部一致」的构建组；不一致的整组丢弃。
+- **反读自证**：用该构建族未参与训练的随机值（如 `0xDEADBEEFCAFEBABE`）反读，必须逐位命中；失败即整批作废，**不许挑选性采纳**（T14 的教训）。
+- 负对照：无改动构建的差分 = 0；不等 0 先查环境，不许直接判读。
+
+### 6 判读
+
+- 位坐标一律写 `(frame_off, parity, bit)` 三元组；只用 `(frame_off, bit)` 统计会造出假共享（IMUX_L0 与 IMUX_L4 即 parity 不同）。
+- 位全 0 必须分类：**默认源** / **互斥族外** / **未覆盖位**，三者不得混写。
+- 地址律：`frame = block_start(col, region) + frame_off`；`word = 2*(Y%50)+parity`（≥50 再 +1 让开 ECC 字）；`bit = raw % 32`。
+- 结论三色：`【硬件事实】` / `【数据事实】` / `【推断】`，一句一条，不混写。
+- 不做无复测的跨位置推广；推广前先在同一方法下换 row / col 各测一次。
+
+### 7 落库
+
+- `STATUS.md` 新增 §（编号接续），必写：数字、被证伪的假设与证伪证据、未测边界。
+- `v7re/steps/<Tn>_<TOPIC>.md` 记录实验设计、构建清单、对账明细。
+- 本地与远端库同时更新；表结构改动走幂等迁移脚本。
+- 失败也落库：被证伪的假设必须有 §，否则后人会重跑。
+
+### 8 交付
+
+- 一句话结论 + 可复现命令（构建 + 差分 + 反读）+ 未测清单。
+- **适用域**：器件 part、行 / 列范围、构建条件（是否 LOCK_PINS、是否同 DCP）；域外标「未测」。
+- 每条结论附「可证伪它的最小实验」；没有下一步实验的结论视为未完成。
+- 字节级与帧级对账分开报告：帧级 0 差异 ≠ 字节级 0 差异（头部时间戳、尾部 CRC 是已知噪声）。
+
+## 三、常用入口
+
+| 用途 | 路径 |
+|---|---|
+| 解帧 / 差分 | `v7re/scripts/parse_bit.py`、`v7re/scripts/diff_frames.py` |
+| FASM ↔ bit | `v7re/scripts/fasm2bit.py`（互斥 + 地址 + 增量 ECC） |
+| 解码 / 查表 | `step03_pip/decode_clb.py`、`step03_pip/imux_decode.py`、`step03_pip/pip_query.py` |
+| 复用规则 | `step03_pip/REUSE_RULES.md` |
+| 现状 / 坑 | `STATUS.md`、`CHEATSHEET.md` |
+| 远端 | `REMOTE.md` |
+
+## 四、历史翻车对照
+
+| 现象 | 真实原因 | 处置 |
+|---|---|---|
+| 同一位置三次测量三张表 | 未锁引脚 + 未做 SITE/BEL 回读核对 | 反读自证失败即整批作废 |
+| 表自洽但解码真实设计全错 | `LOCK_PINS` 缺失，索引是当次 placer 的逻辑顺序 | 表必须标注引脚分配条件 |
+| 「形状随 CLB 类型变」 | 把 XOR 差分当 PURE 解读 | 设计阶段先声明差分语义 |
+| 「每格被两个 family 共用」 | 统计漏掉 parity | 一律三元组统计 |
+| 帧级完全一致但字节差 11 处 | 头部时间戳 + 尾部 CRC | 分两级报告，CRC 标未解 |
+'} reslen 136\r\n225 compress {'content': "m00001–m00005 用户请求与入场
+用户请求（原文）：「总结当前项目 优化一个通用流程skill在当前项目 先使用提示词工具完成提示词」。
+工作目录 E:\\\\DEEPSEEK\\\\FPGA比特流逆向（git 仓库，origin=github lizhenhong176-dotcom/FPGA485T-）。项目是 XC7VX485T 比特流逆向。
+入场动作：glob 全仓（发现 backup/、tools/jdk、v7re/codex/_probe 等噪声目录；仓内无本项目自有 skill，只有 v7re/codex/_probe/asar2/dsh-agent-preset/skills/* 四份 DSH 自带样例）；加载 writing-skills skill（其要求：最小指令面、可执行默认路径 + 不可省约束、reference 一层深、行为验证优先于字数）。
+关键判断：用户所谓「通用流程 skill」= 本项目「位级差分实验」从假设到落库的通用流程，不是 DSH 插件开发。audit_workspace（黑盒/代审 P0）与本任务无关，未使用、未伪造审计数据。
+
+m00006–m00045 项目通读 + 提示词生成 + 落盘
+【项目事实（全部来自 STATUS.md / CHEATSHEET.md / REUSE_RULES.md / FPGA_MASTER_PROMPT.md / v7re/README.md 实读）】
+- 主线：RapidWright 拓扑 → PIP→bit 差分 → frame/bit 数据库 → PIP 复用规律 → 解码/写入闭环。STATUS.md 1669 行，最新 §48（T18）。
+- 器件修正（2026-11-06）：全部探针 DCP/bitstream 实际 part = xc7vx485tffg1157-3，不是长期假定的 VC707 ffg1761-2；fabric 层结论不受影响，PACKAGE_PIN 结论限 ffg1157。
+- 帧结构：50,176 帧 × 101 字；每 config row 末 2 个 overhead 帧；word 50 是 ECC（低 13 位），不是配置位；尾部 CRC 未解（T11 已证伪全部常见变体）。
+- 地址三因子：frame = block_start(col, region) + frame_off；word = 2*(Y%50)+parity（≥50 再 +1 让开 ECC 字）；bit = raw % 32；cell = (frame_off, parity, bit) 三元组。ROW_FRAMES=5246，BAND_BY_REGION=[6,5,0,1,2,3,4]。
+- 规模：150,380 tiles / 115 类型 / 86,022 site / 1,760 pin / 14 clock region；单 INT tile 位池 1,664 位 = 26 帧 × 2 字 × 32；mux 区（帧 16–25）640/640 满装 = 64 family（48 IMUX + 8 BYP_ALT + 8 FAN_ALT）。
+- 复用律：172 family/侧、1,598 cell 独占、feature 3,636、每 cell 被 3..18 源共用（均值 5.57）、域内编码唯一 172/172；仅 5 种 (域大小,源数) 组合：(9,20)×96 /(10,24)×64 /(8,16)×6 /(7,12)×4 /(9,18)×2。生成式表述对账 1,536/1,536 精确（pip_reuse_law.py --verify）。
+- 三种差分语义：PURE（参考流已删 sink PIP）/ XOR（参考流仍含旧 PIP）/ FAM（整族删或加）；混用曾得出「形状随 CLB 类型变」假结论。
+- CLB INIT：T13 的 8 LUT 表 64 位、每 LUT 4 帧 × 16 位；T14 跨位置推广失败；T15 单最小项法；T16 发现差异全来自未加 LOCK_PINS 的 I0..I5 置换；T17 LOCK_PINS 5/5 确认 + FF.INIT = (帧+67, word 40, bit 3) 单比特可逆；T18 判定 T13 表不能用于真实设计，已启动 65 构建重做（/opt/lzh/v7re/work/locked）。
+- 远端：ssh 别名 fpga（DHCP，当前 172.17.70.41，旧 172.17.71.129 失效），用户 s.tschai，私钥 C:\\\\Users\\\\i\\\\.ssh\\\\v7remote；WSL Ubuntu 20.04 + Vivado 2017.2（/opt/lzh/Xilinx/Vivado/2017.2）+ venv /opt/lzh/venv；脚本必须 LF、走 stdin 管道（cmd /c 'ssh ... bash -s' < x.sh）、不用 scp（挂死）、取文件用 tar czf - | base64 -w0；中文文档用 [IO.File]::WriteAllText UTF8。
+- 工具入口：v7re/scripts/{parse_bit.py,diff_frames.py,fasm2bit.py,ecc_model.py,pip_reuse_law.py,bitgen.py}；step03_pip/{pip_query.py,decode_clb.py,imux_decode.py,int_walk_v1.py,emit_netlist2.py,bit2fasm_py.py,verify_reuse.py,reuse_stats.py}；文档 step03_pip/{REUSE_RULES.md,PIP_LAW.md,CLB_VERIFY.md,TRAILING_CRC.md,SYSTEM_PROMPT_V7_BITSTREAM.md}、v7re/steps/T*.md、CHEATSHEET.md（8 节速查，含「位全 0 ≠ 未选中」「BEG→END 不是 mux」等坑）。
+【已交付（本会话写出并读回验证）】
+1. BITSTREAM_EXPERIMENT_FLOW_V1.md（38 行）：prompt-optimizer MCP optimize-user-prompt（template=user-prompt-planning）返回的结构化正文原样落盘，含 V1 头部生成说明。
+2. BITSTREAM_EXPERIMENT_FLOW_V2.md（62 行）：再走 iterate-prompt（template=iterate），requirements 写 10 条针对近三周翻车的加固（LOCK_PINS 门、反读自证、零值三态、parity 三元组、差分语义声明、失败落库、字节级/帧级分报、远端三硬约束清单、适用域、下一步最小实验）；文末「V1 → V2 改动清单」10 行表格，每行给落点章节 + 触发它的项目事实。
+3. .agents/skills/fpga-bitstream-experiment/SKILL.md（92 行，3,383 字符）：frontmatter name/description（英文、第三人称、写明触发场景）+ 中文正文八道强制门（入场/可证伪假设/单变量+配对+声明/LF+stdin+禁scp+回读/自校验门/判读/落库/交付）+ 常用入口表 + 历史翻车对照 5 行。已被 DSH 发现并出现在 available_skills 目录中（证明 frontmatter 可解析、发现路径 .agents/skills 有效）。
+4. AGENTS.md 增一行指针：「**位级差分实验的通用流程见 skill `fpga-bitstream-experiment`**（.agents/skills/fpga-bitstream-experiment/SKILL.md；提示词 V1/V2：BITSTREAM_EXPERIMENT_FLOW_V1.md、BITSTREAM_EXPERIMENT_FLOW_V2.md）。」（已读回确认，AGENTS.md 变更已生效）。
+【决策与遗留】决策：不把 skill 写成 DSH 插件/代码，而是流程纪律文档 + 提示词产物，符合 AGENTS.md「提示词必须过 prompt-optimizer」硬规则。遗留：skill 行为验证（正例/近例/压力场景对照）未跑，按 writing-skills 纪律只能报 needs-verification，不得宣称 deployment-ready；git 未提交（工作区大量既有未跟踪文件，只新增 3 个 + 改 1 个）。
+Open objectives: 向用户交付「项目总结 + 本次改动说明」的最终回复（m00001）。"} reslen 830\r\n260 grep {'pattern': '^## §4[5-9]|^## §5'} reslen 16\r\n262 read {'offset': 1560, 'limit': 115} reslen 4570\r\n282 read {'offset': 1672, 'limit': 200} reslen 988\r\n468 write {'content': "# T20：通用流程 skill 实测 —— part 对差分 + T19 表反读自证
+
+日期：2026-11-06
+数据：远端 `/opt/lzh/v7re/work/partpair`，5 个构建（5 路并行，全部 rc=0）。
+脚本：`step03_pip/_t20_partpair.sh`（构建）、`step03_pip/_diff_pair.sh` / `_diff_pair2.sh` / `_diff_pair3.sh`（差分）。
+
+## 0. 这次实验的目的是「试 skill 本身」
+
+按 `.agents/skills/fpga-bitstream-experiment/SKILL.md` 的八道门走一遍真实流程，看门是否真的挡得住、判读是否真的收敛。
+选这个题目是因为它同时踩到门 1（器件 part）、门 3（单变量 + 配对 + 差分语义）、门 5（负对照 + 反读自证）、门 6（三元组统计）、门 8（适用域）。
+
+| 构建 | INIT | part | 作用 |
+|---|---|---|---|
+| `b0_1157` | `0x0` | `xc7vx485tffg1157-3` | 基线 A |
+| `b0b_1157` | `0x0` | `xc7vx485tffg1157-3` | 重复基线（负对照） |
+| `b0_1761` | `0x0` | `xc7vx485tffg1761-2` | 基线 B（只改 part） |
+| `r_1157` | `0xDEADBEEFCAFEBABE` | `xc7vx485tffg1157-3` | 随机值（未参与 T19 训练） |
+| `r_1761` | `0xDEADBEEFCAFEBABE` | `xc7vx485tffg1761-2` | 随机值 + 另一封装 |
+
+共同条件（全部构建）：`LOC SLICE_X12Y20`、`BEL A6LUT`、`LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6}`、`DONT_TOUCH`。
+
+## 1. 门 4 / 门 5：回读与负对照
+
+五个构建的 `build.log` 全部打印，且逐项一致：
+
+```
+RB_PART=xc7vx485tffg1157-3 / xc7vx485tffg1761-2      （与 -part 一致）
+RB_SITE=SLICE_X12Y20   RB_BEL=SLICEM.A6LUT
+RB_INIT=64'hDEADBEEFCAFEBABE （随机组） / 64'h0000000000000000 （基线组）
+RB_LOCK=I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6
+```
+
+**负对照**：`b0_1157` vs `b0b_1157`（同设计、同 part、重跑一次）→ **差分帧数 = 0**。
+环境自证通过，后续差分可信。
+
+## 2. 门 5：反读自证（关键的一步）
+
+把 `0xDEADBEEFCAFEBABE`（**不在 T19 的 64 个单最小项构建里**）烧进去，与 `INIT=0` 基线差分：
+
+```
+差异帧：4 个（31784, 31785, 31786, 31787）
+差异位：60 个 = word 40 的 46 位 + word 50 的 14 位
+```
+
+其中 word 40 的 46 位用 T19 的闭式公式独立预测（`B = 31716`）：
+
+```
+frame = B + 70 + (k & 1) - 2 * ((k >> 3) & 1)
+word  = 40
+bit   = 15 - 4 * (k >> 4) - ((k >> 1) & 3)
+```
+
+预测量 **46**，实测 **46**，**missing 0 / extra 0** —— 集合级精确相等，不是「大致对上」。
+
+【数据事实】T19 闭式公式对未参与训练的值成立 → 该表可用于反读真实设计的 INIT 物理真值。
+
+## 3. word 50 的 14 位
+
+差异位里 word 50 恰 **14 位**，全部落在 bit 0..12（即低 13 位 ECC 域内）：
+
+```
+(31784, 0/2/5/6/11)  (31785, 3/12)  (31786, 2/3)  (31787, 0/1/5/6/11)
+```
+
+【数据事实】改 INIT 内容后，同帧 word 50 必然跟着变，且落在 ECC 域 —— 再次印证「word 50 是 ECC，不是配置位」。
+
+## 4. 门 1 / 门 6：part 是不是变量
+
+同 netlist、同 LOC/BEL/LOCK_PINS、同 INIT，只改 `-part`：
+
+| 差分对 | part | 差异帧 | 差异位 |
+|---|---|---|---|
+| `part_zero` | `b0_1157` vs `b0_1761` | 133 | 1,210 |
+| `part_rand` | `r_1157` vs `r_1761` | 133 | 1,210 |
+
+两对帧集合完全相同（27189…32607），说明差异与 INIT 内容无关，是 part 造成的固定差。
+
+**关键**：这 133 帧**不含** 31784–31787。
+即：本 BEL 的 CLB INIT 帧（word 40）在两个封装下**逐字节相同**。
+
+- 【数据事实】T19 的 INIT 映射在本设计域内**与封装 part 无关**；这为 `STATUS.md` 附「fabric 层不受影响」提供了第一条直接实测（此前的论据是键合 IOB 数 600 vs 700 的间接推理）。
+- 【推断】31784–31787 之外那 133 帧差异，最可能来自**未约束端口** `a0..a5/o` 的默认 IOB 分配（两封装可用引脚不同），其中 21 帧落在同一 block（base 31716）内，word 50 占 766 位（内容变了 → ECC 重算）。
+- 【未测】上述 133 帧/1,210 位的成因**没有实测确认**。最小验证实验：给所有端口加 `PACKAGE_PIN` 约束到两封装都存在的 IOB，重跑该对；若差分降为 0，则确认成因是默认 IOB 分配。
+
+## 5. 顺带发现：T19 那批构建的 part 写的是 ffg1761-2
+
+`/opt/lzh/v7re/work/locked/mk.tcl` 里是 `synth_design -top top -part xc7vx485tffg1761-2`，
+与 `STATUS.md` 器件修正里「本项目实际 part = `xc7vx485tffg1157-3`」不一致。
+
+按 skill 门 1（不许沿用旧文档的假定 part），本次全部显式写 `ffg1157-3`，并同时跑 `ffg1761-2` 作对照：
+
+- 两边都是同样的 4 帧 / 46 + 14 位结构；
+- 且 word 40 的 46 格与公式 46/46 一致。
+
+【数据事实】所以 T19 表本身没有被 part 污染，仍可用；但**后续构建必须显式声明 part**，不能靠默认。
+
+## 6. 这个 skill 在本次实测里的表现
+
+| 门 | 是否真的起了作用 |
+|---|---|
+| 1 入场（器件 part） | **是** —— 直接暴露出 T19 构建写的是 ffg1761-2 |
+| 2 可证伪假设 | 是 —— 判据 D 写成「若 CLB INIT 帧出现非零差异则 H1 失败」 |
+| 3 单变量 + 配对 + 宣言 | 是 —— part / INIT 两个变量被拆成三对独立差分 |
+| 4 回读（SITE/BEL/INIT/LOCK） | 是 —— 五个构建全部打印并核对 |
+| 5 负对照 + 反读自证 | **是** —— 重跑 0 差异；随机值 46/46 集合精确相等 |
+| 6 判读（三元组 / 三色 / 适用域） | 是 —— 结论全部写了 part、BEL、行号与「未测」 |
+| 7 落库 | 本文 + `STATUS.md` §50 |
+| 8 交付（适用域 + 最小实验） | 是 —— §4 末给出降为 0 的最小实验 |
+
+**待改进**：门 5 只写了「随机值反读必须逐位命中」，没写「预测量与实测量要按**集合**比对（missing/extra 双零）」。本次是人工补做这个集合比对的，下一版 skill 应把「missing=0 且 extra=0」写成硬判据。
+
+## 7. 尚未做
+
+- 未约束端口的 IOB 归因实验（§4 的最小实验）；
+- T19 表在 B6/C6/D6 与别的行上的交叉验证；
+- `part_zero` 那 40 个 word 40 差异位的归属（是否邻近 slice 的默认 INIT）。
+"} reslen 114\r\n478 run_python {'code': '
+import os
+p = r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md"
+raw = open(p,\\'rb\\').read()
+crlf = raw.count(b"\\\\r\\
+") > 0
+txt = raw.decode(\\'utf-8\\')
+add = "## 50. T20 —— 用 skill 实测 part 对差分：INIT 映射与封装无关，但 part 差分不为零（2026-11-06）\\
+\\
+按 `.agents/skills/fpga-bitstream-experiment` 的八道门跑了一遍真实流程（5 个构建，`/opt/lzh/v7re/work/partpair`，5 路并行，全部 rc=0，全部 `LOCK_PINS`，回读 part/SITE/BEL/INIT/LOCK 一致）。\\
+\\
+**负对照**：同 part 同设计重跑的 `b0_1157` vs `b0b_1157` → 差分帧 **0**。\\
+\\
+**反读自证**：`INIT=0xDEADBEEFCAFEBABE`（**不在 T19 的 64 个单最小项里**）相对 `INIT=0` → 4 帧（31784–31787），word 40 共 **46 位**；T19 闭式公式独立预测 46 位，**集合相等：missing 0 / extra 0**。同帧 word 50 恰变 **14 位**（bit 0..12，ECC 域内）。\\
+\\
+**part 对**（同 netlist、同 LOC/BEL/LOCK_PINS、同 INIT，仅 `-part` 不同：`ffg1157-3` vs `ffg1761-2`）：\\
+\\
+| 差分对 | 差异帧 | 差异位 |\\
+|---|---|---|\\
+| `b0_1157` vs `b0_1761` | 133 | 1,210 |\\
+| `r_1157` vs `r_1761` | 133 | 1,210 |\\
+\\
+两对帧集合完全相同（27189…32607），**不含 31784–31787** —— 本 BEL 的 CLB INIT 帧（word 40）两封装下逐字节相同。\\
+\\
+【数据事实】T19 的 INIT 映射在本设计域内**与封装无关**；这是 `STATUS.md` 附「fabric 层不受影响」的第一条直接实测（此前只有键合 IOB 数 600 vs 700 的间接论据）。\\
+【未测】那 133 帧 / 1,210 位的成因未确认。\\
+【推断】最可能来自未约束端口 `a0..a5/o` 的默认 IOB 分配（两封装可用引脚不同）；21 帧落在同一 block（base 31716），word 50 占 766 位（内容变 → ECC 重算）。\\
+最小验证实验：给所有端口加 `PACKAGE_PIN` 约束到两封装共有的 IOB 后重跑该对，若差分降为 0 即确认成因。\\
+\\
+**顺带发现**：`/opt/lzh/v7re/work/locked/mk.tcl` 里写的是 `-part xc7vx485tffg1761-2`，与器件修正（实际 part `ffg1157-3`）不符。本次两边都跑，结构同为 4 帧 / 46+14 位，故 **T19 表未被 part 污染、仍可用**；但后续构建必须显式声明 part。\\
+\\
+文档：`v7re/steps/T20_PART_PAIR.md`。\\
+"
+if crlf:
+    add = add.replace("\\
+","\\\\r\\
+")
+    nl = "\\\\r\\
+"
+else:
+    nl = "\\
+"
+if not txt.endswith(nl): txt += nl
+txt += nl + add
+open(p,\\'wb\\').write(txt.encode(\\'utf-8\\'))
+print("crlf", crlf, "newlen", len(txt))
+', 'cwd': 'E:\\\\DEEPSEEK\\\\FPGA比特流逆向'} reslen 60\r\n488 read {'offset': 1690, 'limit': 40} reslen 1767\r\n528 pwsh {'description': 'git status short', 'command': 'git status --porcelain=v1 -- .agents STATUS.md v7re/steps/T20_PART_PAIR.md step03_pip/_t20_partpair.sh step03_pip/_diff_pair.sh step03_pip/_diff_pair2.sh step03_pip/_diff_pair3.sh step03_pip/_recon_t18.sh step03_pip/_recon2.sh step03_pip/_recon3.sh step03_pip/_fetch_pair.sh', 'workdir': 'E:\\\\DEEPSEEK\\\\FPGA比特流逆向'} reslen 280\r\n582 compress {'content': 'm00165–m00194 skill 实测（T20）+ 按实测缺口升级 skill V2
+【用户意图】m00166「先试一下」→ 要求真跑一遍 skill（不是嘴上推演）；m00191「还需要改进吗」→ 要诚实评估剩余缺口；m00195「ok」→ 批准按建议顺序 1→3→4→2 动手改（另含「要不要把 T19 表接进 site_frames」的询问，用户未单独回答）。
+【远端环境（实测）】ssh 别名 fpga 可用（-o ConnectTimeout=10），Windows 11 + WSL Ubuntu，56 核 / 62G 内存，/opt 剩余 658G；调用姿势：cmd /c \\'ssh ... "C:\\\\\\\\PROGRA~1\\\\\\\\WSL\\\\\\\\wsl.exe -d Ubuntu -u root -- bash -s" < x.sh\\'，脚本须 LF。远端 python=/opt/lzh/venv/bin/python，sys.path 加 /opt/lzh/v7re 后 from bitstream.frames import load_frames, diff_frame_indices, diff_bits_in_frame 可用（pkg_ok 实测）。
+【T20 实验（已落盘）】5 个构建放 /opt/lzh/v7re/work/partpair，5 路并行，~2 分钟，全部 rc=0，全部 LOC SLICE_X12Y20 / BEL A6LUT / LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6} / DONT_TOUCH，回读 RB_SITE=SLICE_X12Y20、RB_BEL=SLICEM.A6LUT、RB_INIT/RB_PART/RB_LOCK 全一致：
+- b0_1157: INIT=0x0, part=xc7vx485tffg1157-3
+- b0b_1157: INIT=0x0, 同 part（重跑负对照）
+- b0_1761: INIT=0x0, part=xc7vx485tffg1761-2
+- r_1157: INIT=0xDEADBEEFCAFEBABE, ffg1157-3
+- r_1761: INIT=0xDEADBEEFCAFEBABE, ffg1761-2
+差分结果（每 bit 20,273,538 字节，gz 仅约 21KB）：
+- det_1157（b0_1157 vs b0b_1157）：ndiff 帧 = 0 → 负对照通过。
+- init_1157 / init_1761（INIT 0 → 0xDEADBEEFCAFEBABE）：4 帧 31784–31787，共 60 位 = word 40 的 46 位 + word 50 的 14 位（bit 全在 0..12，ECC 域内）。
+- 46 位与 T19 闭式公式预测集合完全相等：pred 46 / act 46，missing 0、extra 0（用 Python 复核 pred==act True）。公式：frame = B+70+(k&1)-2*((k>>3)&1)，word 40，bit = 15-4*(k>>4)-((k>>1)&3)，B=31716。
+- part_zero（b0_1157 vs b0_1761）与 part_rand（r_1157 vs r_1761）：各 133 帧 / 1,210 位，帧集合完全相同（27189…32607），word 50 占 766 位、word 40 占 40 位；不触及 31784–31787 → CLB INIT 帧两封装逐字节相同；21 帧落在同一 block（base 31716）。成因未测；推断是未约束端口 a0..a5/o 的默认 IOB 分配不同；最小验证实验＝给端口加两封装共有 IOB 的 PACKAGE_PIN 后重跑。
+- 顺带发现：/opt/lzh/v7re/work/locked/mk.tcl 写的是 -part xc7vx485tffg1761-2，与 STATUS 器件修正的 ffg1157-3 不符；本次两边都跑结构相同，故 T19 表未被 part 污染、仍可用。
+【已写文件】v7re/steps/T20_PART_PAIR.md（117 行，含 8 门逐条命中表、改进落地说明）；STATUS.md 追加 §50（T20，三色标注+未测+最小实验），STATUS.md 现 1721 行，末行「文档：v7re/steps/T20_PART_PAIR.md。」；本地脚本 step03_pip/{_t20_partpair.sh,_diff_pair.sh,_diff_pair2.sh,_diff_pair3.sh,_recon_t18.sh,_recon2.sh,_recon3.sh,_fetch_pair.sh}（未跟踪）；step03_pip/t20_partpair/pair.b64/pair.tgz 是失败的传输尝试产物（ssh→pwsh 回传的 base64 被污染成前导全零，tar 无成员 → 教训：回传 base64 必须落地成文件再解码，且更省的做法是远端直接差分只回传 JSON）。
+【skill 升级（全部经 prompt-optimizer MCP iterate-prompt 生成后落盘，template=iterate）】.agents/skills/fpga-bitstream-experiment/SKILL.md 现 106 行：
+- 门 4 标题改「构建（远端三硬约束 + part 硬规则）」：显式 -part 禁止依赖默认、断言回读 PART；base64 落地成文件禁塞命令行（ENAMETOOLONG）；建议远端差分只回 JSON。
+- 门 5 补：反读自证为集合级硬判据（missing=0 且 extra=0，禁抽样）、「未参与训练」可操作定义、自证报告必须打印四数（预测集大小/实测集大小/missing/extra）、差分种类归属\n\n[...]\n\npipe | 3,914 | 936 | col6 全 36 mux |
+| tilepipe2 | 3,945 | 936 | INT_R 跨类型 |
+| tilepipe3 | 668 | 156 | col6 同类型换行 |
+| tilepipe4 | 3,907 | 936 | col9（奇列）全 36 mux |
+| band1 / lutmap / right | 126 / 88 / 133 | 26 / 65 / 26 | 行带1、LUT 映射、右列 |
+| blkcol / blkcol2 / blkcol3 | 128 / 127 / 127 | 26 each | 换列块基址 |
+
+合计 **~1,700 个位流**（每个 20,273,538 B）。
+
+### 7.2 模型库 `/opt/lzh/v7re/data/model/v7_model.sqlite`（635,883,520 B）
+
+| 表 | 行数 |
+|---|---|
+| tiles | 150,380 |
+| sites | 86,022 |
+| site_pins | 5,489,706 |
+| probe_bits | 1,248 |
+| probes | 72 |
+| **imux_codes** | **2,304** |
+| **pip_bits** | **2,652** |
+| bit_map | 28 |
+
+小表已导出到 `step03_pip/remote_data/model_tables.json`（1.2 MB）。
+注意远端 `v7re` **不是 git 仓库**，代码同步靠本机 `step03_pip/` 为准。
+
+### 7.3 磁盘
+
+`/` = 1007G，已用 201G（21%），剩 756G。
+### 7.4 本机与远端模型库一致性核对（2026-10-26）
+
+逐表比对了 21 张表（行数 + 全量行内容）：
+
+| 表 | 行数 |
+|---|---|
+| tiles | 150,380 |
+| sites | 86,022 |
+| site_pins | 5,489,706 |
+| site_bel_pins / site_bels / site_wires / site_types | 7,107 / 3,439 / 3,252 / 30 |
+| imux_codes | 2,304 |
+| pip_bits | 2,652 |
+| bit_map / probe_bits / probes | 28 / 1,248 / 72 |
+| column_offsets / region_bases / tile_types | 420 / 14 / 115 |
+| site_type_pips / meta / stages / artifacts / site_frames | 583 / 17 / 1 / 0 / 0 |
+
+结论：**21 张表行数与内容完全一致**，本机 `E:\\\\v7work\\\\model\\\\v7_model.sqlite`
+（635,883,520 B）与远端 `/opt/lzh/v7re/data/model/v7_model.sqlite` 已同步，无需合并。
+行数快照存 `step03_pip/remote_data/table_counts.json`。
+
+
+### 6.3 早期行带抽测（2026-10-26）
+
+第一轮只测了三个点：Y=11（区域 0）预测 31,696 起、Y=61（区域 1）预测 26,450 起、
+Y=161（区域 3）预测 5,466 起，三处窗口与 GFAN0 的格子都逐位一致。当时把它记成
+「行带 0/1/5」，其实第三个点是区域 3 —— 正是它提示行带与时钟区域不是简单反向，
+于是有了 §6.6 的七区全测。
+
+非 IMUX 家族的 parity 已由 §6.4/§6.5 的 248 个变体实测确认（62/62 分列 word 22/23，
+左右两侧一致），不再是推断。早期用 `ref_C9.bit` 做的静态盲扫 0 命中，原因是该参考设计
+里 ALT 家族未被使用（全零码），静态探针没有区分力——必须造变体。
+
+### 6.4 非 IMUX 家族全量实测（2026-10-26）
+
+方法：取已布通的 `SLICE_X8Y11_A6LUT_A1.dcp`，在 net `n1` 的 PIP 列表末尾**追加**
+`src ->> 家族`，写 DCP → bitgen → 与 ref.bit 逐位差分。124 个 INT_L 非 IMUX 家族
+每族一个变体（124 次 bitgen，8 并发约 20 分钟），判定为「观测到的 1 位翻转必须全部
+落在 law 预测的 sense=1 格内」。
+
+结果：**124/124 PASS，0 EXTRA，0 EMPTY**。`pip_law.py --check` 已把该回归并入自检。
+
+结构发现：word 恰好 62 族在 22、62 族在 23（= bit//32 打包奇偶）；frame_off 按家族类
+分区——BYP/FAN 16..25，6 步长 BEG 2..7，2 步长 BEG 6/9..15，1 步长 BEG 7/8/10..15，
+直通/时钟类 0..1。不存在统一偏移。
+
+未覆盖：BRAM 行带 8–14（CLB 行带 0–6 已在 §6.6 全测）。
+
+### 6.5 非 IMUX 家族右侧（INT_R）全量实测（2026-10-26）
+
+基座换成 `step03/right/rA1.dcp`（lut @ `SLICE_X11Y10`，tile `INT_R_X7Y10`），同样
+「追加 PIP → bitgen → 差分」，124 个 INT_R 非 IMUX 家族逐一跑（8 并发约 20 分钟）。
+
+结果：**124/124 PASS，0 EXTRA，0 EMPTY**（`famdiff_r.json`）。`pip_law.py --check`
+现在同时回归 `famdiff.json` 与 `famdiff_r.json`。
+
+踩坑记录（对后续有用）：
+1. `rA1.dcp` 直接 bitgen 会被 4 个 DRC 拦下（PDCN-1568/1569、NSTD-1、UCIO-1），
+   前两个必须 `IS_ENABLED false`，后两个可降级为 Warning 或 `-no_drc`。
+2. 基线必须用**同一份 DCP 现生成**（`ref_now.bit`），不能拿旧的 `ref_C9/ref_rA1.bit`
+   ——旧基线与新变体差 3 个固定位（31733/31738/31740 的 w23），会把判定污染成 EXTRA。
+3. 7 系列位流的 FDRI 载荷固定从字节 **338** 起、`50,176 × 404 B`；Type2 包头里的
+   count 是 27 位（`0x504D5400` → 5,067,776 词），别按 13 位解。
+
+
+### 6.6 七个 clock region 全测：行带映射修正（2026-10-26）
+
+七个区域各造一组变体（`INT_L_X6Y`，四个家族 BYP_ALT6 / EE2BEG1 / SE6BEG0 / GFAN0，
+仍是「追加 PIP → bitgen → 逐位差分」），40 项判定里 **32 EXACT、8 SUB、0 FAIL**。
+
+真实映射（此前 `band = 6 - Y//50` 只在 Y<100 时凑巧对）：
+
+| region | Y | FAR 行带 | col6 起帧 | 观测 word |
+|---|---|---|---|---|
+| 0 | 0–49 | 6 | 31,680 | 51/52 |
+| 1 | 50–99 | 5 | 26,434 | 40/41 |
+| 2 | 100–149 | 0 | 204 | 51/52 |
+| 3 | 150–199 | 1 | 5,450 | 51/52 |
+| 4 | 200–249 | 2 | 10,696 | 40/41 |
+| 5 | 250–299 | 3 | 15,942 | 51/52 |
+| 6 | 300–349 | 4 | 21,188 | 51/52 |
+
+`region → 行带 = [6,5,0,1,2,3,4]`；FAR 表把 Y=0 那半边放在最后两带且内部再倒一次，
+所以「Y=0 在最上」不能外推到全器件。
+
+字号规则修正：`word = 2*(Y%50) + parity`，**结果 ≥ 50 时再 +1**（让开第 50 字的 ECC）。
+区域 0 的 BYP_ALT6 落在 word 52、EE2BEG1 落在 51，正是 `2*25+0→51`、`2*25+1→52`。
+
+`pip_law.py` 已把 `BAND_BY_REGION = [6,5,0,1,2,3,4]` 与 `_word()` 写进代码，
+`python pip_law.py --check` 自检全绿；`check_bands2.py` 可复跑这 40 项。
+
+### 6.7 复用规则收尾：三种差分语义 + 位域独占（2026-10-27）
+
+纯本地复核（远端 ssh 超时），把散在 10 多个 JSON 里的观测全部对到同一张形状表上，
+产出总纲 `step03_pip/REUSE_RULES.md`。
+
+**① 差分有三种语义**，取决于参考流怎么生成——这是之前若干「反例」的唯一来源：
+
+| 语义 | 参考流 | 差分 | 文件 |
+|---|---|---|---|
+| PURE | `p6_make2.py` 写出的 `ref_$TAG.dcp`（sink PIP 已删） | 单条 PIP 的位集 = `sense=1` 格 | `tilepipe`/`tp2`/`tp3` |
+| XOR | 原始 dcp（sink PIP 还在） | `code(S0) △ code(w)` | `col_*`/`rep_*`/`t1*`/`tp4b` |
+| FAM | 原设计再追加一条 PIP | 置位 ∪ 清零，都落在该 PIP 的格内 | `famdiff`/`famdiff_r`/`_famexp` |
+
+由此 **`BLOCK_ADDR_CHECK.md` 结论 3「形状随 CLBLL/CLBLM 变」已证伪**：col6 与 col8/10 的
+差别是 PURE vs XOR，不是 CLB 类型。10 个列扫描文件每个都被**唯一**一组 `(mux, S0)` 解释
+（`IMUX_L8←NR1END0`、`IMUX8←NE2END0`、`col_B1` 是 `IMUX_L8←NL1END0`），
+`tp4b.json` 36/36 个 mux 各自唯一命中。跨 col 6/8/10/12 逐 wire 完全一致 → 形状与列无关。
+
+顺带订正一个坑：实验脚本用 `SX=$((2*COL-4))` 从 SLICE_X 反推列是错的（SLICE 编号跳过非 CLB 列）。
+真实映射（`sites.tile` 查得）：`X8→CLBLL_L_X6`、`X10→CLBLM_R_X7`、`X12→CLBLM_L_X8`、
+`X14→CLBLM_R_X9`、`X16→CLBLL_L_X10`、`X18→CLBLM_L_X12`、`X20→CLBLM_R_X13`、`X22→CLBLM_R_X15`。
+所以 `col_11.json` 其实是第 12 列、`col_12.json` 是 13、`col_13.json` 是 15。
+
+**② 位域按 family 独占**（统计必须用 `(frame_off, parity, bit)` 三元组）：
+
+- 每侧 1,598 个 cell、3,636 个 feature、172 个 family；**cell→family 1598/1598 独占，跨 family 零共享**。
+- 每个 cell 被同 family 的 3..18 个源置 1（均值 5.57）；每 feature 平均置 2.45 位。
+- family 域 7..10 格、源 12..24 个，**域内编码唯一 172/172**；组合只有 5 种：
+  `(9,20)×96`、`(10,24)×64`、`(8,16)×6`、`(7,12)×4`、`(9,18)×2`。
+- 块内分区（两侧相同）：off 0..1 时钟/控制/GFAN/LVB（12 族，73.4% 密度）；2..5 长线 BEG（32 族，87.5%）；
+  6..9 短线 BEG（96 族，100%）；10..15 短线（64 族，100%）；**16..25 mux 区（64 族 × 10 格 = 640 位，100% 满装）**。
+  26 帧合计 1,598/1,664 = **96.0%** 位密度。
+- 假象警告：漏掉 parity 会看到「每格被 2 个 family 共用、95 对成对复用」
+  （`IMUX_L0` vs `IMUX_L4` 其实是 parity 0 vs 1），已排除。
+
+**③ sense 语义定死**：`_famexp.json`（124 变体，带方向）292 次置位、22 次清零，
+**124/124 的清零格都落在该 PIP 的 `sense=0` 格上**（集中在 `BYP_ALT*`/`FAN_ALT*` 互斥源与 `CLK_L*`/`CTRL_L*`）。
+推论：差分 ⊆ 该 PIP 自己的格集合；且因位域独占，**SUB 只可能是基线里已有同 family 的另一条 PIP**
+（4 个 SUB 全是 `*_NR1END1`，两侧缺格相同）。
+
+**④ 实测规模与覆盖率**：
+
+- `verify_reuse.py`：PURE 1,872 EXACT（`tilepipe` 864 + `tp2` 864 + `tp3` 144，另 78 条 `VCC_WIRE` 无形状记录）
+  + XOR 1,150 条全部唯一解释 + FAM 244 EXACT/4 SUB + 清零 124/124 → **合计 3,270 条观测、0 反例**。
+- 覆盖率：2,048/7,272 feature = **28.2%**（两侧对称）。`IMUX` 1800/2304 = **78.1%**；
+  `*BEG` 192/3840 = 5.0%；`BYP_ALT`/`FAN_ALT` 各 4.2%。`(tile_type,family)` 层面 320/344 测过 ≥1 源，
+  72/344 源全覆盖。**完全未测的 24 个 family 全是 IMUX**（每侧 12 个），疑为 CLBLM 专属（待办 §5.5）。
+- 未覆盖：154 列只验 7 列；BRAM 行带没碰；长线家族块归属未解；多 PIP 线性叠加未系统验证；
+  没有板子回读的真实比特流。
+
+新增/改动文件：`step03_pip/REUSE_RULES.md`、`verify_reuse.py`、`reuse_stats.py`（+`reuse_stats.json`）；
+订正 `BLOCK_ADDR_CHECK.md`（结论 3 证伪 + 列映射）、`PIP_LAW.md`（§7.3 SUB 成因、新增 §8）；
+删除 `audit_shape.py`（列映射写错，已被 `col_xor_model.py` + `verify_reuse.py` 取代）。
+
+### 6.8 远端重连：DHCP 换址（2026-10-27 17:45）
+
+本轮前半段 `ssh fpga` 报 `connect to host 172.17.71.129 port 22: Connection timed out`。
+根因不是网络故障，是**机器换了 IP，而 `~/.ssh/config` 里的 `Host fpga` 还指着旧地址**
+（正确信息其实早已记在本文件 §1，只是 config 没跟着改）。
+
+诊断过程（可复用，已写进 [REMOTE.md](REMOTE.md) §4）：
+
+| 步骤 | 命令 | 结果 |
+|---|---|---|
+| 本机网络 | `ping 172.17.64.1`（网关）/ `ping 8.8.8.8` | 都 **Success** → 本机没问题 |
+| 旧地址 | ICMP + TCP 22/445/3389/80/5900/8080 全探 | 全 **timeout** → 机器不在这个地址 |
+| ARP 陷阱 | `Get-NetNeighbor` 显示 `172.17.71.129 → 00-00-5E-00-01-1F (Reachable)` | **不算证据**：本网段 ARP 由 VRRP 虚拟 MAC 代答，所有 IP 都"可达" |
+| 找候选 | `known_hosts` 里出现过的同网段 IP | `172.17.70.41`（另有旧条目 `172.17.71.129`） |
+| 探端口 | TCP 22 on `172.17.70.41` | **OPEN**（ICMP 被墙，但 TCP 通） |
+| 认机器 | 读 SSH banner | `SSH-2.0-OpenSSH_for_Windows_9.5` → Windows+WSL，正是那台 |
+| 认用户 | `lzh`/`root` × `id_ed25519`/`v7remote` | 全部 `Permission denied (publickey,…)` |
+| 成功 | **`s.tschai` + `v7remote`** | `DESKTOP-47NHOKA`，Windows 11 build 26200 |
+
+连上后核对：WSL Ubuntu 里 `/opt/lzh` 完好（磁盘 216G/1007G，741G 可用）；
+Vivado `/opt/lzh/Xilinx/Vivado/2017.2/bin/vivado` + `Vivado_license_2037.lic` 在；
+`/opt/lzh/venv/bin/python` = 3.8.10 且 site-packages 里有 rapidwright。
+（`uptime` 显示 `up 0 min` 是正常的——WSL 按需启动。）
+
+**改动**：
+
+- `~/.ssh/config`：`Host fpga` 改指 `172.17.70.41` / `s.tschai` / `v7remote`，加 `ConnectTimeout 10`；
+  旧条目降级留档为 `Host fpga-old`。
+- 新建 [REMOTE.md](REMOTE.md)：远端连接的**唯一权威记录**（地址/用户/私钥、三种调用姿势、
+  Vivado 必备细节、换址后的重连流程、`/opt/lzh/step03` 26 个目录的 bit/json/dcp 清单与「本地是否已有」）。
+- [AGENTS.md](AGENTS.md) 与 [README.md](README.md) 加入指向 `REMOTE.md` 的入口；
+  README 里过时的 `bash /mnt/c/Users/S.tschai/run_ymore.sh` 换成本轮实测通过的 stdin 管道写法；
+  本文件 §1/§2/§6 同步订正（旧的 `/mnt/c/Users/S.tschai/x.sh` + scp 流程已废弃）。
+- 新增 `step03_pip/_recon.sh`：远端盘点脚本（host/vivado/python/disk/step03 各目录计数/所有 json 清单），
+  下次换址后直接跑它就能确认环境完好。
+
+**盘点发现的两个小问题**：`/opt/lzh/step03` 下有个名字带 `\\\\r` 的 `bands2` 垃圾目录（0 bit/0 json/0 dcp，
+早期 CRLF 事故产物，可删）；`reuse4` 是半成品（1 个 dcp、0 bit）。
+另外 `/opt/lzh/README.md` 里写的路径全是 `/data/lzh/...`，那是旧路径，**实际都在 `/opt/lzh/...`**。
+
+### 6.9 tilegrid bits 批量填充：91,050/91,050（2026-10-27）
+
+用 PIP 侧推出的地址律批量填 V7 tilegrid.json 的 `bits` 字段，让 **artix7 segbits 库可直接复用**。
+
+**生成器**：`step03_pip/gen_tilegrid_bits.py`
+- 输入：tilegrid.json + `phaseA/frame_index_far.csv`（50,176 条）
+- 对 INT_L/INT_R/CLBLL_L/CLBLL_R/CLBLM_L/CLBLM_R 六类 tile，从名字解析 `(col, Y)`，
+  用 `block_start(col, Y)` 算基址帧、`_word(Y, 0)` 算 offset，反查 fi2far 得 baseaddr（minor 0）。
+- 约定（**artix7-native**）：INT frames=28, CLB frames=36, offset=`_word(Y,0)`, words=2。
+  artix7 segbits 里 CLB LUT INIT 在 frame cols 32-35（相对 minor 0），与 V7 实测 `block_start+32` 完全对齐。
+
+**修复的 bug**：`pip_law.py:65` 的 `col = (block_addr >> 7) & 0x7F` 把右半 cols 128..153
+折叠到 0..25，与左半碰撞。改为 `col = (((ba >> 14) & 1) << 7) | ((ba >> 7) & 0x7F)`
+（half*128 + col_local = tile X 0..153）。修复后 `_STARTS[band]` 有 154 keys，
+`pip_law.py --check` 仍全绿。
+
+**结果**：
+
+| 输出 | tiles | filled | missing | 锚点 |
+|---|---|---|---|---|
+| 本地 `tilegrid_filled.json`（16.8 MB） | 150,380 | 91,050 (60.5%) | 0 | 3/3 OK |
+| 远端 `tilegrid.json.filled`（30.9 MB） | 150,380 | 91,050 (60.5%) | 0 | 3/3 OK |
+
+六类 tile 全部填满：INT_L 26,550 + INT_R 26,550 + CLBLL_L 3,100 + CLBLL_R 2,150 +
+CLBLM_L 15,700 + CLBLM_R 17,000 = 91,050。offset min=0 max=99（ECC 让位）。
+
+**关键验证**：
+- 3 个独立实测 CLB 锚点全中：CLBLL_L_X6Y10->0x00420320/36/20、CLBLL_L_X10Y303->0x00080500/36/6
+  （held-out, region 6, 芯片另一端）、CLBLM_R_X7Y10->0x00420380/36/20。
+- 右半验证：INT_L_X128Y10->0x00424000/28/20、INT_R_X129Y10->0x00424080（delta=0x80）、
+  CLBLM_L_X150Y69->0x00404B00/36/38（=2*19，region 1）。
+- INT 与 CLB 同列共享 baseaddr（minor 0），frames 不同（28 vs 36）——与 artix7 完全一致。
+- 远端输出保留了 clock_region/sites/prohibited_sites 字段。
+
+**与 fasm_shell 的差异（已解决）**：fasm_shell 手动建的 3 个 tile 用绝对地址（baseaddr = minor 32，
+frames=4，只覆盖 LUT INIT）；我们用 artix7 约定（baseaddr = minor 0，frames=36，覆盖全 tile），
+artix7 segbits 可直接复用，无需调整。
+
+**产物路径**：
+- 生成器：`step03_pip/gen_tilegrid_bits.py`
+- 本地输出：`step03_pip/tilegrid_filled.json`（16.8 MB）
+- 远端输出：`/opt/lzh/v7re/data/fasm_shell/db/xc7vx485t/tilegrid.json.filled`（30.9 MB）
+
+**意义**：两条完全独立的实验路径（INT PIP 删位差分 vs CLB one-hot INIT 探测）在地址律上互相验证；
+91,050 个 tile 的 bits 字段现已可被 prjxray 工具链（bit2fasm / fasm2bel）直接使用——
+一旦恢复或自研 bit->FASM 解码器，INT+CLB 侧即可立即解码。
+
+### §6.10 CLB 特征位验证 + bit2fasm_py ZINI 极性（2026-10-29）
+
+**10 项 artix7 CLB segbits 特征在 V7 全部位置命中（267 位 0 反例）：**
+
+| 特征 | 位 | 位置命中 | 极性 |
+|---|---|---|---|
+| LUT INIT ×256 | cols 32-35 | 256/256 ✅ | 一致 |
+| FF ZINI ×4 | col 31 | 4/4 ✅ | **反转**（V7 bit=1→INIT=0） |
+| CLKINV | 01_51 | 1/1 ✅ | 一致 |
+| CEUSEDMUX | 01_39 | 1/1 ✅ | 一致 |
+| SRUSEDMUX | 01_35 | 1/1 ✅ | 一致 |
+| FFSYNC | 00_48 | 1/1 ✅ | 一致 |
+| LATCH | 30_32 | 1/1 ✅ | 一致 |
+| PRECYINIT.C1 | 00_12 | 1/1 ✅ | 一致 |
+| PRECYINIT.AX | 30_14 | 1/1 ✅ | 一致 |
+| CARRY4.ACY0 | 30_15 | 1/1 ✅ | 一致 |
+
+地址模型：`frame=block_start(col,Y)+col`, `word=offset+bitidx//32`, `bit=bitidx%32`。
+
+**ZINI 极性处理**：artix7 segbits 的 ZINI 位位置正确，但极性反转。
+- 不能在 segbits 层翻转（未配置 tile 的 ZINI 位也 CLEAR，翻转后对每个 tile 的每个 FF 都误发射 ZINI）
+- 正确做法：解码器保持 artix7 极性（bit SET → 发射 ZINI），在 `fasm_to_rw.py` 网表重建时处理
+  （ZINI present → V7 INIT=0；ZINI absent → V7 INIT=1 或未放置 FF）
+
+**解码器验证**：
+- a.bit（LUT only）：67 features（1 INIT + 66 PIP），0 ZINI ✅
+- ref.bit（4FF INIT=0）：65 features，4 ZINI 全发射 ✅（V7 bit SET = INIT=0）
+- v_u_aff_1.bit（AFF INIT=1）：64 features，**缺 AFF.ZINI**，其余 3 个在 ✅（V7 bit CLEAR = INIT=1）
+
+详见 `step03_pip/CLB_VERIFY.md`。
+
+### §6.11 端到端 FF 重建测试通过（2026-10-30）
+
+管线全通：`.bit → bit2fasm_py(50176帧) → FASM → fasm_to_rw.py → RapidWright EDIF → DCP(1.38MB) → Vivado funcsim → Verilog(4.7KB)`
+
+**Test 1: ref.bit (4 FDRE, all INIT=0)**
+- FASM: 65 features (4 ZINI + 1 FFSYNC + 60 PIP)
+- funcsim: 4× `FDRE #(.INIT(1\\'b0))` + shared clk/ce/sr per slice
+- ZINI present → INIT=0 ✅
+
+**Test 2: v_u_aff_1.bit (AFF INIT=1, others INIT=0)**
+- FASM: 64 features (3 ZINI — BFF/CFF/DFF, NOT AFF)
+- funcsim: AFF `.INIT(1\\'b1)`, BFF/CFF/DFF `.INIT(1\\'b0)` ✅
+- ZINI absent → INIT=1 ✅
+
+关键修复：(1) 移除 "No LUT6 → exit" 早退；(2) 同 slice FF 共享 clock/CE/SR net；(3) 3-part slice 级特征正确解析。
+
+### §6.12 BRAM/DSP 特征位验证（2026-10-30）
+
+**DSP48E1（DSP_L_X100Y0, block_start=34884）**：
+
+| 特征 | 预测 | ref(CEAD=1) | var(CEAD=0) | 结果 |
+|------|------|-------------|-------------|------|
+| DSP_VCC_L_CEAD | (34911,1,30) | 1 | 0 | ✅ TOGGLE |
+| DSP_GND_L_CEAD | (34910,1,31) | 0 | 1 | ✅ TOGGLE |
+
+总差分=2，0 非预期。极性一致。CEAD=1→VCC_L=1，CEAD=0→GND_L=1。
+
+**RAMB18E1（BRAM_L_X114Y0, block_start=35356）**：
+
+| 特征 | 预测 | ref(INIT_A=0) | var(INIT_A=1) | 结果 |
+|------|------|-------------|-------------|------|
+| ZINIT_A[17] | (35383,0,1) | 1 | 0 | ✅ TOGGLE |
+| ZINIT_A[0] | (35383,2,9) | 1 | 1 | SAME ✅ |
+| IN_USE_0/1 | (35383,3,3/4) | 1 | 1 | SAME ✅ |
+
+总差分=1（仅 ZINIT_A[17]），0 非预期。
+
+**关键发现——INIT_A 位反转**：INIT_A=0x00001（bit 0 set）→ 只有 ZINIT_A[17] 翻转，证实 segbits ZINIT_A 索引与 INIT_A 参数位是位反转的（ZINIT_A[17]↔bit 0, ZINIT_A[0]↔bit 17）。这是 Xilinx BRAM 已知特性。极性：ZINIT_A[k]=1→对应 INIT_A 位=0。
+
+**总结**：artix7 segbits 对 V7 的 INT/CLB/DSP/BRAM 四大类 tile 均可直接复用。验证总计 12 项特征、269 个位，0 反例。地址模型 `frame=block_start(col,Y)+col, word=offset+bitidx//32, bit=bitidx%32` 适用于全部 tile 类型。
+
+详见 `step03_pip/CLB_VERIFY.md`（DSP/BRAM 段）。
+
+### §6.13 INT_R 12 缺失 IMUX 补齐——IMUX 覆盖率 100%（2026-10-31）
+
+**问题**：INT_R tilepipe 只用了 SLICE_X15Y11（SLICEL，24 IMUX）+ SLICE_X14Y11（SLICEM，仅 A+B LUT = 12 IMUX），缺 12 个 IMUX 索引：22/28/29/31/32/35/38/40/43/44/45/47，对应 SLICE_X14 的 C6LUT 和 D6LUT。
+
+**实验**：ref.bit（A6LUT+B6LUT in SLICE_X14Y11）vs var_cd.bit（A+B+C+D LUT in SLICE_X14Y11），差分检查 12 个预测位置。
+
+**结果**：12/12 word/bit 位置全部在差分中找到 ✅。帧号因路由器选不同源线而异（预测基于特定源线），但 word 和 bit（由 IMUX 索引决定）完全正确。
+
+| IMUX | word | bit | 差分帧 |
+|------|------|-----|--------|
+| 22 | 23 | 19 | 31808, 31812 |
+| 28 | 23 | 4 | 31811, 31812, 31813 |
+| 29 | 23 | 12 | 31805, 31811, 31812, 31813 |
+| 31 | 23 | 28 | 31805, 31811, 31812, 31813 |
+| 32 | 22 | 5 | 31804, 31810, 31812, 31813 |
+| 35 | 22 | 29 | 31812 |
+| 38 | 23 | 21 | 31810, 31812, 31813 |
+| 40 | 22 | 6 | 31800, 31812 |
+| 43 | 22 | 30 | 31810, 31812, 31813 |
+| 44 | 23 | 6 | 31812 |
+| 45 | 23 | 14 | 31804, 31811, 31812, 31813 |
+| 47 | 23 | 30 | 31805, 31812 |
+
+**覆盖率更新**：
+- INT_L：48/48 IMUX = **100%**（tilepipe 直接覆盖）
+- INT_R：36/48 直接 + 12/48 本轮 = **100%**
+- 跨类型偏移 +108：792/792 验证
+- IMUX 总覆盖率：2304/2304 = **100%**（从 78.1% 提升）
+
+实验目录：远端 `/opt/lzh/step03/missingtest/`（ref.bit + var_cd.bit + diff_missing.py）。
+
+13. **S10 INT 全芯片解码 + 反向走线（2026-10-30 深夜）**：发现 INT 行字
+    「半带 +1」规则 `2*(Y%50)+(Y%50>=25)`（artix7 tilegrid offset 佐证 +
+    V7 SW6 中继位实测），修正解码后 119 个激活 INT PIP 全部解出；6 根输入网
+    仅凭比特流反向走线到 IO 边界，5/6 与 route 真值逐 token 一致（A4 入口
+    半段差一跳，IO 侧 tileconn 缺失所致）。报告
+    `step03_pip/S10_INT_WALK.md`，脚本 `step03_pip/int_walk_v1.py`。
+    v7_verified 65→68。**bit→netlist 的 INT 走线层就此闭环**（IO 入口段
+    与输出网为残余缺口）。
+
+14. **S10b IO 入口段解码（2026-10-31 上午）**：补上 IO 侧盲区——die 中心 IO 界面区
+    （X31 CLB 块 27286 之后 72 帧缺口）内 `INT_L_X32` 用基址 27322、`INT_R_X33`
+    用 27354，入口 PIP 直接解出：`NW2BEG0/SW6BEG0/SS6BEG0 <- LOGIC_OUTS_L18`
+    （IF 线名）。A2 全链闭环（入口 SW6BEG0@X32Y51 → X30Y47 → WW4@X28Y43 …
+    与 route I1 十个 SW6 token 完全吻合）；A4 入口结构确认
+
+## 52. T21 — SLICE 内四个 6-LUT 的 INIT 落位不变性 + 行位置不变性（2026-11-06）
+
+目的：补齐 §51.3 的两条未测项（bel 不变性 / 位置不变性），决定 T19 表能否替换进 `build_site_frames.py`。11 个构建（含负对照），part 固定 `xc7vx485tffg1157-3`，全部回读断言一致。
+
+### 52.1 结果（差分语义 PURE）
+
+负对照（`a0_y20` 同参数重跑 vs `a0bc`）→ 差分帧 **0**。
+
+| pair | frame（绝对） | 数据字 | 位区间 | 内容位 | word 50 ECC | 总位 |
+|---|---|---|---|---|---|---|
+| A_y20 | 31784–31787 | **40** | 0–15 | 46 | 14 | 60 |
+| B_y20 | 31784–31787 | **40** | 16–31 | 46 | 18 | 64 |
+| C_y20 | 31784–31787 | **41** | 0–15 | 46 | 14 | 60 |
+| D_y20 | 31784–31787 | **41** | 16–31 | 46 | 14 | 60 |
+| A_y21 | 31784–31787 | **42** | 0–15 | 46 | 14 | 60 |
+
+【数据事实】bel 不变性成立：四个 6-LUT 的 frame_off 全部 = `base+68..71`，归一化（B/D 的 bit−16、C/D 的 word−1）后位图与 A6LUT **逐位相同**（集合对称差 0）。落位规则：
+
+```
+w0 = 2 * (Y % 50)
+A6LUT -> (w0  , bits  0..15)   B6LUT -> (w0  , bits 16..31)
+C6LUT -> (w0+1, bits  0..15)   D6LUT -> (w0+1, bits 16..31)
+frame_off 与 16 位块内的位图由 INIT 索引决定，与 bel / 行无关
+```
+
+【数据事实】位置不变性成立：`SLICE_X12Y21` 的 frame 集合同 y=20，数据字从 40 精确变为 **42 = 2×21**，位区间与位图不变 —— 与事先给出的地址公式预测相符（不是事后拟合）。
+
+【数据事实】无附带差异：五组 pair 变化的字仅 `{数据字, 50}`，其他字全未变 → 未解释差异 **0 帧 / 0 位**。
+
+### 52.2 交叉自证
+
+预测来源为 T19 的 64 个单最小项锁引脚表（另一批独立构建），按上表规则平移后与 T21 实测做集合级比对：`pred 46 / act 46 / missing 0 / extra 0` × 5 个 pair，`RESULT PASS`。交叉批次名 `T19_closed_form`，一致 5/5。
+
+### 52.3 结论等级与覆盖边界
+
+**verified**（负对照 0 帧 + 集合级自证 + 交叉自证 5/5 + 无未解释差异 + 11 构建回读一致）。
+
+【未测】本结论**不覆盖**：
+1. `Y%50 >= 25` 的 word 让位边界（`2*(Y%50)+1` 会撞 word 50 的 ECC 字）；最小实验：`SLICE_X12Y25` A6LUT 一对。
+2. B/C/D6LUT 在 y≠20 的行（规则外推）；最小实验：`SLICE_X12Y21` 的 B/C/D 各一对（3 构建，预测 word 42/43）。
+3. SLICEL 站点（本次全部回读为 `SLICEM.*`）。
+4. 跨 block / 跨 clock region 的 `block_start` 与 frame_off 关系。
+
+### 52.4 对 site_frames 的含义
+
+INIT 落位可由「64 行 `(INIT index) -> (frame_off, bit_in_16block)` 表（可直接复用 T19 表）+ bel/行公式」生成，不必依赖 T13 血统的 `clb_cells`。替换前需先处置 §52.3 的边界项（word 让位规则尤其会影响 `Y%50 >= 25` 的行）。
+
+### 52.5 本次新踩的坑（已进 skill reference）
+
+1. WSL 内 Vivado 因 locale 无效 abort（rc=134，`locale::facet::_S_create_c_locale name not valid`）：Windows 的 `LANG=en_US.UTF-8` 被带进 WSL 而该 locale 未装（`locale -a` 只有 C / C.UTF-8 / POSIX）。修法：`export LANG=C.UTF-8; export LC_ALL=C.UTF-8; unset LANGUAGE`。
+2. `LOCK_PINS` 的管脚名不按 BEL 命名：`SLICEM.B6LUT` 的 BEL 管脚同样是 `A1..A6`，写 `I0:B1` → `ERROR: [Vivado 12-2497] … invalid device pin \\'B1\\'`。
+3. 本地 `run_code` 默认 120 s 短于 11 个构建的墙钟，必须抬 `timeoutMs`。
+
+产物：`v7re/steps/T21_BEL_ROW_INVARIANCE.md`、`v7re/steps/t21_manifest.json`（PASS 15 ok / 0 warn / 0 fail）、`step03_pip/t21_crosscheck.py`。
+'} reslen 96\r\n1213 read {'offset': 1770, 'limit': 6} reslen 84\r\n1223 read {'offset': 1, 'limit': 5} reslen 270\r\n1225 read {'offset': 795, 'limit': 20} reslen 1282\r\n1229 pwsh {'description': 'Git status of STATUS.md', 'workdir': 'E:\\\\DEEPSEEK\\\\FPGA比特流逆向', 'command': 'git status --porcelain STATUS.md; git log --oneline -3 -- STATUS.md; git show HEAD:STATUS.md | Measure-Object -Line'} reslen 302\r\n1241 pwsh {'description': 'Inspect STATUS.md structure', 'workdir': 'E:\\\\DEEPSEEK\\\\FPGA比特流逆向', 'command': '(Get-Content STATUS.md).Count; Select-String -Path STATUS.md -Pattern \\'^## \\' | ForEach-Object { "$($_.LineNumber): $($_.Line)" } | Select-Object -Last 12; "---; git stash list"; git diff --stat STATUS.md'} reslen 560\r\n1253 pwsh {'description': 'Diagnose STATUS.md content loss', 'workdir': 'E:\\\\DEEPSEEK\\\\FPGA比特流逆向', 'command': 'Get-Item STATUS.md | Select-Object Length,LastWriteTime | Format-List
+"--- grep markers"
+Select-String -Path STATUS.md -Pattern \\'T20_PART_PAIR|T19_LOCKED|Skill V2|check_manifest|## 40.|## 47.|## 48.\\' | ForEach-Object { "$($_.LineNumber): $($_.Line.Substring(0,[Math]::Min(70,$_.Line.Length)))" }
+"--- backup dir"
+Get-ChildItem -Path . -Filter \\'STATUS*\\' -Recurse -ErrorAction SilentlyContinue | Select-Object FullName,Length,LastWriteTime | Format-Table -AutoSize'} reslen 300\r\n1309 run_python {'code': '
+import zstandard, json, io, os
+p = r"C:\\\\Users\\\\i\\\\.dsh\\\\sessions\\\\--E-DEEPSEEK-FPGA~6BD4~7279~6D41~9006~5411--\\\\session-dddb2816-0a7c-4c8b-ade5-b2c89c1d6484\\\\session.v4.jsonl.zstd"
+d = zstandard.ZstdDecompressor()
+raw = d.stream_reader(open(p,\\'rb\\')).read()
+print("decompressed", len(raw))
+text = raw.decode("utf-8", "replace")
+lines = text.splitlines()
+print("lines", len(lines))
+kinds = {}
+hits = []
+for i, ln in enumerate(lines):
+    try: o = json.loads(ln)
+    except Exception: continue
+    s = json.dumps(o, ensure_ascii=False)
+    if "STATUS.md" in s:
+        hits.append((i, len(ln), o.get("type"), list(o)[:8]))
+print("hits with STATUS.md:", len(hits))
+for h in hits[:40]: print(h)
+'} reslen 3043\r\n1331 run_python {'code': '
+import zstandard, json
+p = r"C:\\\\Users\\\\i\\\\.dsh\\\\sessions\\\\--E-DEEPSEEK-FPGA~6BD4~7279~6D41~9006~5411--\\\\session-dddb2816-0a7c-4c8b-ade5-b2c89c1d6484\\\\session.v4.jsonl.zstd"
+raw = zstandard.ZstdDecompressor().stream_reader(open(p,\\'rb\\')).read().decode(\\'utf-8\\',\\'replace\\')
+lines = raw.splitlines()
+cands = []
+for i, ln in enumerate(lines):
+    o = json.loads(ln)
+    if o.get(\\'type\\') == \\'tool/result\\' and \\'STATUS.md\\' in ln:
+        s = json.dumps(o.get(\\'data\\'), ensure_ascii=False)
+        cands.append((i, len(ln), len(s), \\'before\\' in s, o[\\'data\\'].keys() if isinstance(o[\\'data\\'], dict) else None))
+for c in cands[-8:]: print(c)
+'} reslen 575\r\n1371 run_python {'code': '
+import zstandard, json, io
+p = r"C:\\\\Users\\\\i\\\\.dsh\\\\sessions\\\\--E-DEEPSEEK-FPGA~6BD4~7279~6D41~9006~5411--\\\\session-dddb2816-0a7c-4c8b-ade5-b2c89c1d6484\\\\session.v4.jsonl.zstd"
+raw = zstandard.ZstdDecompressor().stream_reader(open(p,\\'rb\\')).read().decode(\\'utf-8\\',\\'replace\\')
+o = json.loads(raw.splitlines()[1211])
+d = o[\\'data\\'][\\'meta\\'][\\'diffs\\'][0]
+old, new = d[\\'oldText\\'], d[\\'newText\\']
+cur = open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md", encoding=\\'utf-8\\').read()
+print("cur len", len(cur), "new len", len(new), "cur endswith new:", cur.endswith(new))
+idx = cur.rfind(new)
+print("rfind idx", idx, "len-new?", len(cur)-len(new))
+prefix = cur[:idx] if idx >= 0 else cur[:len(cur)-len(new)]
+restored = prefix + old
+print("restored len", len(restored), "lines", restored.count(chr(10))+1)
+print("header ok:", restored.startswith("# FPGA 比特流逆向"))
+print("tail:", repr(restored[-160:]))
+sections = [l for l in restored.splitlines() if l.startswith("## ")]
+print("sections:", len(sections))
+print("has 44..51:", all(any(l.startswith("## %d." % n) for l in sections) for n in range(44,52)))
+open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md.restored", "w", encoding=\\'utf-8\\', newline=\\'\\').write(restored)
+open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md.s52block", "w", encoding=\\'utf-8\\', newline=\\'\\').write(new)
+print("wrote restored + s52block")
+'} reslen 400\r\n1381 run_python {'code': '
+restored = open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md.restored", encoding=\\'utf-8\\').read()
+block = open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md.s52block", encoding=\\'utf-8\\').read()
+print("block head:", repr(block[:80]))
+print("restored tail:", repr(restored[-40:]))
+final = restored.rstrip("\\
+") + "\\
+" + (block if block.startswith("\\
+") else "\\
+" + block)
+if not final.endswith("\\
+"): final += "\\
+"
+open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md", "w", encoding=\\'utf-8\\', newline=\\'\\').write(final)
+print("final chars", len(final), "lines", final.count(chr(10)))
+sections = [l for l in final.splitlines() if l.startswith("## ")]
+print("sections", len(sections), "last3", sections[-3:])
+print("52 present:", "## 52. T21" in final, "| 50 present:", "## 50." in final, "| 48:", "## 48." in final)
+import os
+for f in ("STATUS.md.restored","STATUS.md.s52block"):
+    os.remove(os.path.join(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向", f))
+print("temp removed")
+'} reslen 516\r\n1391 run_python {'code': '
+import zstandard, json
+p = r"C:\\\\Users\\\\i\\\\.dsh\\\\sessions\\\\--E-DEEPSEEK-FPGA~6BD4~7279~6D41~9006~5411--\\\\session-dddb2816-0a7c-4c8b-ade5-b2c89c1d6484\\\\session.v4.jsonl.zstd"
+raw = zstandard.ZstdDecompressor().stream_reader(open(p,\\'rb\\')).read().decode(\\'utf-8\\',\\'replace\\')
+o = json.loads(raw.splitlines()[1211])
+d = o[\\'data\\'][\\'meta\\'][\\'diffs\\'][0]
+old, new = d[\\'oldText\\'], d[\\'newText\\']
+cur = open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md", encoding=\\'utf-8\\').read()
+i = cur.find("## 52. T21")
+print("current has 52 at", i, "len", len(cur))
+# 重新重建：从旧文件 = 前缀 + oldText；其中前缀 = 当前(被破坏)文件去掉 §52 块
+newfile_prefix = cur[:i]
+restored = newfile_prefix + old
+print("restored lines", restored.count(chr(10))+1, "tail:", repr(restored[-60:]))
+block = new[new.find("## 52. T21"):]
+final = restored.rstrip("\\
+") + "\\
+\\
+" + block
+if not final.endswith("\\
+"): final += "\\
+"
+open(r"E:\\\\DEEPSEEK\\\\FPGA比特流逆向\\\\STATUS.md", "w", encoding=\\'utf-8\\', newline=\\'\\').write(final)
+print("final lines", final.count(chr(10)), "chars", len(final))
+secs = [l for l in final.splitlines() if l.startswith("## ")]
+print("sections", len(secs), "| last:", secs[-1][:40])
+print("dup check 用 27354 count:", final.count("用 27354"))
+print("52 count:", final.count("## 52. T21"), "| 51 count:", final.count("## 51."))
+'} reslen 310\r\n\n\n(Omitted 47352 bytes. Full formatted result stored at: C:\\user\\default\\dsh-spill-ixRr0W\\session-7695b2ffdca0\\367344773720-run_python.txt. Use read with offset/limit, or grep this path to search within it.)"}]

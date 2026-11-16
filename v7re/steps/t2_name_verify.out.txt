@@ -1,0 +1,123 @@
+== 0) 数据源出处 ==
+   [厂商工具] tamper/ref/pips_all.txt <- tamper/ref/build.tcl:15 `get_pips -of_objects $n -quiet`
+   [厂商工具] step03_pip/route_*.txt  <- step03_pip/s8_route.tcl:18 `get_property ROUTE $n`
+   [第三方逆向库] prjxray_ref/artix7/*.db <- prjxray_ref/PRJXRAY_COMPARE.md:11-12 (f4pga/prjxray-db @0a0adde)
+   sha256 校验（证明 db 字节未被本项目改动）：
+     segbits_int_l.db: 0ea44e8dfaf97ed2… 记录=0ea44e8dfaf97ed2… 一致=True
+     segbits_int_r.db: 1541c7832dd161c5… 记录=1541c7832dd161c5… 一致=True
+     ppips_int_l.db: d300ad4128a192e4… 记录=d300ad4128a192e4… 一致=True
+
+== 1) 检索空间（覆盖清单）==
+   共检索 34 个文件，合计 26146 行：
+     prjxray_ref\artix7\mask_bram_l.db  (2087 行)
+     prjxray_ref\artix7\mask_bram_r.db  (2087 行)
+     prjxray_ref\artix7\mask_dsp_l.db  (1542 行)
+     prjxray_ref\artix7\mask_dsp_r.db  (1970 行)
+     prjxray_ref\artix7\ppips_bram_l.db  (794 行)
+     prjxray_ref\artix7\ppips_bram_r.db  (794 行)
+     prjxray_ref\artix7\ppips_clbll_l.db  (146 行)
+     prjxray_ref\artix7\ppips_clbll_r.db  (146 行)
+     prjxray_ref\artix7\ppips_clblm_l.db  (151 行)
+     prjxray_ref\artix7\ppips_clblm_r.db  (151 行)
+     prjxray_ref\artix7\ppips_int_l.db  (108 行)
+     prjxray_ref\artix7\ppips_int_r.db  (108 行)
+     prjxray_ref\artix7\segbits_bram_l.db  (456 行)
+     prjxray_ref\artix7\segbits_bram_r.db  (456 行)
+     prjxray_ref\artix7\segbits_clbll_l.db  (680 行)
+     prjxray_ref\artix7\segbits_clbll_r.db  (680 行)
+     prjxray_ref\artix7\segbits_clblm_l.db  (703 行)
+     prjxray_ref\artix7\segbits_clblm_r.db  (703 行)
+     prjxray_ref\artix7\segbits_dsp_l.db  (436 行)
+     prjxray_ref\artix7\segbits_dsp_r.db  (436 行)
+     prjxray_ref\artix7\segbits_int_l.db  (3636 行)
+     prjxray_ref\artix7\segbits_int_r.db  (3636 行)
+     tamper\ref\pips_all.txt  (1812 行)
+     step03_pip\route_I0.txt  (1 行)
+     step03_pip\route_I1.txt  (1 行)
+     step03_pip\route_I2.txt  (1 行)
+     step03_pip\route_I3.txt  (1 行)
+     step03_pip\route_I4.txt  (1 行)
+     step03_pip\route_I5.txt  (1 行)
+     step03_pip\route_out_o.txt  (2 行)
+     step03_pip\route_out_o2.txt  (2 行)
+     step03_pip\route_out_o3.txt  (2 行)
+     v7re/tmp/tilegrid.json  (1 行)
+     v7re/tmp/part.yaml  (2415 行)
+
+== 2) 三个名字的逐文件命中（DST=feature 第2段 / SRC=第3段）==
+
+-- IMUX_L34
+   prjxray/segbits_int_l.db: DST=24 SRC=0 含名行=24
+      首例 L1305: INT_L.IMUX_L34.BYP_BOUNCE_N3_6 21_21 !22_21 !23_21 !24_21 25_21
+   prjxray/segbits_int_r.db: DST=0 SRC=0 含名行=0
+   prjxray/ppips_int_l.db: 命中 1 行；首例 L95: INT_L.IMUX_L34.VCC_WIRE default
+   全库子串扫描：22 个 db 中命中文件 = [('ppips_int_l.db', 1), ('segbits_int_l.db', 24)]
+   Vivado get_pips (pips_all.txt): 作DST=15 行 作SRC=0 行
+     箭头类型：'->'(站点内部直连)=0 行  '->>'(互连级 PIP)=15 行
+     作 DST：不同源线 8 个 -> {'ER1END1': 6, 'BYP_BOUNCE0': 1, 'SR1BEG_S0': 2, 'FAN_BOUNCE7': 1, 'WR1END1': 1, 'SL1END1': 1, 'SW2END1': 1, 'WW2END0': 2}
+     作 SRC：不同目的线 0 个 -> {}
+      首例 L1059: INT_L_X32Y156/INT_L.ER1END1->>IMUX_L34
+   Vivado ROUTE route_out_o.txt:L2: ROUTE  { CLBLL_LL_A CLBLL_LOGIC_OUTS12 EE4BEG0 EE4BEG0 EE4BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0
+   Vivado ROUTE route_out_o2.txt:L2: ROUTE  { CLBLL_LL_AQ CLBLL_LOGIC_OUTS4 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0 NE6BEG0
+   Vivado ROUTE route_out_o3.txt:L2: ROUTE  { CLBLM_L_A CLBLM_LOGIC_OUTS8 NE2BEG0 NN6BEG0 NN2BEG0 BYP_ALT0 BYP_BOUNCE0 IMUX_L34 IOI_OLOGIC0_D1 LIOI
+   v7re/tmp/tilegrid.json: 命中 0 行
+   v7re/tmp/part.yaml: 命中 0 行
+
+-- WW4BEG0
+   prjxray/segbits_int_l.db: DST=20 SRC=0 含名行=20
+      首例 L3557: INT_L.WW4BEG0.LOGIC_OUTS_L0 02_01 04_02
+   prjxray/segbits_int_r.db: DST=20 SRC=0 含名行=20
+      首例 L3557: INT_R.WW4BEG0.LOGIC_OUTS0 02_01 04_02
+   prjxray/ppips_int_l.db: 命中 0 行
+   全库子串扫描：22 个 db 中命中文件 = [('segbits_int_l.db', 20), ('segbits_int_r.db', 20)]
+   Vivado get_pips (pips_all.txt): 作DST=48 行 作SRC=0 行
+     箭头类型：'->'(站点内部直连)=0 行  '->>'(互连级 PIP)=48 行
+     作 DST：不同源线 8 个 -> {'NW6END0': 1, 'WW4END0': 38, 'LH12': 3, 'NN6END0': 2, 'NW2END0': 1, 'LOGIC_OUTS8': 1, 'WW2END_N0_3': 1, 'NN2END0': 1}
+     作 SRC：不同目的线 0 个 -> {}
+      首例 L16: INT_L_X14Y192/INT_L.NW6END0->>WW4BEG0
+   Vivado ROUTE route_I0.txt:L1: PIN I0 NET i_IBUF[0]ROUTE  { IOB_IBUF0 LIOI_I0 LIOI_ILOGIC0_D IOI_ILOGIC0_O IOI_LOGIC_OUTS18_0 INT_INTERFACE_L
+   Vivado ROUTE route_I2.txt:L1: PIN I2 NET i_IBUF[2]ROUTE  { IOB_IBUF0 LIOI_I0 LIOI_ILOGIC0_D IOI_ILOGIC0_O IOI_LOGIC_OUTS18_1 INT_INTERFACE_L
+   Vivado ROUTE route_I3.txt:L1: PIN I3 NET i_IBUF[3]ROUTE  { IOB_IBUF1 LIOI_I1 LIOI_ILOGIC1_D IOI_ILOGIC1_O IOI_LOGIC_OUTS18_0 INT_INTERFACE_L
+   v7re/tmp/tilegrid.json: 命中 0 行
+   v7re/tmp/part.yaml: 命中 0 行
+
+-- WW4END0
+   prjxray/segbits_int_l.db: DST=0 SRC=10 含名行=10
+      首例 L1652: INT_L.LV_L0.WW4END0 00_05 00_07
+   prjxray/segbits_int_r.db: DST=0 SRC=10 含名行=10
+      首例 L444: INT_R.NL1BEG_N3.WW4END0 08_01 12_01
+   prjxray/ppips_int_l.db: 命中 0 行
+   全库子串扫描：22 个 db 中命中文件 = [('segbits_int_l.db', 10), ('segbits_int_r.db', 10)]
+   Vivado get_pips (pips_all.txt): 作DST=0 行 作SRC=48 行
+     箭头类型：'->'(站点内部直连)=0 行  '->>'(互连级 PIP)=48 行
+     作 DST：不同源线 0 个 -> {}
+     作 SRC：不同目的线 5 个 -> {'WW4BEG0': 38, 'NW2BEG0': 1, 'NL1BEG_N3': 4, 'WR1BEG1': 4, 'NN2BEG0': 1}
+      首例 L17: INT_L_X10Y192/INT_L.WW4END0->>WW4BEG0
+   v7re/tmp/tilegrid.json: 命中 0 行
+   v7re/tmp/part.yaml: 命中 0 行
+
+== 3) all_cells.json 是否逐位移录自 prjxray segbits ==
+   prjxray 行解析出的单元数 = 24336
+   all_cells.json 单元数       = 24336
+   只在 prjxray 侧 = 0；只在 all_cells 侧 = 0
+   全等多重集（无任何增删改）: True
+
+== 4) 三个名字在 all_cells.json / law 模型中的角色 ==
+   IMUX_L34: family行=120  src_wire行=0
+   WW4BEG0: family行=80  src_wire行=0
+   WW4END0: family行=0  src_wire行=40
+   pip_reuse_law.json: tile_type=INT_L  family数=64
+   IMUX_L34 是 law 模型的 family: True
+   WW4BEG0 是 law 模型的 family: False
+   WW4END0 是 law 模型的 family: False
+
+== 5) family 是否为 Vivado 用语（词，而非值） ==
+   Vivado 导出（9 个 ROUTE 文件 + get_pips 表）里出现 'family' 字样的行数 = 0
+
+== 6) 判定汇总 ==
+   IMUX_L34: 厂商工具命中=18（get_pips 15 / ROUTE 3）  prjxray 作DST=24 作SRC=0  get_pips箭头 '->'=0 行 '->>'=15 行
+      → 判定：厂商工具中存在；作 family(目的线)。INT_R 侧无此名（INT_R 用 IMUX34）
+   WW4BEG0: 厂商工具命中=51（get_pips 48 / ROUTE 3）  prjxray 作DST=40 作SRC=0  get_pips箭头 '->'=0 行 '->>'=48 行
+      → 判定：厂商工具中存在；在 prjxray 与 all_cells 中均作 family(目的线)
+   WW4END0: 厂商工具命中=48（get_pips 48 / ROUTE 0）  prjxray 作DST=0 作SRC=20  get_pips箭头 '->'=0 行 '->>'=48 行
+      → 判定：厂商工具中存在，但只作 SRC(驱动线)，不作 family

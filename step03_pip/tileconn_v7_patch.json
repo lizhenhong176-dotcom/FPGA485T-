@@ -1,0 +1,1808 @@
+{
+ "device": "xc7vx485t",
+ "source": "S23/S24 measured fixed wiring",
+ "entries": [
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS0_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS1_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B1"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS2_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B2"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS3_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B3"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS4_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B4"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS5_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B5"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS6_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B6"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS7_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B7"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS8_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B8"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS9_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B9"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS10_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B10"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS11_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B11"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS12_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B12"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS13_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B13"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS14_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B14"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS15_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B15"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS16_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B16"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS17_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B17"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS18_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B18"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS19_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B19"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS20_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B20"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS21_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B21"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS22_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B22"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOI_LOGIC_OUTS23_0",
+     "INT_INTERFACE_LOGIC_OUTS_L_B23"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B0",
+     "INT_INTERFACE_LOGIC_OUTS_L0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B1",
+     "INT_INTERFACE_LOGIC_OUTS_L1"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B2",
+     "INT_INTERFACE_LOGIC_OUTS_L2"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B3",
+     "INT_INTERFACE_LOGIC_OUTS_L3"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B4",
+     "INT_INTERFACE_LOGIC_OUTS_L4"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B5",
+     "INT_INTERFACE_LOGIC_OUTS_L5"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B6",
+     "INT_INTERFACE_LOGIC_OUTS_L6"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B7",
+     "INT_INTERFACE_LOGIC_OUTS_L7"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B8",
+     "INT_INTERFACE_LOGIC_OUTS_L8"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B9",
+     "INT_INTERFACE_LOGIC_OUTS_L9"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B10",
+     "INT_INTERFACE_LOGIC_OUTS_L10"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B11",
+     "INT_INTERFACE_LOGIC_OUTS_L11"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B12",
+     "INT_INTERFACE_LOGIC_OUTS_L12"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B13",
+     "INT_INTERFACE_LOGIC_OUTS_L13"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B14",
+     "INT_INTERFACE_LOGIC_OUTS_L14"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B15",
+     "INT_INTERFACE_LOGIC_OUTS_L15"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B16",
+     "INT_INTERFACE_LOGIC_OUTS_L16"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B17",
+     "INT_INTERFACE_LOGIC_OUTS_L17"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B18",
+     "INT_INTERFACE_LOGIC_OUTS_L18"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B19",
+     "INT_INTERFACE_LOGIC_OUTS_L19"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B20",
+     "INT_INTERFACE_LOGIC_OUTS_L20"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B21",
+     "INT_INTERFACE_LOGIC_OUTS_L21"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B22",
+     "INT_INTERFACE_LOGIC_OUTS_L22"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "IO_INT_INTERFACE_L"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L_B23",
+     "INT_INTERFACE_LOGIC_OUTS_L23"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L0",
+     "LOGIC_OUTS_L0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L1",
+     "LOGIC_OUTS_L1"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L2",
+     "LOGIC_OUTS_L2"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L3",
+     "LOGIC_OUTS_L3"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L4",
+     "LOGIC_OUTS_L4"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L5",
+     "LOGIC_OUTS_L5"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L6",
+     "LOGIC_OUTS_L6"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L7",
+     "LOGIC_OUTS_L7"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L8",
+     "LOGIC_OUTS_L8"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L9",
+     "LOGIC_OUTS_L9"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L10",
+     "LOGIC_OUTS_L10"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L11",
+     "LOGIC_OUTS_L11"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L12",
+     "LOGIC_OUTS_L12"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L13",
+     "LOGIC_OUTS_L13"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L14",
+     "LOGIC_OUTS_L14"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L15",
+     "LOGIC_OUTS_L15"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L16",
+     "LOGIC_OUTS_L16"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L17",
+     "LOGIC_OUTS_L17"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L18",
+     "LOGIC_OUTS_L18"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L19",
+     "LOGIC_OUTS_L19"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L20",
+     "LOGIC_OUTS_L20"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L21",
+     "LOGIC_OUTS_L21"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L22",
+     "LOGIC_OUTS_L22"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_L"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L23",
+     "LOGIC_OUTS_L23"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L0",
+     "LOGIC_OUTS0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L1",
+     "LOGIC_OUTS1"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L2",
+     "LOGIC_OUTS2"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L3",
+     "LOGIC_OUTS3"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L4",
+     "LOGIC_OUTS4"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L5",
+     "LOGIC_OUTS5"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L6",
+     "LOGIC_OUTS6"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L7",
+     "LOGIC_OUTS7"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L8",
+     "LOGIC_OUTS8"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L9",
+     "LOGIC_OUTS9"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L10",
+     "LOGIC_OUTS10"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L11",
+     "LOGIC_OUTS11"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L12",
+     "LOGIC_OUTS12"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L13",
+     "LOGIC_OUTS13"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L14",
+     "LOGIC_OUTS14"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L15",
+     "LOGIC_OUTS15"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L16",
+     "LOGIC_OUTS16"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L17",
+     "LOGIC_OUTS17"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L18",
+     "LOGIC_OUTS18"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L19",
+     "LOGIC_OUTS19"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L20",
+     "LOGIC_OUTS20"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L21",
+     "LOGIC_OUTS21"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L22",
+     "LOGIC_OUTS22"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "IO_INT_INTERFACE_L",
+    "INT_R"
+   ],
+   "grid_deltas": [
+    -1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "INT_INTERFACE_LOGIC_OUTS_L23",
+     "LOGIC_OUTS23"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOB18",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOB_PADOUT0",
+     "LIOI_I0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOB18",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOB_PADOUT1",
+     "LIOI_I1"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOB18",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOB_O_OUT0",
+     "LIOI_O_OUT0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOB18",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    1,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "IOB_T_OUT0",
+     "LIOI_T_OUT0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "LIOI_I0",
+     "LIOI_ILOGIC0_D"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "LIOI_ILOGIC0_D",
+     "LIOI_ILOGIC0_DDLY"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "LIOI_ILOGIC0_O",
+     "IOI_LOGIC_OUTS18_0"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "LIOI_I1",
+     "LIOI_ILOGIC1_D"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "LIOI_ILOGIC1_D",
+     "LIOI_ILOGIC1_DDLY"
+    ]
+   ],
+   "kind": "fixed"
+  },
+  {
+   "tile_types": [
+    "LIOI",
+    "LIOI"
+   ],
+   "grid_deltas": [
+    0,
+    0
+   ],
+   "wire_pairs": [
+    [
+     "LIOI_ILOGIC1_O",
+     "IOI_LOGIC_OUTS18_0"
+    ]
+   ],
+   "kind": "fixed"
+  }
+ ]
+}

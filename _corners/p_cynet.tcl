@@ -1,0 +1,22 @@
+read_verilog ./p_cynet.v
+synth_design -top top -part xc7vx485tffg1157-3
+set_property LOC SLICE_X12Y20 [get_cells u_cy]
+set_property LOC SLICE_X12Y20 [get_cells u_l2]
+set_property BEL A6LUT [get_cells u_l2]
+set_property LOCK_PINS {I0:A1 I1:A2 I2:A3 I3:A4 I4:A5 I5:A6} [get_cells u_l2]
+set_property PACKAGE_PIN AF25 [get_ports {o}]
+set_property IOSTANDARD LVCMOS18 [get_ports {o}]
+set_property PACKAGE_PIN AK34 [get_ports {a}]
+set_property IOSTANDARD LVCMOS18 [get_ports {a}]
+set_property PACKAGE_PIN AL34 [get_ports {b}]
+set_property IOSTANDARD LVCMOS18 [get_ports {b}]
+set_property PACKAGE_PIN AP32 [get_ports {c}]
+set_property IOSTANDARD LVCMOS18 [get_ports {c}]
+place_design
+route_design
+set_property SEVERITY {Warning} [get_drc_checks NSTD-1]
+set_property SEVERITY {Warning} [get_drc_checks UCIO-1]
+set_property CFGBVS GND [current_design]
+set_property CONFIG_VOLTAGE 1.8 [current_design]
+write_bitstream -force ./p_cynet.bit
+puts "DONE_p_cynet"

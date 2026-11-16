@@ -1,0 +1,94 @@
+﻿_full8.bit: frames=50176 setbits=1122
+基线: active_tiles=76  L1 未解释位=0  L2 槽位违例=0
+{
+  "active_tiles": 76,
+  "tiles_with_unexplained": 0,
+  "tile_false_alarm_pct": 0.0,
+  "unexplained_bits": 0,
+  "violations": 0,
+  "modeled_bits": 126464,
+  "bit_false_alarm_per_1e6": 0.0,
+  "setbits_in_model": 458,
+  "unexplained_per_setbit_pct": 0.0
+}
+
+_b1.bit: frames=50176 setbits=896
+基线: active_tiles=57  L1 未解释位=1  L2 槽位违例=0
+   unexplained INT_L_X8Y20 fo=0 bit=16 par=1
+{
+  "active_tiles": 57,
+  "tiles_with_unexplained": 1,
+  "tile_false_alarm_pct": 1.75,
+  "unexplained_bits": 1,
+  "violations": 0,
+  "modeled_bits": 94848,
+  "bit_false_alarm_per_1e6": 10.54,
+  "setbits_in_model": 193,
+  "unexplained_per_setbit_pct": 0.518
+}
+
+_d2.bit: frames=50176 setbits=768
+基线: active_tiles=27  L1 未解释位=2  L2 槽位违例=0
+   unexplained INT_L_X34Y20 fo=0 bit=16 par=1
+   unexplained INT_L_X6Y20 fo=0 bit=16 par=1
+{
+  "active_tiles": 27,
+  "tiles_with_unexplained": 2,
+  "tile_false_alarm_pct": 7.41,
+  "unexplained_bits": 2,
+  "violations": 0,
+  "modeled_bits": 44928,
+  "bit_false_alarm_per_1e6": 44.52,
+  "setbits_in_model": 74,
+  "unexplained_per_setbit_pct": 2.703
+}
+
+_c0.bit: frames=50176 setbits=516
+基线: active_tiles=21  L1 未解释位=1  L2 槽位违例=0
+   unexplained INT_L_X8Y20 fo=0 bit=16 par=1
+{
+  "active_tiles": 21,
+  "tiles_with_unexplained": 1,
+  "tile_false_alarm_pct": 4.76,
+  "unexplained_bits": 1,
+  "violations": 0,
+  "modeled_bits": 34944,
+  "bit_false_alarm_per_1e6": 28.62,
+  "setbits_in_model": 51,
+  "unexplained_per_setbit_pct": 1.961
+}
+
+_g1.bit: frames=50176 setbits=552
+基线: active_tiles=17  L1 未解释位=1  L2 槽位违例=0
+   unexplained INT_R_X13Y20 fo=0 bit=16 par=1
+{
+  "active_tiles": 17,
+  "tiles_with_unexplained": 1,
+  "tile_false_alarm_pct": 5.88,
+  "unexplained_bits": 1,
+  "violations": 0,
+  "modeled_bits": 28288,
+  "bit_false_alarm_per_1e6": 35.35,
+  "setbits_in_model": 47,
+  "unexplained_per_setbit_pct": 2.128
+}
+
+ref.bit: frames=50176 setbits=13426
+基线: active_tiles=945  L1 未解释位=234  L2 槽位违例=0
+   unexplained INT_L_X118Y39 fo=1 bit=0 par=0
+   unexplained INT_L_X118Y39 fo=1 bit=1 par=0
+   unexplained INT_L_X118Y57 fo=1 bit=0 par=0
+   unexplained INT_L_X118Y57 fo=1 bit=1 par=0
+   unexplained INT_L_X118Y75 fo=1 bit=0 par=0
+{
+  "active_tiles": 945,
+  "tiles_with_unexplained": 117,
+  "tile_false_alarm_pct": 12.38,
+  "unexplained_bits": 234,
+  "violations": 0,
+  "modeled_bits": 1572480,
+  "bit_false_alarm_per_1e6": 148.81,
+  "setbits_in_model": 3138,
+  "unexplained_per_setbit_pct": 7.457
+}
+

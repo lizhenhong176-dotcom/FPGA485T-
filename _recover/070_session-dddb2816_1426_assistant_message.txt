@@ -1,0 +1,47 @@
+{"role": "assistant", "content": [{"type": "reasoning", "text": "content may be list of strings or dicts. Guard types."}, {"type": "tool-call", "id": "call_00_vFNkCoQdw6D3UEjX9GtW6703", "name": "run_code", "arguments": "{"code": "const cwd = (await tools.working_directory({})).cwd;
+const py = `
+import zstandard, json, glob, os, re
+root = os.path.expanduser(\\"~/.dsh/sessions\\")
+files = glob.glob(os.path.join(root, \\"**\\", \\"session.v4.jsonl*\\"), recursive=True)
+reads = []
+for f in files:
+    try:
+        raw = zstandard.ZstdDecompressor().stream_reader(open(f,'rb')).read().decode('utf-8','replace')
+    except Exception:
+        continue
+    for i, ln in enumerate(raw.splitlines()):
+        if 'STATUS.md' not in ln or 'ptc-dispatch' not in ln:
+            continue
+        try: o = json.loads(ln)
+        except Exception: continue
+        d = o.get('data') or {}
+        arg = d.get('arguments') or {}
+        if not isinstance(arg, dict): continue
+        if not str(arg.get('file_path','')).endswith(\\"STATUS.md\\"): continue
+        if d.get('name') != 'read': continue
+        c = d.get('content')
+        parts = []
+        if isinstance(c, list):
+            for x in c:
+                if isinstance(x, dict): parts.append(x.get('text',''))
+                elif isinstance(x, str): parts.append(x)
+        elif isinstance(c, str): parts.append(c)
+        txt = \\"\\".join(parts)
+        reads.append((os.path.basename(os.path.dirname(f))[:22], i, arg.get('offset'), arg.get('limit'), len(txt), txt))
+print(\\"reads:\\", len(reads))
+cov = {}; conf = []
+for sess, i, off, lim, n, txt in reads:
+    got = 0
+    for m in re.finditer(r'^(\\\\\\\\d+): (.*)$', txt, re.M):
+        ln_, t = int(m.group(1)), m.group(2)
+        if ln_ in cov and cov[ln_][0] != t: conf.append(ln_)
+        cov[ln_] = (t, sess, i)
+        got += 1
+    print(sess, \\"entry\\", i, \\"off\\", off, \\"lim\\", lim, \\"parsed\\", got)
+print(\\"covered:\\", len(cov), \\"max:\\", max(cov) if cov else 0, \\"conflicts:\\", len(conf), conf[:10])
+json.dump({str(k): v[0] for k, v in cov.items()}, open(r\\"${cwd}\\\\\\\\cov.json\\",\\"w\\",encoding=\\"utf-8\\"), ensure_ascii=False)
+`;
+const r = await tools.run_python({ code: py });
+console.log(r.stdout.slice(0,5000) + (r.stderr ? \\"\\
+ERR:\\" + r.stderr.slice(0,400) : \\"\\"));
+", "description": "Scan sessions for STATUS.md reads with robust parsing"}"}], "source": {"kind": "model", "provider": "deepseek-official", "model": "deepseek-flash", "replayState": {"response": {"kind": "deepseek-messages", "version": 1, "model": "deepseek-flash"}, "blocks": [{"type": "reasoning", "signature": "5b27a5e2-638f-40f1-bde4-4bf23c06fd04"}, {"type": "tool-call"}]}}, "id": "df274a06-62fc-4537-a350-a5735a877c09"}

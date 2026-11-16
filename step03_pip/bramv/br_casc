@@ -1,0 +1,4 @@
+module top(input wire clk, input wire [15:0] a, input wire [7:0] d, output reg [7:0] q);
+  (* ram_style="block" *) reg [7:0] mem [0:65535];
+  always @(posedge clk) begin mem[a] <= d; q <= mem[a]; end
+endmodule

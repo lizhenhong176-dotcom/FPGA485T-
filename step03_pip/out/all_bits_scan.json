@@ -1,0 +1,1334 @@
+{
+ "bitstreams": 92,
+ "errors": [],
+ "active_tile_scans": 7453,
+ "unique_active_tiles": 1965,
+ "set_bits_scanned": 32350,
+ "unexplained_bits": 576,
+ "slot_violations": 0,
+ "rule_of_three_upper_bound_pct": 0.04025,
+ "per_file": [
+  {
+   "file": "_2020_a.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_2020_b.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_2020_bit_base.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_b1.bit",
+   "active_tiles": 57,
+   "set_bits": 193,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c0.bit",
+   "active_tiles": 21,
+   "set_bits": 51,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c0_noop.bit",
+   "active_tiles": 21,
+   "set_bits": 51,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c0_rt.bit",
+   "active_tiles": 21,
+   "set_bits": 51,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c0_to_c3.bit",
+   "active_tiles": 29,
+   "set_bits": 72,
+   "unexplained": 4,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X8Y20",
+     1,
+     7,
+     1
+    ],
+    [
+     "INT_L_X32Y1",
+     7,
+     7,
+     0
+    ],
+    [
+     "INT_L_X32Y7",
+     5,
+     3,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c1.bit",
+   "active_tiles": 21,
+   "set_bits": 51,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c2.bit",
+   "active_tiles": 21,
+   "set_bits": 51,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c3.bit",
+   "active_tiles": 30,
+   "set_bits": 76,
+   "unexplained": 2,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X8Y20",
+     1,
+     7,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c3_rt.bit",
+   "active_tiles": 30,
+   "set_bits": 76,
+   "unexplained": 2,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X8Y20",
+     1,
+     7,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c4.bit",
+   "active_tiles": 27,
+   "set_bits": 76,
+   "unexplained": 2,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X8Y20",
+     1,
+     3,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c4_rt.bit",
+   "active_tiles": 27,
+   "set_bits": 76,
+   "unexplained": 2,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X8Y20",
+     1,
+     3,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_c5.bit",
+   "active_tiles": 27,
+   "set_bits": 76,
+   "unexplained": 2,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X8Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X8Y20",
+     1,
+     3,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_d2.bit",
+   "active_tiles": 27,
+   "set_bits": 74,
+   "unexplained": 2,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X34Y20",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X6Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_blank2.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_blank_rt.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_clb.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_edit.bit",
+   "active_tiles": 76,
+   "set_bits": 454,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_i3.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_idem.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_myinit3.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_rt.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_full8_swap.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_g1.bit",
+   "active_tiles": 17,
+   "set_bits": 47,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_R_X13Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_g16_edit.bit",
+   "active_tiles": 47,
+   "set_bits": 111,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_R_X31Y97",
+     1,
+     31,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_g2.bit",
+   "active_tiles": 12,
+   "set_bits": 35,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_R_X27Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_g3.bit",
+   "active_tiles": 14,
+   "set_bits": 41,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_R_X43Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_g4.bit",
+   "active_tiles": 15,
+   "set_bits": 41,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X48Y20",
+     0,
+     16,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_i3_fixed.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_i3_stale.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_k0.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_k1.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_k2.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_k3.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_k4.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_k5.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_n1.bit",
+   "active_tiles": 392,
+   "set_bits": 2606,
+   "unexplained": 24,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X30Y133",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y133",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y134",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y134",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y138",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y138",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y136",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y136",
+     1,
+     1,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_n3.bit",
+   "active_tiles": 376,
+   "set_bits": 2384,
+   "unexplained": 16,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X30Y130",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y130",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y133",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y133",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y134",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y134",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y132",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y132",
+     1,
+     1,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_n4.bit",
+   "active_tiles": 438,
+   "set_bits": 2566,
+   "unexplained": 18,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X30Y133",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y133",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y134",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y134",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y138",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y138",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X30Y136",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X30Y136",
+     1,
+     1,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_r0.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_r1.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_r2.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_r3.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_r4.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_r5.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_rt_g16_s0.bit",
+   "active_tiles": 47,
+   "set_bits": 111,
+   "unexplained": 1,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_R_X31Y97",
+     1,
+     31,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_v.bit",
+   "active_tiles": 76,
+   "set_bits": 458,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "ref.bit",
+   "active_tiles": 982,
+   "set_bits": 3272,
+   "unexplained": 240,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X118Y39",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y39",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X118Y57",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y57",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X118Y75",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y75",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X118Y93",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y93",
+     1,
+     1,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "tamper_init.bit",
+   "active_tiles": 982,
+   "set_bits": 3272,
+   "unexplained": 240,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X118Y39",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y39",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X118Y57",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y57",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X118Y75",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y75",
+     1,
+     1,
+     0
+    ],
+    [
+     "INT_L_X118Y93",
+     1,
+     0,
+     0
+    ],
+    [
+     "INT_L_X118Y93",
+     1,
+     1,
+     0
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 42,
+   "set_bits": 164,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 42,
+   "set_bits": 164,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "bit_base.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 102,
+   "set_bits": 240,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 102,
+   "set_bits": 240,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "_resynth.bit",
+   "active_tiles": 108,
+   "set_bits": 319,
+   "unexplained": 5,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X24Y25",
+     1,
+     24,
+     1
+    ],
+    [
+     "INT_L_X24Y25",
+     1,
+     26,
+     1
+    ],
+    [
+     "INT_L_X6Y11",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X6Y11",
+     1,
+     3,
+     1
+    ],
+    [
+     "INT_L_X6Y11",
+     1,
+     7,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "_s8v0.bit",
+   "active_tiles": 110,
+   "set_bits": 319,
+   "unexplained": 5,
+   "violations": 0,
+   "unexplained_sample": [
+    [
+     "INT_L_X24Y25",
+     1,
+     24,
+     1
+    ],
+    [
+     "INT_L_X24Y25",
+     1,
+     26,
+     1
+    ],
+    [
+     "INT_L_X6Y11",
+     0,
+     16,
+     1
+    ],
+    [
+     "INT_L_X6Y11",
+     1,
+     3,
+     1
+    ],
+    [
+     "INT_L_X6Y11",
+     1,
+     7,
+     1
+    ]
+   ],
+   "violation_sample": []
+  },
+  {
+   "file": "e10.bit",
+   "active_tiles": 1,
+   "set_bits": 4,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "e10_v2.bit",
+   "active_tiles": 1,
+   "set_bits": 4,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "e8.bit",
+   "active_tiles": 1,
+   "set_bits": 4,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "e8_v2.bit",
+   "active_tiles": 1,
+   "set_bits": 4,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 51,
+   "set_bits": 140,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "alt_a3.bit",
+   "active_tiles": 21,
+   "set_bits": 82,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "alt_clean.bit",
+   "active_tiles": 22,
+   "set_bits": 78,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "alt_same.bit",
+   "active_tiles": 21,
+   "set_bits": 82,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "alt_same2.bit",
+   "active_tiles": 21,
+   "set_bits": 82,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "base_ctrl2.bit",
+   "active_tiles": 21,
+   "set_bits": 80,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "design.bit",
+   "active_tiles": 21,
+   "set_bits": 80,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "one_pip.bit",
+   "active_tiles": 22,
+   "set_bits": 84,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "pin_a5_design.bit",
+   "active_tiles": 21,
+   "set_bits": 80,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "t2_00.bit",
+   "active_tiles": 62,
+   "set_bits": 168,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "t2_01.bit",
+   "active_tiles": 62,
+   "set_bits": 168,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "t2_base.bit",
+   "active_tiles": 62,
+   "set_bits": 168,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "design.bit",
+   "active_tiles": 23,
+   "set_bits": 86,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "design.bit",
+   "active_tiles": 23,
+   "set_bits": 84,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "design.bit",
+   "active_tiles": 23,
+   "set_bits": 86,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "design.bit",
+   "active_tiles": 23,
+   "set_bits": 84,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "design.bit",
+   "active_tiles": 25,
+   "set_bits": 90,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 62,
+   "set_bits": 170,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 62,
+   "set_bits": 170,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 68,
+   "set_bits": 174,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 68,
+   "set_bits": 174,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "a.bit",
+   "active_tiles": 65,
+   "set_bits": 176,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "b.bit",
+   "active_tiles": 65,
+   "set_bits": 176,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "rw_out.bit",
+   "active_tiles": 62,
+   "set_bits": 170,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "yA.bit",
+   "active_tiles": 15,
+   "set_bits": 36,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  },
+  {
+   "file": "yB.bit",
+   "active_tiles": 14,
+   "set_bits": 34,
+   "unexplained": 0,
+   "violations": 0,
+   "unexplained_sample": [],
+   "violation_sample": []
+  }
+ ]
+}
